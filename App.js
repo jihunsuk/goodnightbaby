@@ -17,6 +17,7 @@ import HumiditySetting from './components/HumiditySetting'
 import MeausermentHistory from './components/MeausermentHistory'
 import Setting from './components/Setting'
 import TemperatureSetting from './components/TemperatureSetting'
+import Sidebar from './components/Sidebar'
 
 export default class App extends React.Component {
   render() {
@@ -41,6 +42,7 @@ export default class App extends React.Component {
         <MeausermentHistory />
         <Setting />
         <TemperatureSetting />
+        <Sidebar />
       </View>
     );
   }
