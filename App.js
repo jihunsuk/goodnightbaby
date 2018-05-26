@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  StatusBar
 } from 'react-native';
 import AlarmSetting from './components/AlarmSetting'
 import BabyManagement from './components/BabyManagement'
@@ -14,16 +14,17 @@ import DeviceSelection from './components/DeviceSelection'
 import Home from './components/Home'
 import HumidifierSelection from './components/HumidifierSelection'
 import HumiditySetting from './components/HumiditySetting'
-import MeausermentHistory from './components/MeausermentHistory'
+import MeasurementHistory from './components/MeasurementHistory'
 import Setting from './components/Setting'
 import TemperatureSetting from './components/TemperatureSetting'
+import Content from './components/Content'
 import Sidebar from './components/Sidebar'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page : ''
+      page: 'BabySelection'
     };
   }
 
@@ -34,41 +35,32 @@ export default class App extends React.Component {
   }
 
   _getPage() {
-    const { page } = this.state;
+    const {
+      page
+    } = this.state;
     if (page === 'Home') {
       return <Home />;
-    }
-    else if (page === 'BabySelection') {
+    } else if (page === 'BabySelection') {
       return <BabySelection />;
-    }
-    else if (page === 'DeviceManagement') {
+    } else if (page === 'DeviceManagement') {
       return <DeviceManagement />;
-    }
-    else if (page === 'MeasurementHistory') {
+    } else if (page === 'MeasurementHistory') {
       return <MeasurementHistory />
-    }
-    else if (page === 'Setting') {
+    } else if (page === 'Setting') {
       return <Setting />;
-    }
-    else if (page === 'BabyManagement') {
+    } else if (page === 'BabyManagement') {
       return <BabyManagement />;
-    }
-    else if (page === 'DeviceSelection') {
+    } else if (page === 'DeviceSelection') {
       return <DeviceSelection />;
-    }
-    else if (page === 'CoolFanSelection') {
+    } else if (page === 'CoolFanSelection') {
       return <CoolFanSelection />;
-    }
-    else if (page === 'HumidifierSelection') {
+    } else if (page === 'HumidifierSelection') {
       return <HumidifierSelection />;
-    }
-    else if (page === 'TemeratureSetting') {
+    } else if (page === 'TemeratureSetting') {
       return <TemeratureSetting />;
-    }
-    else if (page === 'HumiditySetting') {
+    } else if (page === 'HumiditySetting') {
       return <HumiditySetting />;
-    }
-    else if (page === 'AlarmSetting') {
+    } else if (page === 'AlarmSetting') {
       return <AlarmSetting />;
     }
   }
@@ -79,22 +71,7 @@ export default class App extends React.Component {
         <View style={styles.header}>
           <Text>goodnightbaby</Text>
         </View>
-        <Image
-            style={styles.image}
-            source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
-          />
-        <AlarmSetting />
-        <BabyManagement />
-        <BabySelection />
-        <CoolFanSelection />
-        <DeviceManagement />
-        <DeviceSelection />
-        <Home />
-        <HumidifierSelection />
-        <HumiditySetting />
-        <MeausermentHistory />
-        <Setting />
-        <TemperatureSetting />
+        <Content page={this._getPage()}/>
         <Sidebar _onPageSelect={(page) => {this._setPage(page)}}/>
       </View>
     );
@@ -109,12 +86,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   header: {
+    position: 'absolute',
+    top: StatusBar.currentHeight,
     width: '100%',
-    height: 50,
+    height: 40,
     backgroundColor: '#00df1a',
   },
-  image: {
-    width: '100%',
-    height: 300,
-  }
 });
