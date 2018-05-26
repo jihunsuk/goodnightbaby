@@ -20,6 +20,53 @@ import TemperatureSetting from './components/TemperatureSetting'
 import Sidebar from './components/Sidebar'
 
 export default class App extends React.Component {
+
+  _setPage(page) {
+    this.setState({
+      page
+    });
+  }
+  
+  _getPage() {
+    const { page } = this.state;
+    if (page === 'Home') {
+      return <Home />;
+    }
+    else if (page === 'BabySelection') {
+      return <BabySelection />;
+    }
+    else if (page === 'DeviceManagement') {
+      return <DeviceManagement />;
+    }
+    else if (page === 'MeasurementHistory') {
+      return <MeasurementHistory />
+    }
+    else if (page === 'Setting') {
+      return <Setting />;
+    }
+    else if (page === 'BabyManagement') {
+      return <BabyManagement />;
+    }
+    else if (page === 'DeviceSelection') {
+      return <DeviceSelection />;
+    }
+    else if (page === 'CoolFanSelection') {
+      return <CoolFanSelection />;
+    }
+    else if (page === 'HumidifierSelection') {
+      return <HumidifierSelection />;
+    }
+    else if (page === 'TemeratureSetting') {
+      return <TemeratureSetting />;
+    }
+    else if (page === 'HumiditySetting') {
+      return <HumiditySetting />;
+    }
+    else if (page === 'AlarmSetting') {
+      return <AlarmSetting />;
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
