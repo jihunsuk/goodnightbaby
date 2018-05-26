@@ -5,6 +5,7 @@ import {
   View,
   Image
 } from 'react-native';
+import BabyList from './BabyList';
 
 export default class BabySelection extends React.Component {
   render() {
@@ -14,7 +15,7 @@ export default class BabySelection extends React.Component {
             style={styles.image}
             source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
           />
-        <Text>BabySelection Test</Text>
+        <BabyList />
       </View>
     );
   }
@@ -23,6 +24,7 @@ export default class BabySelection extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    height: '100%',
   },
   image: {
     width: '100%',
