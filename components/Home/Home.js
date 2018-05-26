@@ -7,7 +7,7 @@ import HomeFunction from './HomeFunction'
 
 export default class Home extends React.Component {
   constructor() {
-      super();
+      super(props);
       this.state = {
          switchValue: false,
       }

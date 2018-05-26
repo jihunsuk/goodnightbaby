@@ -4,7 +4,7 @@ import CoolFanList from "./CoolFanList";
 
 export default class CoolFanManagement extends React.Component {
     constructor() {
-        super();
+        super(props);
         this.state = {
             switchValue: false,
         }

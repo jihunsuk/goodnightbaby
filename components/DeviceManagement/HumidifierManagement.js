@@ -4,7 +4,7 @@ import HumidifierList from "./HumidifierList";
 
 export default class HumidifierManagement extends React.Component {
     constructor() {
-        super();
+        super(props);
         this.state = {
             switchValue: false,
         }
