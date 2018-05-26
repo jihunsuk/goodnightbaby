@@ -11,7 +11,7 @@ import BabySelection from './components/BabySelection'
 import CoolFanSelection from './components/CoolFanSelection'
 import DeviceManagement from './components/DeviceManagement'
 import DeviceSelection from './components/DeviceSelection'
-import Home from './components/Home'
+ import Home from './components/Home'
 import HumidifierSelection from './components/HumidifierSelection'
 import HumiditySetting from './components/HumiditySetting'
 import MeausermentHistory from './components/MeausermentHistory'
@@ -79,23 +79,31 @@ export default class App extends React.Component {
         <View style={styles.header}>
           <Text>goodnightbaby</Text>
         </View>
-        <Image
-            style={styles.image}
-            source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
-          />
-        <AlarmSetting />
-        <BabyManagement />
-        <BabySelection />
-        <CoolFanSelection />
-        <DeviceManagement />
-        <DeviceSelection />
         <Home />
-        <HumidifierSelection />
-        <HumiditySetting />
-        <MeausermentHistory />
-        <Setting />
-        <TemperatureSetting />
         <Sidebar _onPageSelect={(page) => {this._setPage(page)}}/>
+      {/*
+        <View style={styles.header}>
+        <Text>goodnightbaby</Text>
+      </View>
+      <Image
+          style={styles.image}
+          source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
+        />
+      <AlarmSetting />
+      <BabyManagement />
+      <BabySelection />
+      <CoolFanSelection />
+      <DeviceManagement />
+      <DeviceSelection />
+      <Home />
+      <HumidifierSelection />
+      <HumiditySetting />
+      <MeausermentHistory />
+      <Setting />
+      <TemperatureSetting />
+      <Sidebar _onPageSelect={(page) => {this._setPage(page)}}/>
+      */}
+
       </View>
     );
   }
@@ -105,13 +113,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   header: {
     width: '100%',
     height: 50,
     backgroundColor: '#00df1a',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image: {
     width: '100%',
