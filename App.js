@@ -1,13 +1,46 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image
+} from 'react-native';
+import AlarmSetting from './components/AlarmSetting'
+import BabyManagement from './components/BabyManagement'
+import BabySelection from './components/BabySelection'
+import CoolFanSelection from './components/CoolFanSelection'
+import DeviceManagement from './components/DeviceManagement'
+import DeviceSelection from './components/DeviceSelection'
+import Home from './components/Home'
+import HumidifierSelection from './components/HumidifierSelection'
+import HumiditySetting from './components/HumiditySetting'
+import MeausermentHistory from './components/MeausermentHistory'
+import Setting from './components/Setting'
+import TemperatureSetting from './components/TemperatureSetting'
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <View style={styles.header}>
+          <Text>goodnightbaby</Text>
+        </View>
+        <Image
+            style={styles.image}
+            source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
+          />
+        <AlarmSetting />
+        <BabyManagement />
+        <BabySelection />
+        <CoolFanSelection />
+        <DeviceManagement />
+        <DeviceSelection />
+        <Home />
+        <HumidifierSelection />
+        <HumiditySetting />
+        <MeausermentHistory />
+        <Setting />
+        <TemperatureSetting />
       </View>
     );
   }
@@ -20,4 +53,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  header: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#00df1a',
+  },
+  image: {
+    width: '100%',
+    height: 300,
+  }
 });
