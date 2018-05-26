@@ -11,7 +11,7 @@ import BabySelection from './components/BabySelection'
 import CoolFanSelection from './components/CoolFanSelection'
 import DeviceManagement from './components/DeviceManagement'
 import DeviceSelection from './components/DeviceSelection'
-import Home from './components/Home'
+ import Home from './components/Home'
 import HumidifierSelection from './components/HumidifierSelection'
 import HumiditySetting from './components/HumiditySetting'
 import MeasurementHistory from './components/MeasurementHistory'
@@ -82,8 +82,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   header: {
     position: 'absolute',
@@ -91,5 +89,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     backgroundColor: '#00df1a',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

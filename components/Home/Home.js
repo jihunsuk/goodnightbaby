@@ -1,11 +1,32 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Switch } from 'react-native';
+
+import BabyInfo from '../BabyInfo'
+import TempAndHumid from './TempAndHumid'
+import HomeFunction from './HomeFunction'
 
 export default class Home extends React.Component {
+  constructor() {
+      super();
+      this.state = {
+         switchValue: false,
+      }
+   }
+   toggleSwitch = (value) => {
+      this.setState({switchValue: value})
+   }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Home Test</Text>
+        <BabyInfo />
+        <Text>자동측정d</Text>
+        <Switch
+           onValueChange = {this.toggleSwitch}
+           value = {this.state.switchValue}/>
+        <TempAndHumid />
+        <HomeFunction />
       </View>
     );
   }

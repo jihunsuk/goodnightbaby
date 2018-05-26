@@ -5,7 +5,7 @@ export default class TempAndHumid extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>TempAndHumid Test</Text>
+        <Text>온도, 습도 출력 및 측정</Text>
       </View>
     );
   }
