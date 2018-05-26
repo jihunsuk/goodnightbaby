@@ -20,13 +20,19 @@ import TemperatureSetting from './components/TemperatureSetting'
 import Sidebar from './components/Sidebar'
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      page : ''
+    };
+  }
 
   _setPage(page) {
     this.setState({
       page
     });
   }
-  
+
   _getPage() {
     const { page } = this.state;
     if (page === 'Home') {
@@ -89,7 +95,7 @@ export default class App extends React.Component {
         <MeausermentHistory />
         <Setting />
         <TemperatureSetting />
-        <Sidebar />
+        <Sidebar _onPageSelect={(page) => {this._setPage(page)}}/>
       </View>
     );
   }
