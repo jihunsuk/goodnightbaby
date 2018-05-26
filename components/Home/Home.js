@@ -21,7 +21,7 @@ export default class Home extends React.Component {
     return (
       <View style={styles.container}>
         <BabyInfo />
-        <Text>자동측정</Text>
+        <Text>자동측정d</Text>
         <Switch
            onValueChange = {this.toggleSwitch}
            value = {this.state.switchValue}/>
