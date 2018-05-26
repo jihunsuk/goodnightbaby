@@ -1,11 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  StatusBar
+} from 'react-native';
 
 export default class Content extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Content Test</Text>
+        {this.props.page}
       </View>
     );
   }
@@ -13,6 +19,11 @@ export default class Content extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    top: StatusBar.currentHeight + 40,
+    bottom: 50,
     backgroundColor: '#fff',
+    width: '100%',
+    height: 'auto',
   },
 });
