@@ -19,60 +19,64 @@ import Setting from './components/Setting'
 import TemperatureSetting from './components/TemperatureSetting'
 import Content from './components/Content'
 import Sidebar from './components/Sidebar'
+import Store from "./store"
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      page: 'BabySelection'
-    };
-  }
 
-  _setPage(page) {
-    this.setState({
-      page
-    });
-  }
-
-  _getPage() {
-    const {
-      page
-    } = this.state;
-    if (page === 'Home') {
-      return <Home />;
-    } else if (page === 'BabySelection') {
-      return <BabySelection />;
-    } else if (page === 'DeviceManagement') {
-      return <DeviceManagement />;
-    } else if (page === 'MeasurementHistory') {
-      return <MeasurementHistory />
-    } else if (page === 'Setting') {
-      return <Setting />;
-    } else if (page === 'BabyManagement') {
-      return <BabyManagement />;
-    } else if (page === 'DeviceSelection') {
-      return <DeviceSelection />;
-    } else if (page === 'CoolFanSelection') {
-      return <CoolFanSelection />;
-    } else if (page === 'HumidifierSelection') {
-      return <HumidifierSelection />;
-    } else if (page === 'TemeratureSetting') {
-      return <TemeratureSetting />;
-    } else if (page === 'HumiditySetting') {
-      return <HumiditySetting />;
-    } else if (page === 'AlarmSetting') {
-      return <AlarmSetting />;
+    this._setPage = pageName => {
+      this.setState({
+        pageName: pageName,
+        page: this._getPage(pageName),
+      });
     }
+
+    this._getPage = (pageName) => {
+      if (pageName === 'Home') {
+        return <Home />;
+      } else if (pageName === 'BabySelection') {
+        return <BabySelection />;
+      } else if (pageName === 'DeviceManagement') {
+        return <DeviceManagement />;
+      } else if (pageName === 'MeasurementHistory') {
+        return <MeasurementHistory />
+      } else if (pageName === 'Setting') {
+        return <Setting />;
+      } else if (pageName === 'BabyManagement') {
+        return <BabyManagement />;
+      } else if (pageName === 'DeviceSelection') {
+        return <DeviceSelection />;
+      } else if (pageName === 'CoolFanSelection') {
+        return <CoolFanSelection />;
+      } else if (pageName === 'HumidifierSelection') {
+        return <HumidifierSelection />;
+      } else if (pageName === 'TemeratureSetting') {
+        return <TemeratureSetting />;
+      } else if (pageName === 'HumiditySetting') {
+        return <HumiditySetting />;
+      } else if (pageName === 'AlarmSetting') {
+        return <AlarmSetting />;
+      }
+    }
+
+    this.state = {
+      pageName: 'BabySelection',
+      page: <BabySelection />,
+      _setPage: this._setPage,
+    };
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text>goodnightbaby</Text>
-        </View>
-        <Content page={this._getPage()}/>
-        <Sidebar _onPageSelect={(page) => {this._setPage(page)}}/>
+        <Store.Provider value={this.state}>
+          <View style={styles.header}>
+            <Text>goodnightbaby</Text>
+          </View>
+          <Content />
+          <Sidebar />
+        </Store.Provider>
       </View>
     );
   }
