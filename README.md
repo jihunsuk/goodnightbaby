@@ -31,9 +31,9 @@
 
 > 개발 환경 설정
 
-
+* React 16.3.2
 * React-Native
-* Atom
+* Intellij IDEA Ultimate x64
 * npm
 * git
 * Expo
