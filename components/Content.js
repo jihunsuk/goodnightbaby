@@ -1,25 +1,19 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  StatusBar
-} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import Store from '../store'
 
 export default class Content extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Store.Consumer>
-          {store => {
-            return(
-              store.page
-            )
-          }}
-        </Store.Consumer>
-      </View>
+        <View style={styles.container}>
+          <Store.Consumer>
+            {store => {
+              return (
+                  store.page
+              )
+            }}
+          </Store.Consumer>
+        </View>
     );
   }
 }

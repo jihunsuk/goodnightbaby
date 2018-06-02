@@ -27,13 +27,15 @@
 21. 메인 페이지
 22. 선풍기 페이지
 
+## 5.25 (금)
+>개발시작
 
 
 > 개발 환경 설정
 
-
+* React 16.3.2
 * React-Native
-* Atom
+* Intellij IDEA Ultimate x64
 * npm
 * git
 * Expo
