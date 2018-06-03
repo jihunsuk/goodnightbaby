@@ -23,8 +23,7 @@ export default class App extends React.Component {
     this._setPage = pageName => {
       this.setState({
         pageName: pageName,
-        page: this._getPage(pageName),
-        baby: null,
+        page: this._getPage(pageName)
       });
     }
 
