@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Switch } from 'react-native';
 import CoolFanList from "./CoolFanList";
 
 export default class CoolFanManagement extends React.Component {
-    constructor() {
+    constructor(props) {
         super(props);
         this.state = {
             switchValue: false,
