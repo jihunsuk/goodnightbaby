@@ -6,7 +6,7 @@ import TempAndHumid from './TempAndHumid'
 import HomeFunction from './HomeFunction'
 
 export default class Home extends React.Component {
-  constructor() {
+  constructor(props) {
       super(props);
       this.state = {
          switchValue: false,
