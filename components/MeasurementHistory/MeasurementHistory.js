@@ -15,10 +15,19 @@ export default class MeasurementHistory extends React.Component {
             <View style={styles.container}>
                 <BabyInfo/>
                 <Text>온습도 측정기록</Text>
-                <PureChart data={sampleData} type='line'/>
+                <PureChart data={sampleData}
+                           customValueRenderer={(index, point) => {
+                               return (
+                                   <Text style={{textAlign: 'center'}}>{point.y}</Text>
+                               )
+                           }}
+                           type='line'/>
             </View>
         );
     }
+
+
+
 }
 
 const testTemperature = [
