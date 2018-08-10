@@ -3,6 +3,10 @@
 2. adb -s 디바이스번호 reverse tcp:8081 tcp:8081
 3. react-native run-android 로 실행
 
+# reload 방법
+1. 휴대폰을 좌우로 흔들어 Enable Live reload를 클릭한다.
+- Hot reload 기능은 에러가 발생하면서 동작되지 않음.
+
 # 에러처리
 1. index.android.js 관련 에러
 - https://stackoverflow.com/questions/44446523/unable-to-load-script-from-assets-index-android-bundle-on-windows
