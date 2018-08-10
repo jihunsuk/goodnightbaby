@@ -7,3 +7,6 @@
 1. index.android.js 관련 에러
 - https://stackoverflow.com/questions/44446523/unable-to-load-script-from-assets-index-android-bundle-on-windows
 - react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+
+2. Resource 관련에러
+- app.build 
