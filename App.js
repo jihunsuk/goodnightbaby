@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Header, Left, Right, Body, Container, Title } from "native-base";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 import AlarmSetting from "./components/AlarmSetting";
 import BabyManagement from "./components/BabyManagement";
@@ -73,20 +74,32 @@ export default class App extends Component {
       });
     };
     this.state = {
-      pageName: "BabySelection",
+      pageName: PAGE_NAME.babySelection,
       page: <BabySelection />,
       _setPage: this._setPage,
       _setBaby: this._setBaby
     };
   }
 
+  // TODO: Setting fonts
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+    });
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <Container style={styles.container}>
         <Store.Provider value={this.state}>
-          <View style={styles.header}>
-            <Text>{TITLE.goodnightbaby}</Text>
-          </View>
+          <Header style={styles.header}>
+            <Left />
+            <Body>
+              <Title>{TITLE.goodnightbaby}</Title>
+            </Body>
+            <Right />
+          </Header>
           <Content />
           {this.state.pageName !== PAGE_NAME.babySelection &&
           this.state.pageName !== PAGE_NAME.babyModification &&
@@ -94,7 +107,7 @@ export default class App extends Component {
             <Sidebar />
           ) : null}
         </Store.Provider>
-      </View>
+      </Container>
     );
   }
 }
@@ -105,12 +118,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   header: {
-    position: "absolute",
+    // position: "absolute",
     // top: StatusBar.currentHeight,
-    width: "100%",
-    height: 40,
-    backgroundColor: "#00df1a",
-    alignItems: "center",
-    justifyContent: "center"
+    // width: "100%",
+    // height: 40,
+    backgroundColor: "#00df1a"
+    // alignItems: "center",
+    // justifyContent: "center"
   }
 });
