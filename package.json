@@ -13,12 +13,12 @@
   },
   "devDependencies": {
     "babel-jest": "23.4.2",
-    "babel-preset-react-native": "4",
+    "babel-preset-react-native": "^4.0.0",
     "jest": "23.4.2",
-    "react-test-renderer": "16.4.1",
     "react-native-ble-plx": "github:Polidea/react-native-ble-plx",
     "react-native-pure-chart": "0.0.21",
-    "react-native-sqlite-storage": "^3.3.4"
+    "react-native-sqlite-storage": "^3.3.4",
+    "react-test-renderer": "16.4.1"
   },
   "jest": {
     "preset": "react-native"
