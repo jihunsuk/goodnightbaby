@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { PageActions } from "../store/actionCreators";
 import Store from "../store";
 
 export default class Sidebar extends React.Component {

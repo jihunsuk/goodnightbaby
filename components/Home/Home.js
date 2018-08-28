@@ -1,142 +1,320 @@
-import React from 'react';
-import {Platform, StyleSheet, Switch, Text, View} from 'react-native';
-
-import BabyInfo from '../BabyInfo'
-import TempAndHumid from './TempAndHumid'
-import HomeFunction from './HomeFunction'
-
-import {BleManager} from 'react-native-ble-plx'
+import React from "react";
+import {
+  Platform,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  ScrollView,
+  TouchableHighlight,
+  Button
+} from "react-native";
+import BabyInfo from "../BabyInfo";
+import TempAndHumid from "./TempAndHumid";
+import HomeFunction from "./HomeFunction";
+import BluetoothSerial from "react-native-bluetooth-serial";
+import Buffer from "buffer";
 
 export default class Home extends React.Component {
-  toggleSwitch = (value) => {
-    this.setState({switchValue: value})
-  }
-
   constructor(props) {
     super(props);
-    this.manager = new BleManager()
-    this.state = {info: "", values: {}}
-    this.prefixUUID = "f000aa"
-    this.suffixUUID = "-0451-4000-b000-000000000000"
-    this.sensors = {
-      0: "Temperature",
-      1: "Accelerometer",
-      2: "Humidity",
-      3: "Magnetometer",
-      4: "Barometer",
-      5: "Gyroscope"
-    }
-  }
-
-  serviceUUID(num) {
-    return this.prefixUUID + num + "0" + this.suffixUUID
-  }
-
-  notifyUUID(num) {
-    return this.prefixUUID + num + "1" + this.suffixUUID
-  }
-
-  writeUUID(num) {
-    return this.prefixUUID + num + "2" + this.suffixUUID
-  }
-
-  info(message) {
-    this.setState({info: message})
-  }
-
-  error(message) {
-    this.setState({info: "ERROR: " + message})
-  }
-
-  updateValue(key, value) {
-    this.setState({values: {...this.state.values, [key]: value}})
+    this.state = {
+      switchValue: false,
+      isEnabled: false,
+      discovering: false,
+      devices: [],
+      unpairedDevices: [],
+      connected: false,
+      section: 0
+    };
   }
 
   componentWillMount() {
-    if (Platform.OS === 'ios') {
-      this.manager.onStateChange((state) => {
-        if (state === 'PoweredOn') this.scanAndConnect()
-      })
+    Promise.all([BluetoothSerial.isEnabled(), BluetoothSerial.list()]).then(
+      values => {
+        const [isEnabled, devices] = values;
+        this.setState({ isEnabled, devices });
+      }
+    );
+    console.log("componentWillMount", BluetoothSerial);
+
+    BluetoothSerial.on("bluetoothEnabled", () => {
+      console.log("Bluetooth enabled");
+      Promise.all([BluetoothSerial.isEnabled(), BluetoothSerial.list()]).then(
+        values => {
+          const [isEnabled, devices] = values;
+          this.setState({ isEnabled, devices });
+        }
+      );
+    });
+
+    BluetoothSerial.on("bluetoothDisabled", () => {
+      console.log("Bluetooth disabled");
+      this.setState({ devices: [] });
+    });
+
+    BluetoothSerial.on("error", err => console.log(`Error: ${err.message}`));
+    BluetoothSerial.on("connectionLost", () => {
+      if (this.state.device) {
+        console.log(
+          `Connection to device ${this.state.device.name} has been lost`
+        );
+      }
+      this.setState({ connected: false });
+    });
+  }
+
+  /**
+   * [android]
+   * request enable of bluetooth from user
+   */
+  requestEnable() {
+    BluetoothSerial.requestEnable()
+      .then(res => this.setState({ isEnabled: true }))
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * [android]
+   * enable bluetooth on device
+   */
+  enable() {
+    BluetoothSerial.enable()
+      .then(res => this.setState({ isEnabled: true }))
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * [android]
+   * disable bluetooth on device
+   */
+  disable() {
+    BluetoothSerial.disable()
+      .then(res => this.setState({ isEnabled: false }))
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * [android]
+   * toggle bluetooth
+   */
+  toggleBluetooth(value) {
+    if (value === true) {
+      this.enable();
     } else {
-      this.scanAndConnect()
+      this.disable();
     }
   }
 
-  scanAndConnect() {
-    this.manager.startDeviceScan(null,
-      null, (error, device) => {
-        this.info("Scanning...")
-        console.log(device)
-
-        if (error) {
-          this.error(error.message)
-          return
-        }
-
-        if (device.name === 'TI BLE Sensor Tag' || device.name === 'SensorTag') {
-          this.info("Connecting to TI Sensor")
-          this.manager.stopDeviceScan()
-          device.connect()
-          .then((device) => {
-            this.info("Discovering services and characteristics")
-            return device.discoverAllServicesAndCharacteristics()
-          })
-          .then((device) => {
-            this.info("Setting notifications")
-            return this.setupNotifications(device)
-          })
-          .then(() => {
-            this.info("Listening...")
-          }, (error) => {
-            this.error(error.message)
-          })
-        }
-      });
+  /**
+   * [android]
+   * Discover unpaired devices, works only in android
+   */
+  discoverUnpaired() {
+    if (this.state.discovering) {
+      return false;
+    } else {
+      this.setState({ discovering: true });
+      BluetoothSerial.discoverUnpairedDevices()
+        .then(unpairedDevices => {
+          this.setState({ unpairedDevices, discovering: false });
+        })
+        .catch(err => console.log(err.message));
+    }
   }
 
-  async setupNotifications(device) {
-    for (const id in this.sensors) {
-      const service = this.serviceUUID(id)
-      const characteristicW = this.writeUUID(id)
-      const characteristicN = this.notifyUUID(id)
+  /**
+   * [android]
+   * Discover unpaired devices, works only in android
+   */
+  cancelDiscovery() {
+    if (this.state.discovering) {
+      BluetoothSerial.cancelDiscovery()
+        .then(() => {
+          this.setState({ discovering: false });
+        })
+        .catch(err => console.log(err.message));
+    }
+  }
 
-      const characteristic = await device.writeCharacteristicWithResponseForService(
-        service, characteristicW, "AQ==" /* 0x01 in hex */
-      )
-
-      device.monitorCharacteristicForService(service, characteristicN, (error, characteristic) => {
-        if (error) {
-          this.error(error.message)
-          return
+  /**
+   * [android]
+   * Pair device
+   */
+  pairDevice(device) {
+    BluetoothSerial.pairDevice(device.id)
+      .then(paired => {
+        if (paired) {
+          console.log(`Device ${device.name} paired successfully`);
+          const devices = this.state.devices;
+          devices.push(device);
+          this.setState({
+            devices,
+            unpairedDevices: this.state.unpairedDevices.filter(
+              d => d.id !== device.id
+            )
+          });
+        } else {
+          console.log(`Device ${device.name} pairing failed`);
         }
-        this.updateValue(characteristic.uuid, characteristic.value)
       })
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * Connect to bluetooth device by id
+   * @param  {Object} device
+   */
+  connect(device) {
+    this.setState({ connecting: true });
+    BluetoothSerial.connect(device.id)
+      .then(res => {
+        console.log(`Connected to device ${device.name}`);
+        this.setState({ device, connected: true, connecting: false });
+      })
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * Disconnect from bluetooth device
+   */
+  disconnect() {
+    BluetoothSerial.disconnect()
+      .then(() => this.setState({ connected: false }))
+      .catch(err => console.log(err.message));
+  }
+
+  /**
+   * Toggle connection when we have active device
+   * @param  {Boolean} value
+   */
+  toggleConnect(value) {
+    if (value === true && this.state.device) {
+      this.connect(this.state.device);
+    } else {
+      this.disconnect();
     }
   }
+
+  /**
+   * Write message to device
+   * @param  {String} message
+   */
+  write(message) {
+    if (!this.state.connected) {
+      console.log("You must connect to device first");
+    }
+
+    BluetoothSerial.write(message)
+      .then(res => {
+        console.log("Successfuly wrote to device");
+        this.setState({ connected: true });
+      })
+      .catch(err => console.log(err.message));
+  }
+
+  onDevicePress(device) {
+    if (this.state.section === 0) {
+      this.connect(device);
+    } else {
+      this.pairDevice(device);
+    }
+  }
+
+  writePackets(message, packetSize = 64) {
+    const toWrite = iconv.encode(message, "cp852");
+    const writePromises = [];
+    const packetCount = Math.ceil(toWrite.length / packetSize);
+
+    for (var i = 0; i < packetCount; i++) {
+      const packet = new Buffer(packetSize);
+      packet.fill(" ");
+      toWrite.copy(packet, 0, i * packetSize, (i + 1) * packetSize);
+      writePromises.push(BluetoothSerial.write(packet));
+    }
+
+    Promise.all(writePromises).then(result => {});
+  }
+  componentDidMount() {
+    console.log("@Test log");
+  }
+  toggleSwitch = value => {
+    this.setState({});
+  };
 
   render() {
+    console.log("render: ", this.state);
     return (
       <View style={styles.container}>
-        <BabyInfo/>
+        <BabyInfo />
         <Text>자동측정</Text>
-        <Text>{this.state.info}</Text>
-        {Object.keys(this.sensors).map((key) => {
-          return <Text key={key}>
-            {this.sensors[key] + ": " + (this.state.values[this.notifyUUID(key)] || "-")}
-          </Text>
-        })}
         <Switch
           onValueChange={this.toggleSwitch}
-          value={this.state.switchValue}/>
-        <TempAndHumid/>
-        <HomeFunction/>
+          value={this.state.switchValue}
+        />
+        {/*<TempAndHumid />*/}
+        {/*<HomeFunction />*/}
+        <Switch
+          onValueChange={this.toggleBluetooth.bind(this)}
+          value={this.state.isEnabled}
+        />
+        <DeviceList
+          showConnectedIcon={this.state.section === 0}
+          connectedId={this.state.device && this.state.device.id}
+          devices={
+            this.state.section === 0
+              ? this.state.devices
+              : this.state.unpairedDevices
+          }
+          onDevicePress={device => this.onDevicePress(device)}
+        />
+        <Button title="Request enable" onPress={() => this.requestEnable()} />
       </View>
     );
   }
 }
 
+const DeviceList = ({
+  devices,
+  connectedId,
+  showConnectedIcon,
+  onDevicePress
+}) => (
+  <ScrollView style={styles.container}>
+    <View>
+      {devices.map((device, i) => {
+        return (
+          <TouchableHighlight
+            underlayColor="#DDDDDD"
+            key={`${device.id}_${i}`}
+            onPress={() => onDevicePress(device)}
+          >
+            <View style={{ flexDirection: "row" }}>
+              {showConnectedIcon ? (
+                <View style={{ width: 48, height: 48, opacity: 0.4 }}>
+                  <Text>Test</Text>
+                </View>
+              ) : null}
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center"
+                }}
+              >
+                <Text style={{ fontWeight: "bold" }}>{device.name}</Text>
+                <Text>{`<${device.id}>`}</Text>
+              </View>
+            </View>
+          </TouchableHighlight>
+        );
+      })}
+    </View>
+  </ScrollView>
+);
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-  },
+    backgroundColor: "#fff"
+  }
 });

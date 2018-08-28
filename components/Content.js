@@ -1,6 +1,7 @@
 import React from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
+import Store from "../store";
 
 class Content extends React.Component {
   render() {
