@@ -14,6 +14,8 @@ import TempAndHumid from "./TempAndHumid";
 import HomeFunction from "./HomeFunction";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
+global.Buffer = Buffer;
+const iconv = require("iconv-lite");
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -63,6 +65,13 @@ export default class Home extends React.Component {
       this.setState({ connected: false });
     });
   }
+
+  /* Read data test */
+  _readTry = () => {
+    BluetoothSerial.readFromDevice().then(data => {
+      console.log(data);
+    });
+  };
 
   /**
    * [android]
@@ -171,6 +180,7 @@ export default class Home extends React.Component {
       .then(res => {
         console.log(`Connected to device ${device.name}`);
         this.setState({ device, connected: true, connecting: false });
+        setInterval(this._readTry, 1000);
       })
       .catch(err => console.log(err.message));
   }
@@ -208,9 +218,10 @@ export default class Home extends React.Component {
     BluetoothSerial.write(message)
       .then(res => {
         console.log("Successfuly wrote to device");
+        console.log("res: ", res);
         this.setState({ connected: true });
       })
-      .catch(err => console.log(err.message));
+      .catch(err => console.log("err: ", err.message));
   }
 
   onDevicePress(device) {
@@ -235,14 +246,13 @@ export default class Home extends React.Component {
 
     Promise.all(writePromises).then(result => {});
   }
-  componentDidMount() {
-    console.log("@Test log");
-  }
+
   toggleSwitch = value => {
     this.setState({});
   };
 
   render() {
+    const { connected } = this.state;
     console.log("render: ", this.state);
     return (
       <View style={styles.container}>
@@ -269,6 +279,9 @@ export default class Home extends React.Component {
           onDevicePress={device => this.onDevicePress(device)}
         />
         <Button title="Request enable" onPress={() => this.requestEnable()} />
+        {connected === true ? (
+          <Button title="Write" onPress={() => this.write("1")} />
+        ) : null}
       </View>
     );
   }

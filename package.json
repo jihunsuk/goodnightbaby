@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js run-android",
-    "log": "node node_modules/react-native/local-cli/cli.js log-android"
+    "test": "node node_modules/react-native/local-cli/cli.js log-android"
   },
   "dependencies": {
     "adb": "^0.2.0",
     "buffer": "^5.2.0",
+    "iconv-lite": "^0.4.24",
     "immutable": "^3.8.2",
     "native-base": "^2.7.2",
     "react": "16.4.1",
