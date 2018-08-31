@@ -1,4 +1,17 @@
 {
   "name": "goodnightbaby",
-  "displayName": "goodnightbaby"
+  "displayName": "goodnightbaby",
+  "expo": {
+    "name": "goodnightbaby",
+    "icon": "./path/to/your/app-icon.png",
+    "version": "1.0.0",
+    "slug": "your-app-slug",
+    "sdkVersion": "17.0.0",
+    "ios": {
+      "bundleIdentifier": "com.yourcompany.yourappname"
+    },
+    "android": {
+      "package": "com.yourcompany.yourappname"
+    }
+  }
 }
