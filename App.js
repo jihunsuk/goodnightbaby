@@ -75,25 +75,25 @@ export default class App extends Component {
     };
     this.state = {
       // TODO: Remove if production, it's Test Data !!
-      pageName: PAGE_NAME.home,
-      page: <Home />,
-      baby: {
-        name: "test"
-      },
-      // pageName: PAGE_NAME.babySelection,
-      // page: <BabySelection />,
+      // pageName: PAGE_NAME.home,
+      // page: <Home />,
+      // baby: {
+      //   name: "test"
+      // },
+      pageName: PAGE_NAME.babySelection,
+      page: <BabySelection />,
       _setPage: this._setPage,
       _setBaby: this._setBaby
     };
   }
 
-  // TODO: Setting fonts
-  async componentWillMount() {
-    await Expo.Font.loadAsync({
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-    });
-  }
+  // // TODO: Setting fonts
+  // async componentWillMount() {
+  //   await Expo.Font.loadAsync({
+  //     Roboto: require("native-base/Fonts/Roboto.ttf"),
+  //     Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+  //   });
+  // }
 
   render() {
     return (
@@ -126,10 +126,10 @@ const styles = StyleSheet.create({
   header: {
     // position: "absolute",
     // top: StatusBar.currentHeight,
-    // width: "100%",
-    // height: 40,
-    backgroundColor: "#00df1a"
-    // alignItems: "center",
-    // justifyContent: "center"
+    width: "100%",
+    height: 40,
+    backgroundColor: "#00df1a",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

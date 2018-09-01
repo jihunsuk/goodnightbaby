@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   Platform,
   StyleSheet,
@@ -280,7 +280,10 @@ export default class Home extends React.Component {
         />
         <Button title="Request enable" onPress={() => this.requestEnable()} />
         {connected === true ? (
-          <Button title="Write" onPress={() => this.write("1")} />
+            <Fragment>
+              <Button title="On" onPress={() => this.write("0")} />
+              <Button title="Off" onPress={() => this.write("1")} />
+            </Fragment>
         ) : null}
       </View>
     );
