@@ -75,13 +75,13 @@ export default class App extends Component {
     };
     this.state = {
       // TODO: Remove if production, it's Test Data !!
-      pageName: PAGE_NAME.home,
-      page: <Home />,
-      baby: {
-        name: "test"
-      },
-      // pageName: PAGE_NAME.babySelection,
-      // page: <BabySelection />,
+      // pageName: PAGE_NAME.home,
+      // page: <Home />,
+      // baby: {
+      //   name: "test"
+      // },
+      pageName: PAGE_NAME.babySelection,
+      page: <BabySelection />,
       _setPage: this._setPage,
       _setBaby: this._setBaby
     };

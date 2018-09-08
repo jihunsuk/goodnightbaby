@@ -1,17 +1,9 @@
 import React from "react";
 import { Button, Image, StyleSheet, View } from "react-native";
-import {
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Icon,
-  Text,
-  Left
-} from "native-base";
+import { Card, CardItem, Text } from "native-base";
 import BabyList from "./BabyList";
 import Store from "../../store";
-import { URL } from "../../constants";
+import { URL, PAGE_NAME } from "../../constants";
 
 export default class BabySelection extends React.Component {
   render() {
@@ -25,6 +17,9 @@ export default class BabySelection extends React.Component {
             />
           </CardItem>
         </Card>
+        <View style={styles.wrapperTextSelectBaby}>
+          <Text>아이를 선택해주세요</Text>
+        </View>
         <BabyList />
         <Store.Consumer>
           {store => {
@@ -33,7 +28,7 @@ export default class BabySelection extends React.Component {
                 style={styles.babyAdditionButton}
                 title="+"
                 onPress={() => {
-                  store._setPage("BabyAddition");
+                  store._setPage(PAGE_NAME.babyAddition);
                 }}
               />
             );
@@ -58,5 +53,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     bottom: 0
-  }
+  },
+  wrapperTextSelectBaby: {
+    backgroundColor: "#e0e0e0",
+    width: "100%",
+    height: 50,
+  },
 });

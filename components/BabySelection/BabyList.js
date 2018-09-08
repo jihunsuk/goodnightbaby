@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import Store from '../../store'
+import { PAGE_NAME } from "../../constants";
 
 export default class BabyList extends React.Component {
   render() {
@@ -51,10 +52,10 @@ class Baby extends React.Component {
                   </TouchableHighlight>
                   <View style={styles.baby}>
                     <Button title="수정" onPress={() => {
-                      store._setPage("BabyModification")
+                      store._setPage(PAGE_NAME.babyModification)
                     }}/>
                     <Button title="삭제" onPress={() => {
-                      store._setPage("BabyDeletion")
+                      store._setPage(PAGE_NAME.babyDeletion)
                     }}/>
                   </View>
                 </View>
