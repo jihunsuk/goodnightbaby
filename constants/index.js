@@ -16,7 +16,7 @@ export const PAGE_NAME = {
 };
 
 export const TITLE = {
-  goodnightbaby: "goodnightbaby"
+  goodnightbaby: "Goodnight Baby"
 };
 
 export const URL = {

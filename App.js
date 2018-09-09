@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Header, Left, Right, Body, Container, Title } from "native-base";
+import {
+  Header,
+  Left,
+  Right,
+  Body,
+  Container,
+  Title,
+  Content
+} from "native-base";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 import AlarmSetting from "./components/AlarmSetting";
 import BabyManagement from "./components/BabyManagement";
@@ -12,7 +20,7 @@ import HumidifierSelection from "./components/HumidifierSelection";
 import HumiditySetting from "./components/HumiditySetting";
 import MeasurementHistory from "./components/MeasurementHistory";
 import Setting from "./components/Setting";
-import Content from "./components/Content";
+import ContentTemplate from "./components/ContentTemplate";
 import Sidebar from "./components/Sidebar";
 import Store from "./store";
 import { PAGE_NAME, TITLE } from "./constants";
@@ -106,7 +114,7 @@ export default class App extends Component {
             </Body>
             <Right />
           </Header>
-          <Content />
+          <ContentTemplate />
           {this.state.pageName !== PAGE_NAME.babySelection &&
           this.state.pageName !== PAGE_NAME.babyModification &&
           this.state.pageName !== PAGE_NAME.babyDeletion ? (
@@ -127,7 +135,7 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // top: StatusBar.currentHeight,
     width: "100%",
-    height: 40,
+    height: 45,
     backgroundColor: "#00df1a",
     alignItems: "center",
     justifyContent: "center"
