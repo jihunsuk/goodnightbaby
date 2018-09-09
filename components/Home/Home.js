@@ -14,10 +14,11 @@ import TempAndHumid from "./TempAndHumid";
 import HomeFunction from "./HomeFunction";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
+import { connect } from "react-redux";
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
-export default class Home extends React.Component {
+class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -253,7 +254,10 @@ export default class Home extends React.Component {
 
   render() {
     const { connected } = this.state;
+    const { baby } = this.props;
+    console.log("Home baby: ", baby);
     console.log("render: ", this.state);
+
     return (
       <View style={styles.container}>
         <BabyInfo />
@@ -280,10 +284,10 @@ export default class Home extends React.Component {
         />
         <Button title="Request enable" onPress={() => this.requestEnable()} />
         {connected === true ? (
-            <Fragment>
-              <Button title="On" onPress={() => this.write("0")} />
-              <Button title="Off" onPress={() => this.write("1")} />
-            </Fragment>
+          <Fragment>
+            <Button title="On" onPress={() => this.write("0")} />
+            <Button title="Off" onPress={() => this.write("1")} />
+          </Fragment>
         ) : null}
       </View>
     );
@@ -335,3 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   }
 });
+
+export default connect(({ baby }) => ({
+  baby: baby.get("baby")
+}))(Home);

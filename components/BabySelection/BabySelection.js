@@ -2,11 +2,14 @@ import React from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Card, CardItem, Text, Content, Button, Icon } from "native-base";
 import BabyList from "./BabyList";
-import Store from "../../store";
 import { URL, PAGE_NAME } from "../../constants";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { connect } from "react-redux";
 
-export default class BabySelection extends React.Component {
+class BabySelection extends React.Component {
   render() {
+    const { baby } = this.props;
+    console.log("baby Test: ", baby);
     return (
       <Content>
         <View style={styles.outsideMargin}>
@@ -25,24 +28,18 @@ export default class BabySelection extends React.Component {
         <ScrollView style={styles.scrollViewBabyList}>
           <BabyList />
         </ScrollView>
-        <Store.Consumer>
-          {store => {
-            return (
-              <Button
-                dark
-                rounded
-                transparent
-                bordered
-                onPress={() => {
-                  store._setPage(PAGE_NAME.babyAddition);
-                }}
-                style={styles.buttonAdd}
-              >
-                <Icon name="add" />
-              </Button>
-            );
+        <Button
+          dark
+          rounded
+          transparent
+          bordered
+          onPress={() => {
+            BabyActions.setPageName(PAGE_NAME.babyAddition);
           }}
-        </Store.Consumer>
+          style={styles.buttonAdd}
+        >
+          <Icon name="add" />
+        </Button>
       </Content>
     );
   }
@@ -88,3 +85,7 @@ const styles = StyleSheet.create({
     margin: 15
   }
 });
+
+export default connect(({ baby }) => ({
+  baby: baby.get("baby")
+}))(BabySelection);

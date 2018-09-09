@@ -7,9 +7,9 @@ import {
   TouchableHighlight,
   View
 } from "react-native";
-import Store from "../../store";
 import { PAGE_NAME } from "../../constants";
 import { Button, Icon } from "native-base";
+import { BabyActions } from "../../reduxStore/actionCreators";
 
 export default class BabyList extends React.Component {
   render() {
@@ -32,53 +32,46 @@ class Baby extends React.Component {
 
   render() {
     return (
-      <Store.Consumer>
-        {store => {
-          return (
-            <View style={styles.baby}>
-              <Button
-                iconLeft
-                transparent
-                dark
-                onPress={() => {
-                  store._setBaby(this.props.baby, "Home");
-                }}
-              >
-                <Icon bordered name="logo-octocat" style={styles.iconStyle} />
-                <Text style={styles.textBabyName}>{this.props.baby.name}</Text>
-              </Button>
-              <Icon
-                name={this.props.baby.sex}
-                style={
-                  this.props.baby.sex === "male" ? styles.male : styles.female
-                }
-              />
-              <View style={styles.buttonsBabyMenu}>
-                <Button
-                  transparent
-                  dark
-                  onPress={() => {
-                    store._setPage(PAGE_NAME.babyModification);
-                  }}
-                  style={{ fontSize: 15 }}
-                >
-                  <Icon name="create" />
-                </Button>
-                <Button
-                  transparent
-                  dark
-                  onPress={() => {
-                    store._setPage(PAGE_NAME.babyDeletion);
-                  }}
-                  style={{ fontSize: 15 }}
-                >
-                  <Icon name="remove" />
-                </Button>
-              </View>
-            </View>
-          );
-        }}
-      </Store.Consumer>
+      <View style={styles.baby}>
+        <Button
+          iconLeft
+          transparent
+          dark
+          onPress={() => {
+            BabyActions.setBaby(this.props.baby);
+            BabyActions.setPageName(PAGE_NAME.home);
+          }}
+        >
+          <Icon bordered name="logo-octocat" style={styles.iconStyle} />
+          <Text style={styles.textBabyName}>{this.props.baby.name}</Text>
+        </Button>
+        <Icon
+          name={this.props.baby.sex}
+          style={this.props.baby.sex === "male" ? styles.male : styles.female}
+        />
+        <View style={styles.buttonsBabyMenu}>
+          <Button
+            transparent
+            dark
+            onPress={() => {
+              BabyActions.setPageName(PAGE_NAME.babyModification);
+            }}
+            style={{ fontSize: 15 }}
+          >
+            <Icon name="create" />
+          </Button>
+          <Button
+            transparent
+            dark
+            onPress={() => {
+              BabyActions.setPageName(PAGE_NAME.babyDeletion);
+            }}
+            style={{ fontSize: 15 }}
+          >
+            <Icon name="remove" />
+          </Button>
+        </View>
+      </View>
     );
   }
 }
@@ -151,6 +144,6 @@ const styles = StyleSheet.create({
   buttonsBabyMenu: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "flex-end"
   }
 });
