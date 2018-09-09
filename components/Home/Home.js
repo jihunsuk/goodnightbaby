@@ -67,7 +67,7 @@ export default class Home extends React.Component {
   }
 
   /* Read data test */
-  _readTry = () => {
+  _readTry() {
     BluetoothSerial.readFromDevice().then(data => {
       console.log(data);
     });
@@ -252,7 +252,7 @@ export default class Home extends React.Component {
   };
 
   render() {
-    const { connected } = this.state;
+    const {connected,} = this.state;
     console.log("render: ", this.state);
     return (
       <View style={styles.container}>

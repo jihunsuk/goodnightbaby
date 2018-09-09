@@ -15,7 +15,7 @@ export default class Sidebar extends React.Component {
                   store._setPage("Home");
                 }}
               >
-                홈
+
               </Text>
               <Text
                 style={styles.icon}

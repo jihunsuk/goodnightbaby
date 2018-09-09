@@ -14,6 +14,10 @@ import Store from "../../store";
 import { URL } from "../../constants";
 
 export default class BabySelection extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
   render() {
     return (
       <View style={styles.container}>
