@@ -68,11 +68,11 @@ class Home extends React.Component {
   }
 
   /* Read data test */
-  _readTry = () => {
+  _readTry() {
     BluetoothSerial.readFromDevice().then(data => {
       console.log(data);
     });
-  };
+  }
 
   /**
    * [android]
@@ -255,8 +255,6 @@ class Home extends React.Component {
   render() {
     const { connected } = this.state;
     const { baby } = this.props;
-    console.log("Home baby: ", baby);
-    console.log("render: ", this.state);
 
     return (
       <View style={styles.container}>
