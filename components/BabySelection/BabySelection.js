@@ -1,44 +1,46 @@
 import React from "react";
-import { Button, Image, StyleSheet, View } from "react-native";
-import { Card, CardItem, Text } from "native-base";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Card, CardItem, Text, Content, Button, Icon } from "native-base";
 import BabyList from "./BabyList";
-import Store from "../../store";
 import { URL, PAGE_NAME } from "../../constants";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { connect } from "react-redux";
 
-export default class BabySelection extends React.Component {
-  constructor(props){
-    super(props);
-  }
-
+class BabySelection extends React.Component {
   render() {
+    const { baby } = this.props;
+    console.log("baby Test: ", baby);
     return (
-      <View style={styles.container}>
-        <Card>
-          <CardItem cardBody>
-            <Image
-              source={{ uri: URL.babySelectionImage }}
-              style={{ height: 200, width: null, flex: 1 }}
-            />
-          </CardItem>
-        </Card>
-        <View style={styles.wrapperTextSelectBaby}>
-          <Text>아이를 선택해주세요</Text>
-        </View>
-        <BabyList />
-        <Store.Consumer>
-          {store => {
-            return (
-              <Button
-                style={styles.babyAdditionButton}
-                title="+"
-                onPress={() => {
-                  store._setPage(PAGE_NAME.babyAddition);
-                }}
+      <Content>
+        <View style={styles.outsideMargin}>
+          <Card>
+            <CardItem cardBody>
+              <Image
+                source={{ uri: URL.babySelectionImage }}
+                style={styles.image}
               />
-            );
+            </CardItem>
+          </Card>
+        </View>
+        <View style={styles.wrapperTextSelectBaby}>
+          <Text style={styles.textSelectBaby}>아이를 선택해주세요</Text>
+        </View>
+        <ScrollView style={styles.scrollViewBabyList}>
+          <BabyList />
+        </ScrollView>
+        <Button
+          dark
+          rounded
+          transparent
+          bordered
+          onPress={() => {
+            BabyActions.setPageName(PAGE_NAME.babyAddition);
           }}
-        </Store.Consumer>
-      </View>
+          style={styles.buttonAdd}
+        >
+          <Icon name="add" />
+        </Button>
+      </Content>
     );
   }
 }
@@ -50,17 +52,40 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 300
+    height: 250
   },
   babyAdditionButton: {
-    position: "absolute",
     width: 50,
-    height: 50,
-    bottom: 0
+    height: 50
   },
   wrapperTextSelectBaby: {
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#e0e0e0",
-    width: "100%",
-    height: 50,
+    height: 40
   },
+  textSelectBaby: {
+    color: "white",
+    fontSize: 20
+  },
+  scrollViewBabyList: {
+    margin: 15,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#e0e0e0",
+    height: 150
+  },
+  buttonAdd: {
+    borderColor: "#e0e0e0",
+    alignSelf: "flex-end",
+    marginRight: 15,
+    marginBottom: 15
+  },
+  outsideMargin: {
+    margin: 15
+  }
 });
+
+export default connect(({ baby }) => ({
+  baby: baby.get("baby")
+}))(BabySelection);
