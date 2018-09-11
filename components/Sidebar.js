@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Store from "../store";
+import { PAGE_NAME } from "../constants";
 
 export default class Sidebar extends React.Component {
   render() {
@@ -12,7 +13,7 @@ export default class Sidebar extends React.Component {
               <Text
                 style={styles.icon}
                 onPress={() => {
-                  store._setPage("Home");
+                  store._setPage(PAGE_NAME.home);
                 }}
               >
 
@@ -20,7 +21,7 @@ export default class Sidebar extends React.Component {
               <Text
                 style={styles.icon}
                 onPress={() => {
-                  store._setPage("BabySelection");
+                  store._setPage(PAGE_NAME.babySelection);
                 }}
               >
                 아이선택
@@ -28,7 +29,7 @@ export default class Sidebar extends React.Component {
               <Text
                 style={styles.icon}
                 onPress={() => {
-                  store._setPage("DeviceManagement");
+                  store._setPage(PAGE_NAME.deviceMgmt);
                 }}
               >
                 장치관리
@@ -36,7 +37,7 @@ export default class Sidebar extends React.Component {
               <Text
                 style={styles.icon}
                 onPress={() => {
-                  store._setPage("MeasurementHistory");
+                  store._setPage(PAGE_NAME.measurementHistory);
                 }}
               >
                 측정기록
@@ -44,7 +45,7 @@ export default class Sidebar extends React.Component {
               <Text
                 style={styles.icon}
                 onPress={() => {
-                  store._setPage("Setting");
+                  store._setPage(PAGE_NAME.setting);
                 }}
               >
                 설정

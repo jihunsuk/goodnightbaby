@@ -331,6 +331,7 @@ const DeviceList = ({
 
 const styles = StyleSheet.create({
   container: {
+    color: "white",
     backgroundColor: "#fff"
   }
 });

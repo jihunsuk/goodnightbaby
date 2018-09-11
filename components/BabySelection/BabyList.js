@@ -10,6 +10,7 @@ import {
     View,
 } from 'react-native';
 import Store from '../../store'
+import { PAGE_NAME } from "../../constants";
 
 export default class BabyList extends React.Component {
     render() {
