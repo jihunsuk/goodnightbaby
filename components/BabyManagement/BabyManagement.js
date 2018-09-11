@@ -66,11 +66,22 @@ export default class BabyManagement extends React.Component {
         true
       );
     });
-    this.saveDeviceInRealm();
   }
 
   addDevice() {
     //this.state.device에 추가하기
+  // let devices = realm.objects('bluetoothDevice');
+  // var devices_length = devices.length
+  // device = realm.create('bluetoothDevice', {
+  //     id: devices_length === 0 ? 0 : devices[devices_length-1].id+1,
+  //     babyId: this.state.id
+  //     device:
+  //     name:
+  //     type:
+  //     status:
+  //     auto:
+  // }, true);
+  // this.state.device.append(device);
   }
 
   render() {
@@ -90,9 +101,9 @@ export default class BabyManagement extends React.Component {
             <Label>성별</Label>
             <View style={{ flexDirection: "row" }}>
               <Text>남자</Text>
-              <Radio selected={this.state.sex === "male" ? true : false} />
+              <Radio selected={this.state.sex === "male"} />
               <Text>여자</Text>
-              <Radio selected={this.state.sex === "female" ? true : false} />
+              <Radio selected={this.state.sex === "female"} />
             </View>
           </Item>
           <Item stackedLabel>
@@ -100,34 +111,6 @@ export default class BabyManagement extends React.Component {
             <Input />
           </Item>
         </Form>
-        <View style={styles.name}>
-          <Text>이름</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder={"이름을 입력해주세요"}
-            maxLength={10}
-            onChangeText={text => this.setState({ name: text })}
-          />
-        </View>
-        <View style={styles.name}>
-          <Text>사진</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder={"사진을 넣어주세요"}
-            maxLength={10}
-            onChangeText={text => this.setState({ image: text })}
-          />
-        </View>
-        <View style={styles.name}>
-          <Text>나이</Text>
-          <TextInput
-            style={styles.textInput}
-            keyboardType="numeric"
-            placeholder={"나이를 입력해주세요"}
-            maxLength={2}
-            onChangeText={text => this.setState({ age: text })}
-          />
-        </View>
         <Button title="측정장치" onPress={this.addDevice()} />
         <Button title="선풍기" onPress={this.addDevice()} />
         <Button title="가습기" onPress={this.addDevice()} />
@@ -143,15 +126,6 @@ export default class BabyManagement extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    width: "100%"
-  },
-  name: {
-    flexDirection: "row",
-    width: "100%"
-  },
-  textinput: {
-    height: 40,
-    borderWidth: 3,
     width: "100%"
   },
   bottom: {
