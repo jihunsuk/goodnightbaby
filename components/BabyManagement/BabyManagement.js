@@ -63,25 +63,26 @@ const realm = new Realm({schema: [baby, bluetoothDevice, setting, alarm],
 export default class BabyManagement extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {id: realm.objects('baby').length,
-            settingId : realm.objects('setting').length,
-            alarmId : realm.objects('alarm').length,
+        let babys = realm.objects('baby');
+        let babys_length = babys.length;
+        let settings = realm.objects('setting');
+        let settings_length = settings.length;
+        let alarms = realm.objects('alarm');
+        let alarms_length = alarms.length;
+
+        this.state = {id : babys_length === 0 ? 0 : babys[babys_length-1].id+1,
+            settingId: settings_length === 0 ? 0 : settings[settings_length-1].id+1,
+            alarmId: alarms_length === 0 ? 0 : alarms[alarms_length-1].id+1,
             name: '',
             age: 0,
             sex: 'boy',
             image: null,
-            device: [{id : 0,
-                babyId :0,
-                device :'',
-                name: '',
-                type: '',
-                status: '',
-                auto: false}]
+            device: []
         };
     }
 
     saveDevice(){
-        for (var i=0; i<this.state.device.length; i++) {
+        for (let i=0; i<this.state.device.length; i++) {
             realm.write(() => {
                 newDevice = realm.create('bluetoothDevice', {
                     id: this.state.device[i].id,
@@ -113,6 +114,18 @@ export default class BabyManagement extends React.Component {
 
     addDevice() {
         //this.state.device에 추가하기
+        // let devices = realm.objects('bluetoothDevice');
+        // var devices_length = devices.length
+        // device = realm.create('bluetoothDevice', {
+        //     id: devices_length === 0 ? 0 : devices[devices_length-1].id+1,
+        //     babyId: this.state.id
+        //     device:
+        //     name:
+        //     type:
+        //     status:
+        //     auto:
+        // }, true);
+        // this.state.device.append(device);
     }
 
 
