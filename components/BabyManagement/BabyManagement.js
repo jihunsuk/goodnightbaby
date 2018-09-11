@@ -1,42 +1,37 @@
 import React from "react";
-import { StyleSheet, Text, View, TextInput, Button, Image } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import realm from "../../realm/realmDatabase";
 import { Content, Form, Input, Item, Label, Radio } from "native-base";
-import { URL } from "../../constants";
 
 export default class BabyManagement extends React.Component {
   constructor(props) {
     super(props);
-    const babyId = realm.objects("baby").length;
+    let babys = realm.objects("baby");
+    let babys_length = babys.length;
+    let settings = realm.objects("setting");
+    let settings_length = settings.length;
+    let alarms = realm.objects("alarm");
+    let alarms_length = alarms.length;
     this.state = {
-      id: babyId,
-      settingId: realm.objects("setting").length,
-      alarmId: realm.objects("alarm").length,
+      id: babys_length === 0 ? 0 : babys[babys_length - 1].id + 1,
+      settingId:
+        settings_length === 0 ? 0 : settings[settings_length - 1].id + 1,
+      alarmId: alarms_length === 0 ? 0 : alarms[alarms_length - 1].id + 1,
       name: "",
       age: 0,
       sex: "male", // male, female
       image: null,
-      device: [
-        {
-          id: 0,
-          babyId: babyId,
-          device: "",
-          name: "",
-          type: "",
-          status: "",
-          auto: false
-        }
-      ]
+      device: []
     };
   }
 
   saveBaby() {
     this.saveBabyInRealm();
-    this.saveDevice();
+    this.saveDeviceInRealm();
   }
 
-  saveDevice() {
-    for (var i = 0; i < this.state.device.length; i++) {
+  saveDeviceInRealm() {
+    for (let i = 0; i < this.state.device.length; i++) {
       realm.write(() => {
         newDevice = realm.create(
           "bluetoothDevice",
@@ -71,7 +66,7 @@ export default class BabyManagement extends React.Component {
         true
       );
     });
-    this.saveDevice();
+    this.saveDeviceInRealm();
   }
 
   addDevice() {
