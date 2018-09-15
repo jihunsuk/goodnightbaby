@@ -14,6 +14,8 @@ import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../../realm/realmDatabase";
 import { Content } from "native-base";
+import HomeFunction from "./HomeFunction";
+import TempAndHumid from "./TempAndHumid";
 
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
