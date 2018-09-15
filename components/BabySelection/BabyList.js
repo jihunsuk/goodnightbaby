@@ -10,6 +10,7 @@ import {
 import { PAGE_NAME } from "../../constants";
 import { Button, Icon } from "native-base";
 import { BabyActions } from "../../reduxStore/actionCreators";
+import realm from "../../realm/realmDatabase";
 
 export default class BabyList extends React.Component {
   render() {
@@ -17,8 +18,6 @@ export default class BabyList extends React.Component {
 
     return (
       <Fragment>
-        {Babys}
-        {Babys}
         {Babys}
       </Fragment>
     );
@@ -74,43 +73,7 @@ class Baby extends React.Component {
   }
 }
 
-const testBabys = [
-  {
-    id: 1,
-    name: "이상현",
-    sex: "male"
-  },
-  {
-    id: 1,
-    name: "석지훈",
-    sex: "male"
-  },
-  {
-    id: 1,
-    name: "정윤수",
-    sex: "female"
-  },
-  {
-    id: 1,
-    name: "조현욱",
-    sex: "male"
-  },
-  {
-    id: 1,
-    name: "임대영",
-    sex: "male"
-  },
-  {
-    id: 1,
-    name: "권성수",
-    sex: "male"
-  },
-  {
-    id: 1,
-    name: "임병언",
-    sex: "male"
-  }
-];
+const testBabys = realm.objects('baby');
 
 const styles = StyleSheet.create({
   container: {

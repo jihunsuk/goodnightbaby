@@ -20,22 +20,21 @@ import TempAndHumid from "./TempAndHumid";
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
-//babyInfo = realm.objects('baby').filtered(`id = ${baby.id}`)[0];
-babyInfo = realm.objects('baby').filtered('name = "시불년"')[0];
+let babyInfo;
 let myTimer;
-
 
 class Home extends React.Component {
 
   constructor(props) {
     super(props);
-    const { baby } = this.props;
+      const { baby } = this.props;
+      babyInfo = realm.objects('baby').filtered(`name = "${baby.name}"`)[0];
 
     this.state = {
       switchValue: true,
       isEnabled: false,
       discovering: false,
-        devices: realm.objects('bluetoothDevice').filtered(`babyId = ${babyInfo.id}`),
+      devices: realm.objects('bluetoothDevice').filtered(`babyId = ${babyInfo.id}`),
       unpairedDevices: [],
       connected: false,
       section: 0
@@ -270,7 +269,6 @@ class Home extends React.Component {
   };
 
   activateDevice(){
-    console.log(this.state.devices.length);
     for (let i=0; i<this.state.devices.length; i++){
         if (BluetoothSerial.isEnabled()){
             this.connect(this.state.devices[i]);
@@ -280,13 +278,9 @@ class Home extends React.Component {
 
   render() {
     const { connected } = this.state;
-    const { baby } = this.props;
-    console.log("state: ", this.state);
     return (
       <Content style={styles.container}>
         <BabyInfo />
-        {/*<Text>{realm.objects('baby').length}</Text>*/}
-        {/*<Text>{realm.objects('bluetoothDevice').length}</Text>*/}
         <Text>자동측정</Text>
         <Switch
           onValueChange={this.toggleSwitch}
