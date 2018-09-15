@@ -14,6 +14,10 @@ export const commonStyles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20
   },
+  viewCenter: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
 
   /* Button Start */
   buttonMenu: {
@@ -21,12 +25,17 @@ export const commonStyles = StyleSheet.create({
     justifyContent: "center"
   },
   buttonLeftMenu: {
-    marginRight: 20,
+    marginRight: 20
   },
 
   /* Text Start */
   textPageName: {
     fontSize: 20
+  },
+
+  /* Icon Start */
+  iconMenu: {
+    fontSize: 30
   }
 });
 

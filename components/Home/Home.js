@@ -20,7 +20,6 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      switchValue: false,
       isEnabled: false,
       discovering: false,
       devices: [],
@@ -246,22 +245,12 @@ class Home extends React.Component {
     Promise.all(writePromises).then(result => {});
   }
 
-  toggleSwitch = value => {
-    this.setState({});
-  };
 
   render() {
     const { connected } = this.state;
-    const { baby } = this.props;
-    console.log("state: ", this.state);
     return (
       <Content style={styles.container}>
         <BabyInfo />
-        <Text>자동측정</Text>
-        <Switch
-          onValueChange={this.toggleSwitch}
-          value={this.state.switchValue}
-        />
         {/*<TempAndHumid />*/}
         {/*<HomeFunction />*/}
         <Switch

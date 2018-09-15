@@ -18,8 +18,16 @@ export const setSelectedHumidifier = createAction(SET_SELECTED_HUMIDIFIER);
 
 // 모듈의 초기상태를 정의합니다.
 const initialState = Map({
-  baby: {},
-  pageName: PAGE_NAME.babyAddition,
+  baby: {
+    id: 1,
+    settingId: 1,
+    alarmId: 1,
+    name: "이상현",
+    age: 15,
+    sex: "male",
+    image: null
+  },
+  pageName: PAGE_NAME.home,
   selectedThermometer: null,
   selectedCoolFan: List([]),
   selectedHumidifier: List([])

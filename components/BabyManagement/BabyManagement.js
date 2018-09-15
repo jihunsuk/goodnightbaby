@@ -72,6 +72,7 @@ class BabyManagement extends React.Component {
   saveBaby() {
     this.saveBabyInRealm();
     this.saveDeviceInRealm();
+    this._resetBluetoothDevicesInRedux();
   }
 
   saveDeviceInRealm() {
@@ -90,13 +91,11 @@ class BabyManagement extends React.Component {
       devices.push(this._makeDevice(device, ETC.humidifier))
     );
 
-    devices.map(device => realm.write(() => {
-      newDevice = realm.create(
-        "bluetoothDevice",
-        device,
-        true
-      );
-    }));
+    devices.map(device =>
+      realm.write(() => {
+        newDevice = realm.create("bluetoothDevice", device, true);
+      })
+    );
     // for (let i = 0; i < this.state.device.length; i++) {
     //   realm.write(() => {
     //     newDevice = realm.create(
@@ -141,6 +140,12 @@ class BabyManagement extends React.Component {
   /* Realm logic End */
 
   /* Defined Function Start */
+  _resetBluetoothDevicesInRedux() {
+    BabyActions.setSelectedThermometer(null);
+    BabyActions.setSelectedCoolFan(null);
+    BabyActions.setSelectedHumidifier(null);
+  }
+
   _makeDevice(bluetoothDevice, type) {
     return {
       id: null, // TODO: fix
@@ -161,6 +166,7 @@ class BabyManagement extends React.Component {
 
   _setPageBabySelection() {
     BabyActions.setPageName(PAGE_NAME.babySelection);
+    this._resetBluetoothDevicesInRedux();
   }
 
   _makeBluetoothDeviceNames(data) {
@@ -207,7 +213,10 @@ class BabyManagement extends React.Component {
             </Item>
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
-              <Input onChangeText={age => this.setState({ age })} />
+              <Input
+                keyboardType="numeric"
+                onChangeText={age => this.setState({ age })}
+              />
             </Item>
             <Item stackedLabel style={styles.itemEtc}>
               <Label>성별</Label>
