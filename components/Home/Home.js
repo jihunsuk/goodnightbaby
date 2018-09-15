@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import {
-  Platform,
   StyleSheet,
   Switch,
   Text,
@@ -10,11 +9,10 @@ import {
   Button
 } from "react-native";
 import BabyInfo from "../BabyInfo";
-import TempAndHumid from "./TempAndHumid";
-import HomeFunction from "./HomeFunction";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
 import { connect } from "react-redux";
+import { Content } from "native-base";
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
@@ -255,9 +253,9 @@ class Home extends React.Component {
   render() {
     const { connected } = this.state;
     const { baby } = this.props;
-
+    console.log("state: ", this.state);
     return (
-      <View style={styles.container}>
+      <Content style={styles.container}>
         <BabyInfo />
         <Text>자동측정</Text>
         <Switch
@@ -287,7 +285,7 @@ class Home extends React.Component {
             <Button title="Off" onPress={() => this.write("1")} />
           </Fragment>
         ) : null}
-      </View>
+      </Content>
     );
   }
 }
@@ -298,7 +296,7 @@ const DeviceList = ({
   showConnectedIcon,
   onDevicePress
 }) => (
-  <ScrollView style={styles.container}>
+  <Content style={styles.container}>
     <View>
       {devices.map((device, i) => {
         return (
@@ -328,12 +326,11 @@ const DeviceList = ({
         );
       })}
     </View>
-  </ScrollView>
+  </Content>
 );
 
 const styles = StyleSheet.create({
   container: {
-    color: "white",
     backgroundColor: "#fff"
   }
 });

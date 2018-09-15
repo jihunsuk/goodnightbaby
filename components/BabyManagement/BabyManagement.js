@@ -1,9 +1,25 @@
-import React from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import React, { Fragment } from "react";
+import { StyleSheet, View } from "react-native";
 import realm from "../../realm/realmDatabase";
-import { Content, Form, Input, Item, Label, Radio } from "native-base";
+import {
+  Content,
+  Form,
+  Input,
+  Item,
+  Label,
+  Radio,
+  Button,
+  Text
+} from "native-base";
+import { ETC, PAGE_NAME, KO } from "../../constants";
+import BluetoothSelectModal from "./BluetoothSelectModal";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { commonProps, commonStyles } from "../../styles";
+import ButtonTemplate from "../../component/ButtonTemplate/ButtonTemplate";
+import { connect } from "react-redux";
+import { isNotNull } from "../../util/commonUtil";
 
-export default class BabyManagement extends React.Component {
+class BabyManagement extends React.Component {
   constructor(props) {
     super(props);
     let babys = realm.objects("baby");
@@ -19,35 +35,85 @@ export default class BabyManagement extends React.Component {
       alarmId: alarms_length === 0 ? 0 : alarms[alarms_length - 1].id + 1,
       name: "",
       age: 0,
-      sex: "male", // male, female
+      sex: ETC.male, // male, female
       image: null,
-      device: []
+      // device: [],
+      thermometerModalVisible: false,
+      coolFanModalVisible: false,
+      humidifierModalVisible: false
     };
+
+    /* Bind start */
+    this.setThermometerModalVisible = this.setThermometerModalVisible.bind(
+      this
+    );
+    this.setCoolFanModalVisible = this.setCoolFanModalVisible.bind(this);
+    this.setHumidifierModalVisible = this.setHumidifierModalVisible.bind(this);
+    this.saveBaby = this.saveBaby.bind(this);
+    this._setPageBabySelection = this._setPageBabySelection.bind(this);
+    /* Bind end */
   }
 
+  /* Modal Function Start */
+  setThermometerModalVisible(visible) {
+    this.setState({ thermometerModalVisible: visible });
+  }
+
+  setCoolFanModalVisible(visible) {
+    this.setState({ coolFanModalVisible: visible });
+  }
+
+  setHumidifierModalVisible(visible) {
+    this.setState({ humidifierModalVisible: visible });
+  }
+  /* Modal Function End */
+
+  /* Realm logic Start */
   saveBaby() {
     this.saveBabyInRealm();
     this.saveDeviceInRealm();
   }
 
   saveDeviceInRealm() {
-    for (let i = 0; i < this.state.device.length; i++) {
-      realm.write(() => {
-        newDevice = realm.create(
-          "bluetoothDevice",
-          {
-            id: this.state.device[i].id,
-            babyId: this.state.id,
-            device: this.state.device[i].device,
-            name: this.state.device[i].name,
-            type: this.state.device[i].type,
-            status: this.state.device[i].status,
-            auto: this.state.device[i].auto
-          },
-          true
-        );
-      });
-    }
+    let {
+      selectedThermometer,
+      selectedCoolFan,
+      selectedHumidifier
+    } = this.props;
+    // Make devices
+    let devices = [];
+    devices.push(this._makeDevice(selectedThermometer, ETC.thermometer));
+    selectedCoolFan.map(device =>
+      devices.push(this._makeDevice(device, ETC.coolFan))
+    );
+    selectedHumidifier.map(device =>
+      devices.push(this._makeDevice(device, ETC.humidifier))
+    );
+
+    devices.map(device => realm.write(() => {
+      newDevice = realm.create(
+        "bluetoothDevice",
+        device,
+        true
+      );
+    }));
+    // for (let i = 0; i < this.state.device.length; i++) {
+    //   realm.write(() => {
+    //     newDevice = realm.create(
+    //       "bluetoothDevice",
+    //       {
+    //         id: this.state.device[i].id,
+    //         babyId: this.state.id,
+    //         device: this.state.device[i].device,
+    //         name: this.state.device[i].name,
+    //         type: this.state.device[i].type,
+    //         status: this.state.device[i].status,
+    //         auto: this.state.device[i].auto
+    //       },
+    //       true
+    //     );
+    //   });
+    // }
   }
 
   saveBabyInRealm() {
@@ -68,67 +134,234 @@ export default class BabyManagement extends React.Component {
     });
   }
 
-  addDevice() {
-    //this.state.device에 추가하기
-  // let devices = realm.objects('bluetoothDevice');
-  // var devices_length = devices.length
-  // device = realm.create('bluetoothDevice', {
-  //     id: devices_length === 0 ? 0 : devices[devices_length-1].id+1,
-  //     babyId: this.state.id
-  //     device:
-  //     name:
-  //     type:
-  //     status:
-  //     auto:
-  // }, true);
-  // this.state.device.append(device);
+  // addDevice() {
+  //   //this.state.device에 추가하기
+  //   const {} = this.props;
+  // }
+  /* Realm logic End */
+
+  /* Defined Function Start */
+  _makeDevice(bluetoothDevice, type) {
+    return {
+      id: null, // TODO: fix
+      babyId: this.state.id,
+      device: bluetoothDevice.deviceId,
+      name: bluetoothDevice.deviceName,
+      type: type,
+      status: ETC.status.stopped,
+      auto: false
+    };
   }
 
+  setSex(sex) {
+    this.setState({
+      sex
+    });
+  }
+
+  _setPageBabySelection() {
+    BabyActions.setPageName(PAGE_NAME.babySelection);
+  }
+
+  _makeBluetoothDeviceNames(data) {
+    let string = "";
+    let count = 0;
+    data.map((element, idx) => {
+      if (isNotNull(element)) {
+        string += count !== 0 ? ", " : "";
+        string += `${element.deviceName}`;
+        count++;
+      }
+    });
+    return string === "" ? "-" : string;
+  }
+  /* Defined Function End */
+
   render() {
-    const { sex } = this.state;
+    const {
+      sex,
+      thermometerModalVisible,
+      coolFanModalVisible,
+      humidifierModalVisible
+    } = this.state;
+    const {
+      selectedThermometer,
+      selectedCoolFan,
+      selectedHumidifier
+    } = this.props;
+
+    const coolFans = this._makeBluetoothDeviceNames(selectedCoolFan);
+    const humidifiers = this._makeBluetoothDeviceNames(selectedHumidifier);
+
     return (
-      <Content style={styles.container}>
-        <Form>
-          <Item stackedLabel>
-            <Label>이름</Label>
-            <Input />
-          </Item>
-          <Item stackedLabel>
-            <Label>사진</Label>
-            <Input />
-          </Item>
-          <Item stackedLabel style={{ borderColor: "transparent" }}>
-            <Label>성별</Label>
-            <View style={{ flexDirection: "row" }}>
-              <Text>남자</Text>
-              <Radio selected={this.state.sex === "male"} />
-              <Text>여자</Text>
-              <Radio selected={this.state.sex === "female"} />
-            </View>
-          </Item>
-          <Item stackedLabel>
-            <Label>나이</Label>
-            <Input />
-          </Item>
-        </Form>
-        <Button title="측정장치" onPress={this.addDevice()} />
-        <Button title="선풍기" onPress={this.addDevice()} />
-        <Button title="가습기" onPress={this.addDevice()} />
-        <View style={styles.bottom}>
-          <Button title="저장" onPress={this.saveBaby()} />
-          <Button title="취소" />
-        </View>
-      </Content>
+      <Fragment>
+        <Content style={styles.container}>
+          <Form>
+            <Item stackedLabel style={styles.itemInput}>
+              <Label>이름</Label>
+              <Input onChangeText={name => this.setState({ name })} />
+            </Item>
+            <Item stackedLabel style={styles.itemInput}>
+              <Label>사진</Label>
+              <Input onChangeText={image => this.setState({ image })} />
+            </Item>
+            <Item stackedLabel style={styles.itemInput}>
+              <Label>나이</Label>
+              <Input onChangeText={age => this.setState({ age })} />
+            </Item>
+            <Item stackedLabel style={styles.itemEtc}>
+              <Label>성별</Label>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginRight: 20
+                  }}
+                >
+                  <Radio
+                    selected={sex === ETC.male ? true : false}
+                    onPress={() => this.setSex(ETC.male)}
+                  />
+                  <Text style={{ marginLeft: 10 }}>남자</Text>
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                  <Radio
+                    selected={sex === ETC.female ? true : false}
+                    onPress={() => this.setSex(ETC.female)}
+                  />
+                  <Text style={{ marginLeft: 10 }}>여자</Text>
+                </View>
+              </View>
+            </Item>
+            <Item stackedLabel style={styles.itemEtc}>
+              <Label>체온측정장치</Label>
+              <View style={styles.viewBluetoothDevice}>
+                <Button
+                  onPress={() => {
+                    this.setThermometerModalVisible(true);
+                  }}
+                  style={styles.buttonBluetoothDevice}
+                >
+                  <Text style={styles.textBluetoothDeviceButton}>
+                    체온측정장치선택
+                  </Text>
+                </Button>
+                <Text>
+                  {selectedThermometer === null
+                    ? "-"
+                    : selectedThermometer.deviceName}
+                </Text>
+              </View>
+            </Item>
+            <Item stackedLabel style={styles.itemEtc}>
+              <Label>선풍기</Label>
+              <View style={styles.viewBluetoothDevice}>
+                <Button
+                  onPress={() => {
+                    this.setCoolFanModalVisible(true);
+                  }}
+                  style={styles.buttonBluetoothDevice}
+                >
+                  <Text style={styles.textBluetoothDeviceButton}>
+                    선풍기선택
+                  </Text>
+                </Button>
+                <Text>{coolFans}</Text>
+              </View>
+            </Item>
+            <Item stackedLabel style={styles.itemEtc}>
+              <Label>가습기</Label>
+              <View style={styles.viewBluetoothDevice}>
+                <Button
+                  onPress={() => {
+                    this.setHumidifierModalVisible(true);
+                  }}
+                  style={styles.buttonBluetoothDevice}
+                >
+                  <Text style={styles.textBluetoothDeviceButton}>
+                    가습기선택
+                  </Text>
+                </Button>
+                <Text>{humidifiers}</Text>
+              </View>
+            </Item>
+          </Form>
+          <View style={commonStyles.viewMenu}>
+            <ButtonTemplate
+              buttonProps={commonProps.buttonMenus}
+              style={[commonStyles.buttonMenu, commonStyles.buttonLeftMenu]}
+              onPress={this.saveBaby}
+              title={KO.save}
+            />
+            <ButtonTemplate
+              buttonProps={commonProps.buttonMenus}
+              style={commonStyles.buttonMenu}
+              onPress={this._setPageBabySelection}
+              title={KO.cancel}
+            />
+          </View>
+        </Content>
+        <BluetoothSelectModal
+          modalVisible={thermometerModalVisible}
+          setModalVisible={this.setThermometerModalVisible}
+          pageName={KO.thermometer}
+        />
+        <BluetoothSelectModal
+          modalVisible={coolFanModalVisible}
+          setModalVisible={this.setCoolFanModalVisible}
+          pageName={KO.coolFan}
+        />
+        <BluetoothSelectModal
+          modalVisible={humidifierModalVisible}
+          setModalVisible={this.setHumidifierModalVisible}
+          pageName={KO.humidifier}
+        />
+      </Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    padding: 15
+  },
+  itemInput: { marginBottom: 10 },
+  itemEtc: { borderColor: "transparent" },
+  viewBluetoothDevice: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginTop: 10,
     width: "100%"
   },
-  bottom: {
-    flexDirection: "row"
+  buttonBluetoothDevice: {
+    width: 140,
+    borderColor: "#e0e0e0",
+    backgroundColor: "#e0e0e0",
+    marginRight: 20,
+    justifyContent: "center"
+  },
+  textBluetoothDeviceButton: {
+    color: "black"
+  },
+  name: {
+    flexDirection: "row",
+    width: "100%"
+  },
+  textinput: {
+    height: 40,
+    borderWidth: 3,
+    width: "100%"
   }
 });
+
+export default connect(({ baby }) => ({
+  selectedThermometer: baby.get("selectedThermometer"),
+  selectedCoolFan: baby.get("selectedCoolFan"),
+  selectedHumidifier: baby.get("selectedHumidifier")
+}))(BabyManagement);
