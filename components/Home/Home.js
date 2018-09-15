@@ -20,14 +20,14 @@ import TempAndHumid from "./TempAndHumid";
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
-//babyInfo = realm.objects('baby').filtered(`id = ${baby.id}`)[0];
-babyInfo = realm.objects("baby").filtered('name = "시불년"')[0];
+let babyInfo;
 let myTimer;
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     const { baby } = this.props;
+    babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
 
     this.state = {
       isEnabled: false,
@@ -269,6 +269,15 @@ class Home extends React.Component {
       }
     }
   }
+
+  // toggleSwitch = value => {
+  //   this.setState({switchValue : value});
+  //   if (value == true){
+  //   this.write("1");
+  // } else {
+  //   this.write("0");
+  // }
+  // };
 
   render() {
     return (

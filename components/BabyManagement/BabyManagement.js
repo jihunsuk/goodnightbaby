@@ -73,6 +73,7 @@ class BabyManagement extends React.Component {
     this.saveBabyInRealm();
     this.saveDeviceInRealm();
     this._resetBluetoothDevicesInRedux();
+    this._setPageBabySelection();
   }
 
   saveDeviceInRealm() {
@@ -83,36 +84,25 @@ class BabyManagement extends React.Component {
     } = this.props;
     // Make devices
     let devices = [];
-    devices.push(this._makeDevice(selectedThermometer, ETC.thermometer));
-    selectedCoolFan.map(device =>
-      devices.push(this._makeDevice(device, ETC.coolFan))
-    );
-    selectedHumidifier.map(device =>
-      devices.push(this._makeDevice(device, ETC.humidifier))
-    );
+    if (isNotNull(selectedThermometer)) {
+      devices.push(this._makeDevice(selectedThermometer, ETC.thermometer));
+    }
+    if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
+      selectedCoolFan.map(device =>
+        devices.push(this._makeDevice(device, ETC.coolFan))
+      );
+    }
+    if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
+      selectedHumidifier.map(device =>
+        devices.push(this._makeDevice(device, ETC.humidifier))
+      );
+    }
 
     devices.map(device =>
       realm.write(() => {
         newDevice = realm.create("bluetoothDevice", device, true);
       })
     );
-    // for (let i = 0; i < this.state.device.length; i++) {
-    //   realm.write(() => {
-    //     newDevice = realm.create(
-    //       "bluetoothDevice",
-    //       {
-    //         id: this.state.device[i].id,
-    //         babyId: this.state.id,
-    //         device: this.state.device[i].device,
-    //         name: this.state.device[i].name,
-    //         type: this.state.device[i].type,
-    //         status: this.state.device[i].status,
-    //         auto: this.state.device[i].auto
-    //       },
-    //       true
-    //     );
-    //   });
-    // }
   }
 
   saveBabyInRealm() {
@@ -143,14 +133,14 @@ class BabyManagement extends React.Component {
 
   _makeDevice(bluetoothDevice, type) {
     device = {
-        id: this.state.device_length, // TODO: fix
-        babyId: this.state.id,
-        device: bluetoothDevice.deviceId,
-        name: bluetoothDevice.deviceName,
-        type: type,
-        status: ETC.status.stopped,
-        auto: false
-    }
+      id: this.state.device_length, // TODO: fix
+      babyId: this.state.id,
+      device: bluetoothDevice.deviceId,
+      name: bluetoothDevice.deviceName,
+      type: type,
+      status: ETC.status.stopped,
+      auto: false
+    };
     this.state.device_length += 1;
     return device;
   }
@@ -193,8 +183,14 @@ class BabyManagement extends React.Component {
       selectedHumidifier
     } = this.props;
 
-    const coolFans = this._makeBluetoothDeviceNames(selectedCoolFan);
-    const humidifiers = this._makeBluetoothDeviceNames(selectedHumidifier);
+    let coolFans = "-";
+    let humidifiers = "-";
+    if (isNotNull(selectedCoolFan)) {
+      coolFans = this._makeBluetoothDeviceNames(selectedCoolFan);
+    }
+    if (isNotNull(selectedHumidifier)) {
+      humidifiers = this._makeBluetoothDeviceNames(selectedHumidifier);
+    }
 
     return (
       <Fragment>
@@ -210,9 +206,13 @@ class BabyManagement extends React.Component {
             </Item>
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
-              <Input keyboardType = 'numeric' onChangeText={ age => {
-                age = parseInt(age)
-                this.setState({ age })}} />
+              <Input
+                keyboardType="numeric"
+                onChangeText={age => {
+                  age = parseInt(age);
+                  this.setState({ age });
+                }}
+              />
             </Item>
             <Item stackedLabel style={styles.itemEtc}>
               <Label>성별</Label>

@@ -68,9 +68,20 @@ history.schema = {
     temperature: "int",
     humidity: "int"
   }
-}
+};
+
+class medic {}
+medic.schema = {
+  name: "medic",
+    primaryKey: "id",
+    properties: {
+      id:"int",
+      babyId: "int",
+      time:"date"
+    }
+};
 
 export default realmDatabase = new Realm({
-  schema: [baby, bluetoothDevice, setting, alarm, history],
+  schema: [baby, bluetoothDevice, setting, alarm, history, medic],
   schemaVersion: 2
 });

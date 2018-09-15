@@ -1,16 +1,36 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 import { Icon } from "native-base";
+import { connect } from "react-redux";
+import realm from "../../realm/realmDatabase";
 import { commonStyles } from "../../styles";
 import { ETC, KO } from "../../constants";
 
-export default class HomeFunction extends React.Component {
+let babyInfo;
+
+class HomeFunction extends React.Component {
   constructor(props) {
     super(props);
+    const { baby } = this.props;
+    babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
     this.state = {
       coolFanStatus: ETC.status.running,
-      humidifierStatus: ETC.status.stopped
-    };
+    }
+  }
+
+  prescribe() {
+    let len = realm.objects("medic").length;
+    realm.write(() => {
+      newMedic = realm.create(
+        "medic",
+        {
+          id: len,
+          babyId: babyInfo.id,
+          time: new Date()
+        },
+        true
+      );
+    });
   }
 
   render() {
@@ -21,7 +41,15 @@ export default class HomeFunction extends React.Component {
           <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
             <Icon name="medkit" />
           </View>
-          <Text style={[styles.textMenu, { color: "green" }]}>해열제 투약</Text>
+          <TouchableHighlight
+            onPress={() => {
+              this.prescribe();
+            }}
+          >
+            <Text style={[styles.textMenu, { color: "green" }]}>
+              해열제 투약
+            </Text>
+          </TouchableHighlight>
         </View>
         <View style={[styles.viewMenu]}>
           <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
@@ -73,3 +101,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   }
 });
+
+export default connect(({ baby }) => ({
+  baby: baby.get("baby")
+}))(HomeFunction);
