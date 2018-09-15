@@ -97,23 +97,6 @@ class BabyManagement extends React.Component {
         true
       );
     }));
-    // for (let i = 0; i < this.state.device.length; i++) {
-    //   realm.write(() => {
-    //     newDevice = realm.create(
-    //       "bluetoothDevice",
-    //       {
-    //         id: this.state.device[i].id,
-    //         babyId: this.state.id,
-    //         device: this.state.device[i].device,
-    //         name: this.state.device[i].name,
-    //         type: this.state.device[i].type,
-    //         status: this.state.device[i].status,
-    //         auto: this.state.device[i].auto
-    //       },
-    //       true
-    //     );
-    //   });
-    // }
   }
 
   saveBabyInRealm() {
@@ -134,10 +117,6 @@ class BabyManagement extends React.Component {
     });
   }
 
-  // addDevice() {
-  //   //this.state.device에 추가하기
-  //   const {} = this.props;
-  // }
   /* Realm logic End */
 
   /* Defined Function Start */
