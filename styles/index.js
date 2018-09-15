@@ -14,6 +14,18 @@ export const commonStyles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20
   },
+  viewCenter: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  viewIconWrapper: {
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    width: 45,
+    height: 45,
+    backgroundColor: "white"
+  },
 
   /* Button Start */
   buttonMenu: {
@@ -21,12 +33,23 @@ export const commonStyles = StyleSheet.create({
     justifyContent: "center"
   },
   buttonLeftMenu: {
-    marginRight: 20,
+    marginRight: 20
   },
 
   /* Text Start */
   textPageName: {
     fontSize: 20
+  },
+
+  /* Icon Start */
+  iconMenu: {
+    fontSize: 30
+  },
+
+  /* Switch Start */
+  switchDefault: {
+    transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
+    marginLeft: 15
   }
 });
 

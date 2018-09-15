@@ -20,7 +20,11 @@ export const KO = {
   cancel: "취소",
   thermometer: "체온측정장치",
   coolFan: "선풍기",
-  humidifier: "가습기"
+  humidifier: "가습기",
+  runningCoolFan: "선풍기 켜짐",
+  stoppedCoolFan: "선풍기 꺼짐",
+  runningHumidifier: "가습기 켜짐",
+  stoppedHumidifier: "가습기 꺼짐"
 };
 
 export const REALM_SCHEMA = {};
@@ -33,7 +37,7 @@ export const ETC = {
   humidifier: "humidifier",
   status: {
     stopped: "STOPPED",
-    running: "RUNNING",
+    running: "RUNNING"
   }
 };
 

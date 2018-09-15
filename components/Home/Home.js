@@ -24,17 +24,17 @@ let babyInfo;
 let myTimer;
 
 class Home extends React.Component {
-
   constructor(props) {
     super(props);
-      const { baby } = this.props;
-      babyInfo = realm.objects('baby').filtered(`name = "${baby.name}"`)[0];
+    const { baby } = this.props;
+    babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
 
     this.state = {
-      switchValue: true,
       isEnabled: false,
       discovering: false,
-      devices: realm.objects('bluetoothDevice').filtered(`babyId = ${babyInfo.id}`),
+      devices: realm
+        .objects("bluetoothDevice")
+        .filtered(`babyId = ${babyInfo.id}`),
       unpairedDevices: [],
       connected: false,
       section: 0
@@ -42,7 +42,7 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-      this.activateDevice();
+    this.activateDevice();
     BluetoothSerial.on("bluetoothEnabled", () => {
       console.log("Bluetooth enabled");
       this.activateDevice();
@@ -54,9 +54,7 @@ class Home extends React.Component {
     });
 
     BluetoothSerial.on("error", err => console.log(`Error: ${err.message}`));
-    BluetoothSerial.on("connectionLost", () => {
-
-    });
+    BluetoothSerial.on("connectionLost", () => {});
   }
 
   /* Read data test */
@@ -67,20 +65,20 @@ class Home extends React.Component {
       let temp = parseInt(values[1]);
       console.log(humid);
       console.log(temp);
-      if (!isNaN(parseInt(humid)) && !isNaN(temp)){
-        let len = realm.objects('history').length;
+      if (!isNaN(parseInt(humid)) && !isNaN(temp)) {
+        let len = realm.objects("history").length;
         realm.write(() => {
-            newHistory = realm.create(
-                "history",
-                {
-                    id: len,
-                    babyId: babyInfo.id,
-                    time: new Date(),
-                    temperature: temp,
-                    humidity: humid
-                },
-                true
-            );
+          newHistory = realm.create(
+            "history",
+            {
+              id: len,
+              babyId: babyInfo.id,
+              time: new Date(),
+              temperature: temp,
+              humidity: humid
+            },
+            true
+          );
         });
       }
     });
@@ -192,7 +190,11 @@ class Home extends React.Component {
     BluetoothSerial.connect(device.device)
       .then(res => {
         realm.write(() => {
-          realm.create('bluetoothDevice', {id: device.id, status: 'CONNECTED'}, true)
+          realm.create(
+            "bluetoothDevice",
+            { id: device.id, status: "CONNECTED" },
+            true
+          );
         });
         console.log(`Connected to device ${device.name}`);
         this.setState({ device, connected: true, connecting: false });
@@ -259,43 +261,36 @@ class Home extends React.Component {
     Promise.all(writePromises).then(result => {});
   }
 
-  toggleSwitch = value => {
-    this.setState({switchValue : value});
-    if (value == true){
-      this.write("1");
-    } else {
-      this.write("0");
-    }
-  };
-
-  activateDevice(){
-    for (let i=0; i<this.state.devices.length; i++){
-        if (BluetoothSerial.isEnabled()){
-            this.connect(this.state.devices[i]);
-        }
+  activateDevice() {
+    console.log(this.state.devices.length);
+    for (let i = 0; i < this.state.devices.length; i++) {
+      if (BluetoothSerial.isEnabled()) {
+        this.connect(this.state.devices[i]);
+      }
     }
   }
 
+  // toggleSwitch = value => {
+  //   this.setState({switchValue : value});
+  //   if (value == true){
+  //   this.write("1");
+  // } else {
+  //   this.write("0");
+  // }
+  // };
+
   render() {
-    const { connected } = this.state;
     return (
       <Content style={styles.container}>
         <BabyInfo />
-        <Text>자동측정</Text>
-        <Switch
-          onValueChange={this.toggleSwitch}
-          value={this.state.switchValue}
-        />
-        <TouchableHighlight onPress={() => {
-          this.write("2");
-        }}>
-            <TempAndHumid />
+        <TouchableHighlight
+          onPress={() => {
+            this.write("2");
+          }}
+        >
+          <TempAndHumid />
         </TouchableHighlight>
         <HomeFunction />
-        <Switch
-          onValueChange={this.toggleBluetooth.bind(this)}
-          value={this.state.isEnabled}
-        />
       </Content>
     );
   }

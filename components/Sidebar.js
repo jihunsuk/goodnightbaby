@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { PAGE_NAME } from "../constants";
 import { BabyActions } from "../reduxStore/actionCreators";
 import { connect } from "react-redux";
+import { Content, Icon } from "native-base";
+import { commonStyles } from "../styles";
 
 class Sidebar extends React.Component {
   render() {
@@ -15,46 +17,61 @@ class Sidebar extends React.Component {
     ) {
       return (
         <View style={styles.container}>
-          <Text
-            style={styles.icon}
-            onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.home);
-            }}
-          >
-            홈
-          </Text>
-          <Text
-            style={styles.icon}
-            onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.babySelection);
-            }}
-          >
-            아이선택
-          </Text>
-          <Text
-            style={styles.icon}
-            onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.deviceMgmt);
-            }}
-          >
-            장치관리
-          </Text>
-          <Text
-            style={styles.icon}
-            onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.measurementHistory);
-            }}
-          >
-            측정기록
-          </Text>
-          <Text
-            style={styles.icon}
-            onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.setting);
-            }}
-          >
-            설정
-          </Text>
+          <View style={styles.viewSidebarMenu}>
+            <Icon name="home" style={commonStyles.iconMenu} />
+            <Text
+              style={styles.icon}
+              onPress={() => {
+                BabyActions.setPageName(PAGE_NAME.home);
+              }}
+            >
+              홈
+            </Text>
+          </View>
+          <View style={styles.viewSidebarMenu}>
+            <Icon name="logo-octocat" style={commonStyles.iconMenu} />
+            <Text
+              style={styles.icon}
+              onPress={() => {
+                BabyActions.setPageName(PAGE_NAME.babySelection);
+              }}
+            >
+              아이선택
+            </Text>
+          </View>
+          <View style={styles.viewSidebarMenu}>
+            <Icon name="document" style={commonStyles.iconMenu} />
+            <Text
+              style={styles.icon}
+              onPress={() => {
+                BabyActions.setPageName(PAGE_NAME.deviceMgmt);
+              }}
+            >
+              장치관리
+            </Text>
+          </View>
+          <View style={styles.viewSidebarMenu}>
+            <Icon name="logo-android" style={commonStyles.iconMenu} />
+            <Text
+              style={styles.icon}
+              onPress={() => {
+                BabyActions.setPageName(PAGE_NAME.measurementHistory);
+              }}
+            >
+              측정기록
+            </Text>
+          </View>
+          <View style={styles.viewSidebarMenu}>
+            <Icon name="settings" style={commonStyles.iconMenu} />
+            <Text
+              style={styles.icon}
+              onPress={() => {
+                BabyActions.setPageName(PAGE_NAME.setting);
+              }}
+            >
+              설정
+            </Text>
+          </View>
         </View>
       );
     } else {
@@ -69,10 +86,20 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#fff",
     flexDirection: "row",
-    height: 50
+    height: 70,
+    width: "100%",
+    borderColor: "#e0e0e0",
+    borderWidth: 1
   },
   icon: {
     marginHorizontal: 10
+  },
+  viewSidebarMenu: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    width: "20%"
   }
 });
 

@@ -1,21 +1,43 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Switch, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
+import { Icon } from "native-base";
+import { commonStyles } from "../styles";
 
 class BabyInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      switchValue: false
+    };
+    this.toggleSwitch = this.toggleSwitch.bind(this);
+  }
+
+  toggleSwitch(value) {
+    this.setState({
+      switchValue: value
+    });
+  }
+
   render() {
     const { baby } = this.props;
     return (
-      <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={{
-            uri:
-              "https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2"
-          }}
-        />
-        <Text>{baby.name}</Text>
-        <Text>+배터리정보</Text>
+      <View style={[styles.container]}>
+        <View style={[commonStyles.viewCenter, styles.viewBabyNameArea]}>
+          <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
+            <Icon name="logo-octocat" style={commonStyles.iconMenu} />
+          </View>
+          <Text style={styles.textBabyName}>{baby.name}</Text>
+        </View>
+        <View style={[commonStyles.viewCenter, styles.viewOptionArea]}>
+          <Text style={styles.textBabyName}>자동측정</Text>
+          <Switch
+            style={commonStyles.switchDefault}
+            onValueChange={this.toggleSwitch}
+            value={this.state.switchValue}
+          />
+          <Icon name="battery-charging" />
+        </View>
       </View>
     );
   }
@@ -24,12 +46,24 @@ class BabyInfo extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 10,
+    marginBottom: 10,
+    justifyContent: "space-between"
+  },
+  viewBabyNameArea: {
     flexDirection: "row"
   },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 100
+  viewOptionArea: {
+    flexDirection: "row"
+  },
+  textBabyName: {
+    marginLeft: 5,
+    color: "green",
+    fontSize: 20
   }
 });
 
