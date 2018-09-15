@@ -1,7 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, } from 'react-native';
+import realm from "../../realm/realmDatabase";
 
 export default class HomeFunction extends React.Component {
+
+
+
+
   render() {
     return (
       <View style={styles.container}>

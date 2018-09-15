@@ -57,7 +57,20 @@ alarm.schema = {
   }
 };
 
+class history {}
+history.schema = {
+  name: "history",
+  primaryKey: "id",
+  properties: {
+    id: "int",
+    babyId: "int",
+    time: "date",
+    temperature: "int",
+    humidity: "int"
+  }
+}
+
 export default realmDatabase = new Realm({
-  schema: [baby, bluetoothDevice, setting, alarm],
+  schema: [baby, bluetoothDevice, setting, alarm, history],
   schemaVersion: 2
 });
