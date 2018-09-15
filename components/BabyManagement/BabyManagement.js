@@ -37,7 +37,7 @@ class BabyManagement extends React.Component {
       age: 0,
       sex: ETC.male, // male, female
       image: null,
-      // device: [],
+      device_length: realm.objects("bluetoothDevice").length,
       thermometerModalVisible: false,
       coolFanModalVisible: false,
       humidifierModalVisible: false
@@ -75,7 +75,7 @@ class BabyManagement extends React.Component {
   }
 
   saveDeviceInRealm() {
-    let {
+    const {
       selectedThermometer,
       selectedCoolFan,
       selectedHumidifier
@@ -142,15 +142,17 @@ class BabyManagement extends React.Component {
 
   /* Defined Function Start */
   _makeDevice(bluetoothDevice, type) {
-    return {
-      id: null, // TODO: fix
-      babyId: this.state.id,
-      device: bluetoothDevice.deviceId,
-      name: bluetoothDevice.deviceName,
-      type: type,
-      status: ETC.status.stopped,
-      auto: false
-    };
+    device = {
+        id: this.state.device_length, // TODO: fix
+        babyId: this.state.id,
+        device: bluetoothDevice.deviceId,
+        name: bluetoothDevice.deviceName,
+        type: type,
+        status: ETC.status.stopped,
+        auto: false
+    }
+    this.state.device_length += 1;
+    return device;
   }
 
   setSex(sex) {
@@ -207,7 +209,9 @@ class BabyManagement extends React.Component {
             </Item>
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
-              <Input onChangeText={age => this.setState({ age })} />
+              <Input keyboardType = 'numeric' onChangeText={ age => {
+                age = parseInt(age)
+                this.setState({ age })}} />
             </Item>
             <Item stackedLabel style={styles.itemEtc}>
               <Label>성별</Label>
