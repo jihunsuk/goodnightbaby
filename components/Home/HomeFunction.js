@@ -1,32 +1,47 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Icon } from "native-base";
+import { commonStyles } from "../../styles";
+import { ETC, KO } from "../../constants";
 
 export default class HomeFunction extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      coolFanStatus: ETC.status.running,
+      humidifierStatus: ETC.status.stopped
+    };
+  }
+
   render() {
+    const { coolFanStatus, humidifierStatus } = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.func}>
-          <View>
-            <Image
-                style={styles.image}
-                source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
-            />
-            <Text>ON</Text>
+        <View style={[styles.viewMenu]}>
+          <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
+            <Icon name="medkit" />
           </View>
-          <View>
-            <Image
-                style={styles.image}
-                source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
-            />
-            <Text>ON</Text>
+          <Text style={[styles.textMenu, { color: "green" }]}>해열제 투약</Text>
+        </View>
+        <View style={[styles.viewMenu]}>
+          <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
+            <Icon name="nuclear" />
           </View>
-          <View>
-            <Image
-                style={styles.image}
-                source={{uri: 'https://mblogthumb-phinf.pstatic.net/20140917_247/jin21676_14108854049566wssz_PNG/1410885403714_Dango_Daikazoku.png?type=w2'}}
-            />
-            <Text>해열제 투약</Text>
+          <Text style={[styles.textMenu, { color: "blue" }]}>
+            {coolFanStatus === ETC.status.running
+              ? KO.runningCoolFan
+              : KO.stoppedCoolFan}
+          </Text>
+        </View>
+        <View style={[styles.viewMenu]}>
+          <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
+            <Icon name="cloud" />
           </View>
+          <Text style={[styles.textMenu, { color: "black" }]}>
+            {humidifierStatus === ETC.status.running
+              ? KO.runningHumidifier
+              : KO.stoppedHumidifier}
+          </Text>
         </View>
       </View>
     );
@@ -35,14 +50,26 @@ export default class HomeFunction extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
   },
-    func: {
-        flexDirection: 'row',
-    },
-    image : {
-        width: 50,
-        height: 50,
-        borderRadius:100,
-    },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 100
+  },
+  viewMenu: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 5,
+    height: 60,
+    backgroundColor: "#e0e0e0",
+    padding: 10
+  },
+  textMenu: {
+    fontSize: 22,
+    marginLeft: 10
+  }
 });

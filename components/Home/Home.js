@@ -12,17 +12,29 @@ import BabyInfo from "../BabyInfo";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
 import { connect } from "react-redux";
+import realm from "../../realm/realmDatabase";
 import { Content } from "native-base";
+import HomeFunction from "./HomeFunction";
+import TempAndHumid from "./TempAndHumid";
+
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
+
+//babyInfo = realm.objects('baby').filtered(`id = ${baby.id}`)[0];
+babyInfo = realm.objects("baby").filtered('name = "시불년"')[0];
+let myTimer;
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    const { baby } = this.props;
+
     this.state = {
       isEnabled: false,
       discovering: false,
-      devices: [],
+      devices: realm
+        .objects("bluetoothDevice")
+        .filtered(`babyId = ${babyInfo.id}`),
       unpairedDevices: [],
       connected: false,
       section: 0
@@ -30,44 +42,45 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-    Promise.all([BluetoothSerial.isEnabled(), BluetoothSerial.list()]).then(
-      values => {
-        const [isEnabled, devices] = values;
-        this.setState({ isEnabled, devices });
-      }
-    );
-    console.log("componentWillMount", BluetoothSerial);
-
+    this.activateDevice();
     BluetoothSerial.on("bluetoothEnabled", () => {
       console.log("Bluetooth enabled");
-      Promise.all([BluetoothSerial.isEnabled(), BluetoothSerial.list()]).then(
-        values => {
-          const [isEnabled, devices] = values;
-          this.setState({ isEnabled, devices });
-        }
-      );
+      this.activateDevice();
     });
 
     BluetoothSerial.on("bluetoothDisabled", () => {
       console.log("Bluetooth disabled");
-      this.setState({ devices: [] });
+      clearInterval(myTimer);
     });
 
     BluetoothSerial.on("error", err => console.log(`Error: ${err.message}`));
-    BluetoothSerial.on("connectionLost", () => {
-      if (this.state.device) {
-        console.log(
-          `Connection to device ${this.state.device.name} has been lost`
-        );
-      }
-      this.setState({ connected: false });
-    });
+    BluetoothSerial.on("connectionLost", () => {});
   }
 
   /* Read data test */
   _readTry() {
     BluetoothSerial.readFromDevice().then(data => {
-      console.log(data);
+      let values = data.split(".");
+      let humid = parseInt(values[0]);
+      let temp = parseInt(values[1]);
+      console.log(humid);
+      console.log(temp);
+      if (!isNaN(parseInt(humid)) && !isNaN(temp)) {
+        let len = realm.objects("history").length;
+        realm.write(() => {
+          newHistory = realm.create(
+            "history",
+            {
+              id: len,
+              babyId: babyInfo.id,
+              time: new Date(),
+              temperature: temp,
+              humidity: humid
+            },
+            true
+          );
+        });
+      }
     });
   }
 
@@ -174,11 +187,18 @@ class Home extends React.Component {
    */
   connect(device) {
     this.setState({ connecting: true });
-    BluetoothSerial.connect(device.id)
+    BluetoothSerial.connect(device.device)
       .then(res => {
+        realm.write(() => {
+          realm.create(
+            "bluetoothDevice",
+            { id: device.id, status: "CONNECTED" },
+            true
+          );
+        });
         console.log(`Connected to device ${device.name}`);
         this.setState({ device, connected: true, connecting: false });
-        setInterval(this._readTry, 1000);
+        myTimer = setInterval(this._readTry, 1000);
       })
       .catch(err => console.log(err.message));
   }
@@ -209,10 +229,6 @@ class Home extends React.Component {
    * @param  {String} message
    */
   write(message) {
-    if (!this.state.connected) {
-      console.log("You must connect to device first");
-    }
-
     BluetoothSerial.write(message)
       .then(res => {
         console.log("Successfuly wrote to device");
@@ -245,78 +261,31 @@ class Home extends React.Component {
     Promise.all(writePromises).then(result => {});
   }
 
+  activateDevice() {
+    console.log(this.state.devices.length);
+    for (let i = 0; i < this.state.devices.length; i++) {
+      if (BluetoothSerial.isEnabled()) {
+        this.connect(this.state.devices[i]);
+      }
+    }
+  }
 
   render() {
-    const { connected } = this.state;
     return (
       <Content style={styles.container}>
         <BabyInfo />
-        {/*<TempAndHumid />*/}
-        {/*<HomeFunction />*/}
-        <Switch
-          onValueChange={this.toggleBluetooth.bind(this)}
-          value={this.state.isEnabled}
-        />
-        <DeviceList
-          showConnectedIcon={this.state.section === 0}
-          connectedId={this.state.device && this.state.device.id}
-          devices={
-            this.state.section === 0
-              ? this.state.devices
-              : this.state.unpairedDevices
-          }
-          onDevicePress={device => this.onDevicePress(device)}
-        />
-        <Button title="Request enable" onPress={() => this.requestEnable()} />
-        {connected === true ? (
-          <Fragment>
-            <Button title="On" onPress={() => this.write("0")} />
-            <Button title="Off" onPress={() => this.write("1")} />
-          </Fragment>
-        ) : null}
+        <TouchableHighlight
+          onPress={() => {
+            this.write("2");
+          }}
+        >
+          <TempAndHumid />
+        </TouchableHighlight>
+        <HomeFunction />
       </Content>
     );
   }
 }
-
-const DeviceList = ({
-  devices,
-  connectedId,
-  showConnectedIcon,
-  onDevicePress
-}) => (
-  <Content style={styles.container}>
-    <View>
-      {devices.map((device, i) => {
-        return (
-          <TouchableHighlight
-            underlayColor="#DDDDDD"
-            key={`${device.id}_${i}`}
-            onPress={() => onDevicePress(device)}
-          >
-            <View style={{ flexDirection: "row" }}>
-              {showConnectedIcon ? (
-                <View style={{ width: 48, height: 48, opacity: 0.4 }}>
-                  <Text>Test</Text>
-                </View>
-              ) : null}
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  flexDirection: "row",
-                  alignItems: "center"
-                }}
-              >
-                <Text style={{ fontWeight: "bold" }}>{device.name}</Text>
-                <Text>{`<${device.id}>`}</Text>
-              </View>
-            </View>
-          </TouchableHighlight>
-        );
-      })}
-    </View>
-  </Content>
-);
 
 const styles = StyleSheet.create({
   container: {

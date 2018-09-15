@@ -22,18 +22,21 @@ class BabyInfo extends React.Component {
   render() {
     const { baby } = this.props;
     return (
-      <View style={[styles.container, commonStyles.viewCenter]}>
-        <View style={[commonStyles.viewCenter]}>
-          <Icon name="logo-octocat" style={styles.image} />
-          <Text>{baby.name}</Text>
+      <View style={[styles.container]}>
+        <View style={[commonStyles.viewCenter, styles.viewBabyNameArea]}>
+          <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
+            <Icon name="logo-octocat" style={commonStyles.iconMenu} />
+          </View>
+          <Text style={styles.textBabyName}>{baby.name}</Text>
         </View>
-        <View style={[commonStyles.viewCenter]}>
-          <Text>자동측정</Text>
+        <View style={[commonStyles.viewCenter, styles.viewOptionArea]}>
+          <Text style={styles.textBabyName}>자동측정</Text>
           <Switch
+            style={commonStyles.switchDefault}
             onValueChange={this.toggleSwitch}
             value={this.state.switchValue}
           />
-          <Icon name="battery-charging"/>
+          <Icon name="battery-charging" />
         </View>
       </View>
     );
@@ -44,11 +47,23 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 10,
+    marginBottom: 10,
+    justifyContent: "space-between"
   },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 100
+  viewBabyNameArea: {
+    flexDirection: "row"
+  },
+  viewOptionArea: {
+    flexDirection: "row"
+  },
+  textBabyName: {
+    marginLeft: 5,
+    color: "green",
+    fontSize: 20
   }
 });
 
