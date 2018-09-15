@@ -60,9 +60,9 @@ class BabySelection extends React.Component {
         <View style={styles.wrapperTextSelectBaby}>
           <Text style={styles.textSelectBaby}>아이를 선택해주세요</Text>
         </View>
-        <ScrollView style={styles.scrollViewBabyList}>
+        <Content style={styles.scrollViewBabyList}>
           <BabyList />
-        </ScrollView>
+        </Content>
         <Button
           dark
           rounded

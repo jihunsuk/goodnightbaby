@@ -9,6 +9,7 @@ class Sidebar extends React.Component {
     const { pageName } = this.props;
     if (
       pageName !== PAGE_NAME.babySelection &&
+      pageName !== PAGE_NAME.babyAddition &&
       pageName !== PAGE_NAME.babyModification &&
       pageName !== PAGE_NAME.babyDeletion
     ) {

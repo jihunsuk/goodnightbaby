@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import {
-  Platform,
   StyleSheet,
   Switch,
   Text,
@@ -10,12 +9,12 @@ import {
   Button
 } from "react-native";
 import BabyInfo from "../BabyInfo";
-import TempAndHumid from "./TempAndHumid";
-import HomeFunction from "./HomeFunction";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../../realm/realmDatabase";
+import { Content } from "native-base";
+
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
@@ -278,11 +277,14 @@ class Home extends React.Component {
   }
 
   render() {
+    const { connected } = this.state;
+    const { baby } = this.props;
+    console.log("state: ", this.state);
     return (
-      <View style={styles.container}>
+      <Content style={styles.container}>
         <BabyInfo />
-        <Text>{realm.objects('baby').length}</Text>
-        <Text>{realm.objects('bluetoothDevice').length}</Text>
+        {/*<Text>{realm.objects('baby').length}</Text>*/}
+        {/*<Text>{realm.objects('bluetoothDevice').length}</Text>*/}
         <Text>자동측정</Text>
         <Switch
           onValueChange={this.toggleSwitch}
@@ -291,21 +293,20 @@ class Home extends React.Component {
         <TouchableHighlight onPress={() => {
           this.write("2");
         }}>
-          <TempAndHumid />
+            <TempAndHumid />
         </TouchableHighlight>
         <HomeFunction />
         <Switch
           onValueChange={this.toggleBluetooth.bind(this)}
           value={this.state.isEnabled}
         />
-      </View>
+      </Content>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    color: "white",
     backgroundColor: "#fff"
   }
 });
