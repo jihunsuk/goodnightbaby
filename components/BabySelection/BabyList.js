@@ -56,7 +56,6 @@ class Baby extends React.Component {
             onPress={() => {
               BabyActions.setPageName(PAGE_NAME.babyModification);
             }}
-            style={{ fontSize: 15 }}
           >
             <Icon name="create" />
           </Button>
@@ -66,7 +65,6 @@ class Baby extends React.Component {
             onPress={() => {
               BabyActions.setPageName(PAGE_NAME.babyDeletion);
             }}
-            style={{ fontSize: 15 }}
           >
             <Icon name="remove" />
           </Button>
