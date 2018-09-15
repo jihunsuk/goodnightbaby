@@ -6,45 +6,9 @@ import { URL, PAGE_NAME } from "../../constants";
 import { BabyActions } from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
 
-
-import realm from "../../realm/realmDatabase";
-
-realm.write(() => {
-    newBaby = realm.create(
-        "baby",
-        {
-            id: 0,
-            settingId: 0,
-            alarmId: 0,
-            name: '시불년',
-            age: 0,
-            sex: 'male',
-            image: null
-        },
-        true
-    );
-});
-
-realm.write(() => {
-    newDevice = realm.create(
-        "bluetoothDevice",
-        {
-            id: 0,
-            babyId: 0,
-            device: '00:18:E5:04:88:4A',
-            name: 'HC-06',
-            type: 'THERMOMETER',
-            status: 'DISCONNECTED',
-            auto: false
-        },
-        true
-    );
-});
-
 class BabySelection extends React.Component {
   render() {
     const { baby } = this.props;
-    console.log("baby Test: ", baby);
     return (
       <Content>
         <View style={styles.outsideMargin}>

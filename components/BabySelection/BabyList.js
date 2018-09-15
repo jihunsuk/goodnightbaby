@@ -74,43 +74,6 @@ class Baby extends React.Component {
 }
 
 const testBabys = realm.objects('baby');
-// const testBabys = [
-//   {
-//     id: 1,
-//     name: "이상현",
-//     sex: "male"
-//   },
-//   {
-//     id: 1,
-//     name: "석지훈",
-//     sex: "male"
-//   },
-//   {
-//     id: 1,
-//     name: "정윤수",
-//     sex: "female"
-//   },
-//   {
-//     id: 1,
-//     name: "조현욱",
-//     sex: "male"
-//   },
-//   {
-//     id: 1,
-//     name: "임대영",
-//     sex: "male"
-//   },
-//   {
-//     id: 1,
-//     name: "권성수",
-//     sex: "male"
-//   },
-//   {
-//     id: 1,
-//     name: "임병언",
-//     sex: "male"
-//   }
-// ];
 
 const styles = StyleSheet.create({
   container: {
