@@ -132,7 +132,6 @@ class BabyManagement extends React.Component {
         true
       );
     });
-    this.saveDeviceInRealm();
   }
 
   // addDevice() {
