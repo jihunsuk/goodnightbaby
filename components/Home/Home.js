@@ -21,6 +21,7 @@ import {BabyActions} from "../../reduxStore/actionCreators";
 
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
+const devices = realm.objects("bluetoothDevice");
 
 let babyInfo;
 let myTimer;
@@ -61,7 +62,6 @@ class Home extends React.Component {
 
   /* Read data test */
   _readTry() {
-
     BluetoothSerial.readFromDevice().then(data => {
       let values = data.split(".");
       let humid = parseInt(values[0]);
@@ -73,6 +73,19 @@ class Home extends React.Component {
            temp,
            humid
         });
+
+        if (humid <= 40){
+          this.write("a");
+        } else if (humid >= 60){
+          this.write("b");
+        }
+
+        if (temp >= 33) {
+          this.write("c");
+        } else if (temp <= 30) {
+          this.write("d");
+        }
+
         let len = realm.objects("history").length;
         realm.write(() => {
           newHistory = realm.create(
