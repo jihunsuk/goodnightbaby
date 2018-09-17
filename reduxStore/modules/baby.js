@@ -22,7 +22,7 @@ const initialState = Map({
     name: "테스트",
     id: 1
   },
-  pageName: PAGE_NAME.babyAddition,
+  pageName: PAGE_NAME.babySelection,
   selectedThermometer: null,
   selectedCoolFan: List([]),
   selectedHumidifier: List([])

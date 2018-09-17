@@ -5,8 +5,13 @@ import BabyList from "./BabyList";
 import { URL, PAGE_NAME } from "../../constants";
 import { BabyActions } from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
+import { activateDevice } from "../../util/BluetoothSerialTemplate";
 
 class BabySelection extends React.Component {
+  componentDidMount() {
+    // activateDevice();
+  }
+
   render() {
     const { baby } = this.props;
     return (

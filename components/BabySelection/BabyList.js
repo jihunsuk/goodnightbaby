@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { PAGE_NAME } from "../../constants";
 import { Button, Icon } from "native-base";
-import { BabyActions } from "../../reduxStore/actionCreators";
+import { BabyActions, BluetoothActions } from "../../reduxStore/actionCreators";
 import realm from "../../realm/realmDatabase";
 
 export default class BabyList extends React.Component {
@@ -30,6 +30,7 @@ class Baby extends React.Component {
   }
 
   render() {
+    const { baby } = this.props;
     return (
       <View style={styles.baby}>
         <Button
@@ -37,16 +38,19 @@ class Baby extends React.Component {
           transparent
           dark
           onPress={() => {
-            BabyActions.setBaby(this.props.baby);
+            BabyActions.setBaby(baby);
             BabyActions.setPageName(PAGE_NAME.home);
+            BluetoothActions.setDevices(
+              realm.objects("bluetoothDevice").filtered(`babyId = ${baby.id}`)
+            );
           }}
         >
           <Icon bordered name="logo-octocat" style={styles.iconStyle} />
-          <Text style={styles.textBabyName}>{this.props.baby.name}</Text>
+          <Text style={styles.textBabyName}>{baby.name}</Text>
         </Button>
         <Icon
-          name={this.props.baby.sex}
-          style={this.props.baby.sex === "male" ? styles.male : styles.female}
+          name={baby.sex}
+          style={baby.sex === "male" ? styles.male : styles.female}
         />
         <View style={styles.buttonsBabyMenu}>
           <Button

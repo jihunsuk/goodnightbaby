@@ -13,6 +13,7 @@ import Setting from "../components/Setting";
 import AlarmSetting from "../components/AlarmSetting";
 import BabyManagement from "../components/BabyManagement";
 import BabySelection from "../components/BabySelection";
+import BluetoothSerialTemplate from "../util/BluetoothSerialTemplate";
 
 class ContentTemplate extends React.Component {
   _getPage(pageName) {
@@ -49,10 +50,42 @@ class ContentTemplate extends React.Component {
     );
   }
 
+  isNeedBluetooth() {
+    const { pageName } = this.props;
+    switch (pageName) {
+      case PAGE_NAME.home:
+        return true;
+      case PAGE_NAME.deviceMgmt:
+        return true;
+      case PAGE_NAME.measurementHistory:
+        return true;
+      case PAGE_NAME.setting:
+        return true;
+      case PAGE_NAME.deviceSelection:
+        return true;
+      case PAGE_NAME.coolFanSelection:
+        return true;
+      case PAGE_NAME.humidifierSelection:
+        return true;
+      case PAGE_NAME.temperatureSetting:
+        return true;
+      case PAGE_NAME.humiditySetting:
+        return true;
+      case PAGE_NAME.alarmSetting:
+        return true;
+    }
+    return false;
+  }
+
   render() {
     const { pageName } = this.props;
     const page = this._getPage(pageName);
-    return <Fragment>{page}</Fragment>;
+    return (
+      <Fragment>
+        {page}
+        {this.isNeedBluetooth() === true && <BluetoothSerialTemplate />}
+      </Fragment>
+    );
   }
 }
 

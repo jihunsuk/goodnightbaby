@@ -83,7 +83,7 @@ class BabyManagement extends React.Component {
       selectedHumidifier
     } = this.props;
     // Make devices
-    let devices = [];
+    const devices = [];
     if (isNotNull(selectedThermometer)) {
       devices.push(this._makeDevice(selectedThermometer, ETC.thermometer));
     }
