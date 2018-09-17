@@ -7,6 +7,9 @@ import { BabyActions } from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
 
 class BabySelection extends React.Component {
+  
+//Todo : 메뉴바에서 아이선택 눌렀을 경우, bluetooth통해서 write("2")보내기
+  
   render() {
     const { baby } = this.props;
     return (

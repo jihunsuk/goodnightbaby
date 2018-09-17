@@ -16,9 +16,12 @@ import realm from "../../realm/realmDatabase";
 import { Content } from "native-base";
 import HomeFunction from "./HomeFunction";
 import TempAndHumid from "./TempAndHumid";
+import {isNotNull} from "../../util/commonUtil";
+import {BabyActions} from "../../reduxStore/actionCreators";
 
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
+const devices = realm.objects("bluetoothDevice");
 
 let babyInfo;
 let myTimer;
@@ -65,7 +68,24 @@ class Home extends React.Component {
       let temp = parseInt(values[1]);
       console.log(humid);
       console.log(temp);
-      if (!isNaN(parseInt(humid)) && !isNaN(temp)) {
+      if (!isNaN(humid) && !isNaN(temp)) {
+        BabyActions.setTempAndHumid({
+           temp,
+           humid
+        });
+
+        if (humid <= 40){
+          this.write("a");
+        } else if (humid >= 60){
+          this.write("b");
+        }
+
+        if (temp >= 33) {
+          this.write("c");
+        } else if (temp <= 30) {
+          this.write("d");
+        }
+
         let len = realm.objects("history").length;
         realm.write(() => {
           newHistory = realm.create(
@@ -303,5 +323,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({ baby }) => ({
-  baby: baby.get("baby")
+  baby: baby.get("baby"),
+    setTempAndHumid: baby.get("setTempAndHumid"),
 }))(Home);
