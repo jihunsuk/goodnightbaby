@@ -8,7 +8,7 @@ class BabyInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      switchValue: true;
+      switchValue: true
     };
     this.toggleSwitch = this.toggleSwitch.bind(this);
   }

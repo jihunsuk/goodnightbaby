@@ -6,7 +6,7 @@ export default class HumidifierManagement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: false,
+            switchValue: true,
         }
     }
     toggleSwitch = (value) => {
