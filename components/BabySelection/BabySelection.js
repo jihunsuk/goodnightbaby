@@ -8,12 +8,7 @@ import { connect } from "react-redux";
 import { activateDevice } from "../../util/BluetoothSerialTemplate";
 
 class BabySelection extends React.Component {
-  componentDidMount() {
-    // activateDevice();
-  }
-
   render() {
-    const { baby } = this.props;
     return (
       <Content>
         <View style={styles.outsideMargin}>

@@ -4,7 +4,7 @@ import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../realm/realmDatabase";
-import { BluetoothActions } from "../reduxStore/actionCreators";
+import { BabyActions, BluetoothActions } from "../reduxStore/actionCreators";
 
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
@@ -34,6 +34,7 @@ class BluetoothSerialTemplate extends React.Component {
       onDevicePress: this.onDevicePress.bind(this),
       writePackets: this.writePackets.bind(this)
     });
+    this.readFromDevice = this.readFromDevice.bind(this);
   }
 
   componentWillMount() {
@@ -59,12 +60,18 @@ class BluetoothSerialTemplate extends React.Component {
   /* Read data test */
   readFromDevice() {
     BluetoothSerial.readFromDevice().then(data => {
-      let values = data.split(".");
-      let humid = parseInt(values[0]);
-      let temp = parseInt(values[1]);
-      console.log(humid);
-      console.log(temp);
-      if (!isNaN(parseInt(humid)) && !isNaN(temp)) {
+      const values = data.split(".");
+      const humid = parseInt(values[0]);
+      const temp = parseInt(values[1]);
+      console.log("Humidity: ", humid);
+      console.log("Temperature: ", temp);
+      if (!isNaN(humid) && !isNaN(temp)) {
+        const readData = {
+          temp,
+          humid
+        };
+        BabyActions.setTempAndHumid(readData);
+        this.writeTemperatureControlDevices(readData);
         let len = realm.objects("history").length;
         realm.write(() => {
           newHistory = realm.create(
@@ -80,11 +87,22 @@ class BluetoothSerialTemplate extends React.Component {
           );
         });
       }
-      return {
-        humid: humid,
-        temp: temp
-      };
     });
+  }
+
+  /* Write to bluetooth devices */
+  writeTemperatureControlDevices(readData){
+    if (readData.humid <= 55){
+      this.write("a");  //켜짐
+    } else if (readData.humid >= 60){
+      this.write("b");  //꺼짐
+    }
+
+    if (readData.temp >= 33) {
+      this.write("c");  //켜짐
+    } else if (readData.temp <= 30) {
+      this.write("d");  //꺼짐
+    }
   }
 
   /**

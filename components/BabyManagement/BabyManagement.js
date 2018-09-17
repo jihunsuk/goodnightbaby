@@ -66,6 +66,7 @@ class BabyManagement extends React.Component {
   setHumidifierModalVisible(visible) {
     this.setState({ humidifierModalVisible: visible });
   }
+
   /* Modal Function End */
 
   /* Realm logic Start */
@@ -82,20 +83,31 @@ class BabyManagement extends React.Component {
       selectedCoolFan,
       selectedHumidifier
     } = this.props;
+    const { device_length } = this.state;
     // Make devices
-    const devices = [];
+    let devices = [];
+    let deviceId = device_length;
     if (isNotNull(selectedThermometer)) {
-      devices.push(this._makeDevice(selectedThermometer, ETC.thermometer));
+      devices.push(
+        this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
+      );
+      deviceId++;
     }
     if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
-      selectedCoolFan.map(device =>
-        devices.push(this._makeDevice(device, ETC.coolFan))
-      );
+      selectedCoolFan.map(device => {
+        if (isNotNull(device)) {
+          devices.push(this._makeDevice(device, ETC.coolFan, deviceId));
+          deviceId++;
+        }
+      });
     }
     if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
-      selectedHumidifier.map(device =>
-        devices.push(this._makeDevice(device, ETC.humidifier))
-      );
+      selectedHumidifier.map(device => {
+        if (isNotNull(device)) {
+          devices.push(this._makeDevice(device, ETC.humidifier, deviceId));
+          deviceId++;
+        }
+      });
     }
 
     devices.map(device =>
@@ -122,6 +134,7 @@ class BabyManagement extends React.Component {
       );
     });
   }
+
   /* Realm logic End */
 
   /* Defined Function Start */
@@ -131,9 +144,9 @@ class BabyManagement extends React.Component {
     BabyActions.setSelectedHumidifier(null);
   }
 
-  _makeDevice(bluetoothDevice, type) {
+  _makeDevice(bluetoothDevice, type, deviceId) {
     device = {
-      id: this.state.device_length, // TODO: fix
+      id: deviceId, // TODO: fix
       babyId: this.state.id,
       device: bluetoothDevice.deviceId,
       name: bluetoothDevice.deviceName,
@@ -141,7 +154,6 @@ class BabyManagement extends React.Component {
       status: ETC.status.stopped,
       auto: false
     };
-    this.state.device_length += 1;
     return device;
   }
 
@@ -168,6 +180,7 @@ class BabyManagement extends React.Component {
     });
     return string === "" ? "-" : string;
   }
+
   /* Defined Function End */
 
   render() {
