@@ -18,16 +18,15 @@ class TempAndHumid extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.temp}>
-          <Text>온도</Text>
-          {/*<Text>{this.state.temp}</Text>*/}
-            <Text>30</Text>
-          <Text>측정하기</Text>
+        <View style={styles.viewTemperature}>
+          <Text style={styles.textTemperature}>온도</Text>
+          {/*TODO: 온도*/}
+          <Text style={styles.textTemperatureNumber}>36.5</Text>
         </View>
-        <View style={styles.humid}>
-          <Text>습도</Text>
-          <Text>50%</Text>
-            {/*<Text>{this.state.humid}</Text>*/}
+        <View style={styles.viewHumidity}>
+          <Text style={styles.textHumidity}>습도</Text>
+          {/*TODO: 습도*/}
+          <Text style={styles.textHumidityNumber}>50%</Text>
         </View>
       </View>
     );
@@ -36,31 +35,46 @@ class TempAndHumid extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-      flexDirection: 'row',
-      alignItems:'center',
-      justifyContent:'center',
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: 40
   },
-    temp :{
-        borderStyle: 'solid',
-        borderWidth: 2,
-        borderColor : "green",
-        borderRadius: 100,
-        width: 200,
-        height: 200,
-        alignItems:'center',
-        justifyContent:'center',
-    },
-    humid :{
-        borderStyle: 'solid',
-        borderWidth: 2,
-        borderColor : "green",
-        borderRadius:100,
-        width: 100,
-        height: 100,
-        alignItems:'center',
-        justifyContent:'center',
-    },
+  textTemperature: {
+    color: "white",
+    fontSize: 30
+  },
+  textTemperatureNumber: {
+    color: "white",
+    fontSize: 80
+  },
+  textHumidity: {
+    color: "white",
+    fontSize: 20
+  },
+  textHumidityNumber: {
+    color: "white",
+    fontSize: 50
+  },
+  viewTemperature: {
+    borderRadius: 100,
+    width: 220,
+    height: 220,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "red",
+    marginRight: 10
+  },
+  viewHumidity: {
+    borderRadius: 100,
+    width: 150,
+    height: 150,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "blue"
+  }
 });
 
 export default connect(({ baby }) => ({
