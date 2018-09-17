@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
 import HumidifierList from "./HumidifierList";
+import { connect } from "react-redux";
 
-export default class HumidifierManagement extends React.Component {
+class HumidifierManagement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -10,7 +11,13 @@ export default class HumidifierManagement extends React.Component {
         }
     }
     toggleSwitch = (value) => {
+        const { write } = this.props;
         this.setState({switchValue: value})
+        if (value == true){
+            write("u");
+        } else {
+            write("e");
+        }
     }
 
   render() {
@@ -37,3 +44,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
 });
+
+export default connect(({ bluetooth }) => ({
+    write: bluetooth.get("functions").write
+}))(HumidifierManagement);
