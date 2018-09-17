@@ -16,6 +16,8 @@ import realm from "../../realm/realmDatabase";
 import { Content } from "native-base";
 import HomeFunction from "./HomeFunction";
 import TempAndHumid from "./TempAndHumid";
+import {isNotNull} from "../../util/commonUtil";
+import {BabyActions} from "../../reduxStore/actionCreators";
 
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
@@ -59,13 +61,18 @@ class Home extends React.Component {
 
   /* Read data test */
   _readTry() {
+
     BluetoothSerial.readFromDevice().then(data => {
       let values = data.split(".");
       let humid = parseInt(values[0]);
       let temp = parseInt(values[1]);
       console.log(humid);
       console.log(temp);
-      if (!isNaN(parseInt(humid)) && !isNaN(temp)) {
+      if (!isNaN(humid) && !isNaN(temp)) {
+        BabyActions.setTempAndHumid({
+           temp,
+           humid
+        });
         let len = realm.objects("history").length;
         realm.write(() => {
           newHistory = realm.create(
@@ -303,5 +310,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({ baby }) => ({
-  baby: baby.get("baby")
+  baby: baby.get("baby"),
+    setTempAndHumid: baby.get("setTempAndHumid"),
 }))(Home);

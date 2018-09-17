@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import realm from "../../realm/realmDatabase";
+import { connect } from "react-redux";
+import {BabyActions} from "../../reduxStore/actionCreators";
 
 
 class TempAndHumid extends React.Component {
@@ -9,10 +11,6 @@ class TempAndHumid extends React.Component {
         const { baby } = this.props;
         babyInfo = realm.objects('baby').filtered(`name = "${baby.name}"`)[0];
         history = realm.objects('history').filtered(`babyId = "${baby.id}"`);
-        this.state = {
-            temp: history[history.length-1].temperature,
-            humid: history[history.length-1].humidity
-        }
     }
 
   render() {
@@ -21,12 +19,14 @@ class TempAndHumid extends React.Component {
         <View style={styles.viewTemperature}>
           <Text style={styles.textTemperature}>온도</Text>
           {/*TODO: 온도*/}
-          <Text style={styles.textTemperatureNumber}>36.5</Text>
+          <Text style={styles.textTemperatureNumber}>{this.props.temp}˚C</Text>
+          {/*<Text style={styles.textTemperatureNumber}>36.5</Text>*/}
         </View>
         <View style={styles.viewHumidity}>
           <Text style={styles.textHumidity}>습도</Text>
           {/*TODO: 습도*/}
-          <Text style={styles.textHumidityNumber}>50%</Text>
+            <Text style={styles.textHumidityNumber}>{this.props.humid}%</Text>
+          {/*<Text style={styles.textTemperatureNumber}>50%</Text>*/}
         </View>
       </View>
     );
@@ -78,5 +78,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({ baby }) => ({
-    baby: baby.get("baby")
+    baby: baby.get("baby"),
+    temp: baby.get("temp"),
+    humid: baby.get("humid")
 }))(TempAndHumid);
