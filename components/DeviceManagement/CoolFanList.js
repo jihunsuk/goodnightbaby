@@ -22,7 +22,6 @@ class CoolFan extends React.Component {
         this.state = {
             switchValue: true,
         }
-        console.log(this.props);
     }
 
     toggleSwitch = (value) => {
