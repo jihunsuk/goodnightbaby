@@ -8,15 +8,21 @@ class BabyInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      switchValue: false
+      switchValue: true;
     };
     this.toggleSwitch = this.toggleSwitch.bind(this);
   }
 
   toggleSwitch(value) {
+    const { write } = this.props;
     this.setState({
       switchValue: value
     });
+    if (value == true){
+      write("1");
+    } else {
+      write("0");
+    }
   }
 
   render() {
@@ -67,6 +73,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ baby }) => ({
-  baby: baby.get("baby")
+export default connect(({ baby, bluetooth }) => ({
+  baby: baby.get("baby"),
+  write: bluetooth.get("functions").write
 }))(BabyInfo);
