@@ -26,12 +26,12 @@ const devices = realm.objects("bluetoothDevice");
 let babyInfo;
 let myTimer;
 
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
     const { baby } = this.props;
     babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
-
     this.state = {
       isEnabled: false,
       discovering: false,
@@ -42,7 +42,9 @@ class Home extends React.Component {
       connected: false,
       section: 0
     };
+    this._readTry = this._readTry.bind(this);
   }
+
 
   componentWillMount() {
     this.activateDevice();
@@ -60,8 +62,19 @@ class Home extends React.Component {
     BluetoothSerial.on("connectionLost", () => {});
   }
 
+    write(message) {
+        BluetoothSerial.write(message)
+            .then(res => {
+                console.log("Successfuly wrote to device");
+                console.log("res: ", res);
+                this.setState({ connected: true });
+            })
+            .catch(err => console.log("err: ", err.message));
+    }
+
   /* Read data test */
   _readTry() {
+
     BluetoothSerial.readFromDevice().then(data => {
       let values = data.split(".");
       let humid = parseInt(values[0]);
@@ -69,23 +82,12 @@ class Home extends React.Component {
       console.log(humid);
       console.log(temp);
       if (!isNaN(humid) && !isNaN(temp)) {
-        BabyActions.setTempAndHumid({
-           temp,
-           humid
-        });
-
-        if (humid <= 40){
-          this.write("a");
-        } else if (humid >= 60){
-          this.write("b");
-        }
-
-        if (temp >= 33) {
-          this.write("c");
-        } else if (temp <= 30) {
-          this.write("d");
-        }
-
+        const readData = {
+            temp,
+            humid
+        };
+        BabyActions.setTempAndHumid(readData);
+        this.writeTemperatureControlDevices(readData);
         let len = realm.objects("history").length;
         realm.write(() => {
           newHistory = realm.create(
@@ -102,6 +104,20 @@ class Home extends React.Component {
         });
       }
     });
+  }
+
+  writeTemperatureControlDevices(readData){
+      if (readData.humid <= 55){
+          this.write("a");  //켜짐
+      } else if (readData.humid >= 60){
+          this.write("b");  //꺼짐
+      }
+
+      if (readData.temp >= 33) {
+          this.write("c");  //켜짐
+      } else if (readData.temp <= 30) {
+          this.write("d");  //꺼짐
+      }
   }
 
   /**
@@ -248,15 +264,7 @@ class Home extends React.Component {
    * Write message to device
    * @param  {String} message
    */
-  write(message) {
-    BluetoothSerial.write(message)
-      .then(res => {
-        console.log("Successfuly wrote to device");
-        console.log("res: ", res);
-        this.setState({ connected: true });
-      })
-      .catch(err => console.log("err: ", err.message));
-  }
+
 
   onDevicePress(device) {
     if (this.state.section === 0) {
