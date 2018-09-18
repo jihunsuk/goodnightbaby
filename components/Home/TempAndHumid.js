@@ -5,12 +5,14 @@ import { connect } from "react-redux";
 import { BabyActions } from "../../reduxStore/actionCreators";
 
 class TempAndHumid extends React.Component {
-  constructor(props) {
-    super(props);
-    const { baby } = this.props;
-    babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
-    history = realm.objects("history").filtered(`babyId = "${baby.id}"`);
-  }
+
+    constructor(props){
+        super(props);
+        const { baby } = this.props;
+        babyInfo = realm.objects('baby').filtered(`id = "${baby.id}"`)[0];
+        history = realm.objects('history').filtered(`babyId = "${baby.id}"`);
+    }
+
 
   render() {
     return (

@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Switch, ScrollView, Image } from 'react-native';
+import { connect } from "react-redux";
 
-export default class CoolFanList extends React.Component {
+class CoolFanList extends React.Component {
   render() {
-      let CoolFans = testCoolFan.map((coolfan, idx) =>
-          <CoolFan coolfan={coolfan} key={idx}/>
+      const CoolFans = testCoolFan.map((coolfan, idx) =>
+          <CoolFan {...this.props} coolfan={coolfan} key={idx} />
       );
 
       return (
@@ -19,12 +20,18 @@ class CoolFan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: false,
+            switchValue: true,
         }
     }
 
     toggleSwitch = (value) => {
+        const { write } = this.props;
         this.setState({switchValue: value})
+        if (value == true){
+            write("y");
+        } else {
+            write("x");
+        }
     }
 
   render() {
@@ -47,12 +54,12 @@ class CoolFan extends React.Component {
 const testCoolFan = [{
     name: '선풍기1',
 },
-    {
-        name: '선풍기2',
-    },
-    {
-        name: '선풍기3',
-    },
+    // {
+    //     name: '선풍기2',
+    // },
+    // {
+    //     name: '선풍기3',
+    // },
 ];
 
 
@@ -69,3 +76,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     }
 });
+
+export default connect(({ bluetooth }) => ({
+    write: bluetooth.get("functions").write
+}))(CoolFanList);

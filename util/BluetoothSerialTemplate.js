@@ -105,7 +105,7 @@ class BluetoothSerialTemplate extends React.Component {
         this.writeTemperatureControlDevices(readData);
         let len = realm.objects("history").length;
         realm.write(() => {
-          newHistory = realm.create(
+          realm.create(
             "history",
             {
               id: len,
@@ -122,11 +122,13 @@ class BluetoothSerialTemplate extends React.Component {
   }
 
   /* Write to bluetooth devices */
-  writeTemperatureControlDevices(readData) {
-    if (readData.humid <= 55) {
-      this.write("a"); //켜짐
-    } else if (readData.humid >= 60) {
-      this.write("b"); //꺼짐
+
+  writeTemperatureControlDevices(readData){
+    if (readData.humid <= 62){
+      this.write("b");  //켜짐
+    } else if (readData.humid >= 70){
+      this.write("a");  //꺼짐
+
     }
 
     if (readData.temp >= 33) {

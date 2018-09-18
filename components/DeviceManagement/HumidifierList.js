@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Switch, ScrollView } from 'react-native';
+import { connect } from "react-redux";
 
-export default class HumidifierList extends React.Component {
+class HumidifierList extends React.Component {
     render() {
         let Humidifiers = testHumidifier.map((humidifier, idx) =>
-            <Humidifier humidifier={humidifier} key={idx} />
+            <Humidifier {...this.props} humidifier={humidifier} key={idx} />
         );
 
         return (
@@ -19,12 +20,18 @@ class Humidifier extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: false,
+            switchValue: true,
         }
     }
 
     toggleSwitch = (value) => {
+        const { write } = this.props;
         this.setState({switchValue: value})
+        if (value == true){
+            write("p");
+        } else {
+            write("q");
+        }
     }
 
     render() {
@@ -46,12 +53,12 @@ class Humidifier extends React.Component {
 const testHumidifier = [{
     name: '가습기1',
 },
-    {
-        name: '가습기2',
-    },
-    {
-        name: '가습기3',
-    },
+    // {
+    //     name: '가습기2',
+    // },
+    // {
+    //     name: '가습기3',
+    // },
 ];
 
 const styles = StyleSheet.create({
@@ -67,3 +74,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     }
 });
+
+export default connect(({ bluetooth }) => ({
+    write: bluetooth.get("functions").write
+}))(HumidifierList);
