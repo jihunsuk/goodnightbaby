@@ -14,27 +14,25 @@ class HomeFunction extends React.Component {
     const { baby } = this.props;
     babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
     this.state = {
-      //coolFanStatus: ETC.status.running,
       medic_len: realm.objects("medic").length
-    }
+    };
   }
 
   prescribe(index) {
-      realm.write(() => {
-          realm.create(
-              "medic",
-              {
-                  id: index,
-                  babyId: babyInfo.id,
-                  time: new Date()
-              },
-              true
-          );
-      });
+    realm.write(() => {
+      realm.create(
+        "medic",
+        {
+          id: index,
+          babyId: babyInfo.id,
+          time: new Date()
+        },
+        true
+      );
+    });
   }
 
   render() {
-    //const { coolFanStatus, humidifierStatus } = this.state;
     let { medic_len } = this.state;
     return (
       <View style={styles.container}>

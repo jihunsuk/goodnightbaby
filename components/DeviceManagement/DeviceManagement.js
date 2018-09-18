@@ -1,18 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import  BabyInfo from '../BabyInfo'
+import { StyleSheet } from 'react-native';
 import CoolFanManagement from "./CoolFanManagement";
 import HumidifierManagement from "./HumidifierManagement";
+import { Content } from "native-base";
 
 export default class DeviceManagement extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <BabyInfo />
-        <Text>조절장치관리</Text>
+      <Content style={styles.container}>
         <CoolFanManagement />
         <HumidifierManagement />
-      </View>
+      </Content>
     );
   }
 }
