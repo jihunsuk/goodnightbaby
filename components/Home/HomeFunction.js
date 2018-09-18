@@ -14,18 +14,16 @@ class HomeFunction extends React.Component {
     const { baby } = this.props;
     babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
     this.state = {
-      humidifierStatus: ETC.status.stopped,
-      coolFanStatus: ETC.status.running
+      medic_len: realm.objects("medic").length
     };
   }
 
-  prescribe() {
-    let len = realm.objects("medic").length;
+  prescribe(index) {
     realm.write(() => {
-      newMedic = realm.create(
+      realm.create(
         "medic",
         {
-          id: len,
+          id: index,
           babyId: babyInfo.id,
           time: new Date()
         },
@@ -35,7 +33,7 @@ class HomeFunction extends React.Component {
   }
 
   render() {
-    const { coolFanStatus, humidifierStatus } = this.state;
+    let { medic_len } = this.state;
     return (
       <View style={styles.container}>
         <View style={[styles.viewMenu]}>
@@ -44,7 +42,8 @@ class HomeFunction extends React.Component {
           </View>
           <TouchableHighlight
             onPress={() => {
-              this.prescribe();
+              this.prescribe(medic_len);
+              medic_len++;
             }}
           >
             <Text style={[styles.textMenu, { color: "green" }]}>
@@ -57,7 +56,7 @@ class HomeFunction extends React.Component {
             <Icon name="nuclear" />
           </View>
           <Text style={[styles.textMenu, { color: "blue" }]}>
-            {coolFanStatus === ETC.status.running
+            {this.props.coolFanState === ETC.status.running
               ? KO.runningCoolFan
               : KO.stoppedCoolFan}
           </Text>
@@ -67,7 +66,7 @@ class HomeFunction extends React.Component {
             <Icon name="cloud" />
           </View>
           <Text style={[styles.textMenu, { color: "black" }]}>
-            {humidifierStatus === ETC.status.running
+            {this.props.humidifierState === ETC.status.running
               ? KO.runningHumidifier
               : KO.stoppedHumidifier}
           </Text>
@@ -104,5 +103,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({ baby }) => ({
-  baby: baby.get("baby")
+  baby: baby.get("baby"),
+  coolFanState: baby.get("coolFanState"),
+  humidifierState: baby.get("humidifierState")
 }))(HomeFunction);

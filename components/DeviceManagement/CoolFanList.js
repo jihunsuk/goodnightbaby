@@ -1,8 +1,10 @@
 import React, { Fragment } from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
-import { Icon, Text, Switch, Button } from "native-base";
+import { Icon, Text, Switch } from "native-base";
 import { commonStyles } from "../../styles";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { ETC } from "../../constants";
 
 class CoolFanList extends React.Component {
   render() {
@@ -10,7 +12,6 @@ class CoolFanList extends React.Component {
       <CoolFan {...this.props} coolfan={coolfan} key={idx} />
     ));
 
-    style = commonStyles.switchDefault;
     return <Fragment>{CoolFans}</Fragment>;
   }
 }
@@ -19,17 +20,22 @@ class CoolFan extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      switchValue: true
+      switchValue: this.props.coolFanState === ETC.status.running
     };
   }
 
   toggleSwitch = value => {
     const { write } = this.props;
     this.setState({ switchValue: value });
-    if (value == true) {
+    if (value === true && this.props.autoCoolFan === ETC.status.stopped) {
       write("y");
-    } else {
+      BabyActions.setCoolFanState(ETC.status.running);
+    } else if (
+      value === false &&
+      this.props.autoCoolFan === ETC.status.stopped
+    ) {
       write("x");
+      BabyActions.setCoolFanState(ETC.status.stopped);
     }
   };
 
@@ -75,10 +81,12 @@ const styles = StyleSheet.create({
   },
   viewDeviceInfo: {
     flexDirection: "row",
-    alignItems:"center"
+    alignItems: "center"
   }
 });
 
-export default connect(({ bluetooth }) => ({
-  write: bluetooth.get("functions").write
+export default connect(({ bluetooth, baby }) => ({
+  write: bluetooth.get("functions").write,
+  coolFanState: baby.get("coolFanState"),
+  autoCoolFan: baby.get("autoCoolFan")
 }))(CoolFanList);

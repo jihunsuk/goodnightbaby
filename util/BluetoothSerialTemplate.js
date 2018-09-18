@@ -158,40 +158,44 @@ class BluetoothSerialTemplate extends React.Component {
     const LOW_TEMPERATURE = 30,
       HIGH_TEMPERATURE = 33;
 
-    if (readData.humid <= LOW_HUMIDITY) {
-      this.write("a"); //켜짐
+    if (readData.humid <= LOW_HUMIDITY && this.props.autoHumidifier === ETC.status.running) {
+      this.write("b"); //켜짐
       if (humdifierStatus === ETC.status.stopped) {
         pushNotifications.localNotification(KO.notification.runningHumidifier);
         this.setState({
           humdifierStatus: ETC.status.running
         });
+        BabyActions.setHumidifierState(ETC.status.running);
       }
-    } else if (readData.humid >= HIGH_HUMIDITY) {
-      this.write("b"); //꺼짐
+    } else if (readData.humid >= HIGH_HUMIDITY && this.props.autoHumidifier === ETC.status.running) {
+      this.write("a"); //꺼짐
       if (humdifierStatus === ETC.status.running) {
         pushNotifications.localNotification(KO.notification.stoppedHumidifier);
         this.setState({
           humdifierStatus: ETC.status.stopped
         });
+        BabyActions.setHumidifierState(ETC.status.stopped);
       }
     }
 
-    if (readData.temp >= HIGH_TEMPERATURE) {
+    if (readData.temp >= HIGH_TEMPERATURE && this.props.autoCoolFan === ETC.status.running) {
       this.write("c"); //켜짐
       if (coolFanStatus === ETC.status.stopped) {
         pushNotifications.localNotification(KO.notification.runningCoolFan);
         this.setState({
           coolFanStatus: ETC.status.running
         });
+        BabyActions.setCoolFanState(ETC.status.running);
       }
       pushNotifications.localNotification(KO.notification.runningCoolFan);
-    } else if (readData.temp <= LOW_TEMPERATURE) {
+    } else if (readData.temp <= LOW_TEMPERATURE && this.props.autoCoolFan === ETC.status.running) {
       this.write("d"); //꺼짐
       if (coolFanStatus === ETC.status.running) {
         pushNotifications.localNotification(KO.notification.stoppedCoolFan);
         this.setState({
           coolFanStatus: ETC.status.stopped
         });
+          BabyActions.setCoolFanState(ETC.status.stopped);
       }
     }
   }
@@ -415,5 +419,7 @@ export default connect(({ baby, bluetooth }) => ({
   baby: baby.get("baby"),
   pageName: baby.get("pageName"),
   devices: bluetooth.get("devices"),
-  device: bluetooth.get("device")
+  device: bluetooth.get("device"),
+  autoCoolFan: baby.get("autoCoolFan"),
+  autoHumidifier: baby.get("autoHumidifier")
 }))(BluetoothSerialTemplate);

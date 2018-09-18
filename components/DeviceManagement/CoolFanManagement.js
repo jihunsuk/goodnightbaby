@@ -4,21 +4,25 @@ import CoolFanList from "./CoolFanList";
 import { connect } from "react-redux";
 import { commonStyles } from "../../styles";
 import { Content, Text, Switch } from "native-base";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { ETC } from "../../constants";
 
 class CoolFanManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      switchValue: true
+      switchValue: this.props.autoCoolFan === ETC.status.running
     };
   }
   toggleSwitch = value => {
     const { write } = this.props;
     this.setState({ switchValue: value });
-    if (value == true) {
+    if (value === true) {
       write("u");
+      BabyActions.setAutoCoolFan("RUNNING");
     } else {
       write("e");
+      BabyActions.setAutoCoolFan("STOPPED");
     }
   };
 
@@ -56,6 +60,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ bluetooth }) => ({
-  write: bluetooth.get("functions").write
+export default connect(({ bluetooth, baby }) => ({
+  write: bluetooth.get("functions").write,
+  autoCoolFan: baby.get("autoCoolFan")
 }))(CoolFanManagement);
