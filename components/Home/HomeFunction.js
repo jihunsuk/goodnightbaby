@@ -15,26 +15,31 @@ class HomeFunction extends React.Component {
     babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
     this.state = {
       coolFanStatus: ETC.status.running,
+      medic_len: realm.objects("medic").length
     }
   }
 
-  prescribe() {
-    let len = realm.objects("medic").length;
-    realm.write(() => {
-      newMedic = realm.create(
-        "medic",
-        {
-          id: len,
-          babyId: babyInfo.id,
-          time: new Date()
-        },
-        true
-      );
-    });
+  prescribe(index) {
+      realm.write(() => {
+          realm.create(
+              "medic",
+              {
+                  id: index,
+                  babyId: babyInfo.id,
+                  time: new Date()
+              },
+              true
+          );
+      });
+  }
+
+  write_realm(index){
+
   }
 
   render() {
     const { coolFanStatus, humidifierStatus } = this.state;
+    let { medic_len } = this.state;
     return (
       <View style={styles.container}>
         <View style={[styles.viewMenu]}>
@@ -43,7 +48,8 @@ class HomeFunction extends React.Component {
           </View>
           <TouchableHighlight
             onPress={() => {
-              this.prescribe();
+              this.prescribe(medic_len);
+              medic_len++;
             }}
           >
             <Text style={[styles.textMenu, { color: "green" }]}>

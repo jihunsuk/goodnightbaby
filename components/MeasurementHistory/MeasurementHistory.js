@@ -19,12 +19,14 @@ class MeasurementHistory extends React.Component {
             babyId: baby.id,
             isLoading: false,
             historys: [],
+            medic: [],
         }
     }
 
     componentWillMount() {
         this.setState({
             historys: realm.objects('history').filtered(`babyId = "${this.state.babyId}"`),
+            medic: realm.objects('medic').filtered(`babyId = "${this.state.babyId}"`),
         }, () => {
             this.setState({
                 isLoading: true
@@ -33,13 +35,15 @@ class MeasurementHistory extends React.Component {
     }
 
     render() {
-        const {historys, isLoading} = this.state;
+        const {historys, medic, isLoading} = this.state;
         const len = historys.length;
-        historise = historys.slice(len - 20, len);
-        console.log(historise);
+        const histories = historys.slice(len - 20, len);
+        const medics = medic.slice(0, medic.length);
         let Temperature = [];
         let Humidity = [];
-        historise.map(history => {
+        let medicTime = [];
+
+        histories.map(history => {
             Temperature.push({
                 y: history.temperature,
                 x: String(history.time.getDate())+ "일." +String(history.time.getHours())+ "시." +String(history.time.getMinutes())+"분"
@@ -49,6 +53,13 @@ class MeasurementHistory extends React.Component {
                 x: String(history.time.getDate())+ "일." +String(history.time.getHours())+ "시." +String(history.time.getMinutes())+"분"
             })
         });
+
+        let m = medics.map((md,idx) => {
+            if (md.time.getTime() >= histories[0].time.getTime() && md.time.getTime() <= histories[19].time.getTime())
+                return <Medic medic={String(md.time.getDate())+ "일." +String(md.time.getHours())+ "시." +String(md.time.getMinutes())+"분"} key={idx} />
+            }
+        );
+
         let Data = [
             {
                 seriesName: 'Temperature',
@@ -59,61 +70,43 @@ class MeasurementHistory extends React.Component {
                 seriesName: 'Humidity',
                 data: Humidity,
                 color: '#297AB1'
-            }];
+            },];
+
         return (
             <View style={styles.container}>
                 <BabyInfo/>
                 <Text>온습도 측정기록</Text>
                 {isLoading && <PureChart data={Data} type='line'/>}
+                <Text>약 투여 기록</Text>
+                {m}
             </View>
         );
     }
 }
 
-// let testTemperature = [];
-//
-//
-// historys.map((history, idx) =>
-//     testTemperature.push({
-//         y: history.temperature,
-//         x: history.time
-//     })
-// );
+class Medic extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-// let testTemperature = [
-//     {x: '2018-02-01', y: 36},
-//     {x: '2018-02-02', y: 35},
-//     {x: '2018-02-03', y: 37},
-//     {x: '2018-02-04', y: 36},
-//     {x: '2018-02-05', y: 35},
-// ];
-
-
-let testHumidity = [
-    {x: '2018-02-01', y: 30},
-    {x: '2018-02-02', y: 50},
-    {x: '2018-02-03', y: 80},
-    {x: '2018-02-04', y: 40},
-    {x: '2018-02-05', y: 50},
-];
-
-// let sampleData = [
-//     {
-//         seriesName: 'series1',
-//         data: testTemperature,
-//         color: '#297AB1'
-//     },
-// {
-//     seriesName: 'series2',
-//     data: testHumidity,
-//     color: 'red'
-// },
-//]
+    render() {
+        const { medic } = this.props;
+        return (
+            <View style={styles.medic_list}>
+                {console.log(medic)}
+                <Text>{medic}</Text>
+            </View>
+        );
+    }
+}
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
     },
+    medic_list: {
+        marginTop: 2
+    }
 });
 
 export default connect(({baby}) => ({
