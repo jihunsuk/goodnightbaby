@@ -5,9 +5,11 @@ import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../realm/realmDatabase";
 import { BabyActions, BluetoothActions } from "../reduxStore/actionCreators";
-import { PAGE_NAME } from "../constants";
+import { KO, PAGE_NAME } from "../constants";
 import { isNotNull } from "./commonUtil";
+import pushNotifications from "util/PushNotification";
 
+pushNotifications.configure();
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
@@ -123,16 +125,25 @@ class BluetoothSerialTemplate extends React.Component {
 
   /* Write to bluetooth devices */
   writeTemperatureControlDevices(readData) {
-    if (readData.humid <= 55) {
+    const LOW_HUMIDITY = 55,
+      HIGH_HUMIDITY = 60;
+    const LOW_TEMPERATURE = 30,
+      HIGH_TEMPERATURE = 33;
+
+    if (readData.humid <= LOW_HUMIDITY) {
       this.write("a"); //켜짐
-    } else if (readData.humid >= 60) {
+      pushNotifications.localNotification(KO.notification.runningHumidifier);
+    } else if (readData.humid >= HIGH_HUMIDITY) {
       this.write("b"); //꺼짐
+      pushNotifications.localNotification(KO.notification.stoppedHumidifier);
     }
 
-    if (readData.temp >= 33) {
+    if (readData.temp >= HIGH_TEMPERATURE) {
       this.write("c"); //켜짐
-    } else if (readData.temp <= 30) {
+      pushNotifications.localNotification(KO.notification.runningCoolFan);
+    } else if (readData.temp <= LOW_TEMPERATURE) {
       this.write("d"); //꺼짐
+      pushNotifications.localNotification(KO.notification.stoppedCoolFan);
     }
   }
 
