@@ -5,9 +5,11 @@ import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../realm/realmDatabase";
 import { BabyActions, BluetoothActions } from "../reduxStore/actionCreators";
-import { PAGE_NAME } from "../constants";
+import { ETC, KO, PAGE_NAME } from "../constants";
 import { isNotNull } from "./commonUtil";
+import pushNotifications from "./PushNotification";
 
+pushNotifications.configure();
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
@@ -21,7 +23,9 @@ class BluetoothSerialTemplate extends React.Component {
       discovering: false,
       unpairedDevices: [],
       connected: false,
-      section: 0
+      section: 0,
+      coolFanStatus: ETC.status.stopped,
+      humdifierStatus: ETC.status.stopped
     };
     BluetoothActions.setFunctions({
       initializeBluetooth: this.initializeBluetooth.bind(this),
@@ -122,19 +126,48 @@ class BluetoothSerialTemplate extends React.Component {
   }
 
   /* Write to bluetooth devices */
+  writeTemperatureControlDevices(readData) {
+    const { coolFanStatus, humdifierStatus } = this.state;
+    const LOW_HUMIDITY = 62,
+      HIGH_HUMIDITY = 70;
+    const LOW_TEMPERATURE = 30,
+      HIGH_TEMPERATURE = 33;
 
-  writeTemperatureControlDevices(readData){
-    if (readData.humid <= 62){
-      this.write("b");  //켜짐
-    } else if (readData.humid >= 70){
-      this.write("a");  //꺼짐
-
+    if (readData.humid <= LOW_HUMIDITY) {
+      this.write("a"); //켜짐
+      if (humdifierStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.running
+        });
+      }
+    } else if (readData.humid >= HIGH_HUMIDITY) {
+      this.write("b"); //꺼짐
+      if (humdifierStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.stopped
+        });
+      }
     }
 
-    if (readData.temp >= 33) {
+    if (readData.temp >= HIGH_TEMPERATURE) {
       this.write("c"); //켜짐
-    } else if (readData.temp <= 30) {
+      if (coolFanStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.running
+        });
+      }
+      pushNotifications.localNotification(KO.notification.runningCoolFan);
+    } else if (readData.temp <= LOW_TEMPERATURE) {
       this.write("d"); //꺼짐
+      if (coolFanStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.stopped
+        });
+      }
     }
   }
 

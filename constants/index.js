@@ -24,7 +24,28 @@ export const KO = {
   runningCoolFan: "선풍기 켜짐",
   stoppedCoolFan: "선풍기 꺼짐",
   runningHumidifier: "가습기 켜짐",
-  stoppedHumidifier: "가습기 꺼짐"
+  stoppedHumidifier: "가습기 꺼짐",
+  notification: {
+    runningCoolFan: {
+      title: "선풍기가 켜졌습니다.",
+      content: "선풍기가 켜졌습니다.",
+    },
+    stoppedCoolFan: {
+      title: "선풍기가 꺼졌습니다.",
+      content: "선풍기가 꺼졌습니다.",
+    },
+    runningHumidifier: {
+      title: "가습기가 켜졌습니다.",
+      content: "가습기가 켜졌습니다.",
+    },
+    stoppedHumidifier: {
+      title: "가습기가 꺼졌습니다.",
+      content: "가습기가 꺼졌습니다.",
+    }
+  },
+  temperatureSetting: "체온조절 설정",
+  humiditySetting: "습도조절 설정",
+  alarmSetting: "알람 설정"
 };
 
 export const REALM_SCHEMA = {};

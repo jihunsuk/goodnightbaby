@@ -1,2 +1,2 @@
-import BabyManagement from "./BabyManagement";
+import BabyManagement from "./BabyAddition";
 export default BabyManagement;

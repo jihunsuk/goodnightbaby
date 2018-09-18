@@ -1,33 +1,39 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import realm from "../../realm/realmDatabase";
 import { connect } from "react-redux";
 import { BabyActions } from "../../reduxStore/actionCreators";
 
 class TempAndHumid extends React.Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props){
-        super(props);
-        const { baby } = this.props;
-        babyInfo = realm.objects('baby').filtered(`id = "${baby.id}"`)[0];
-        history = realm.objects('history').filtered(`babyId = "${baby.id}"`);
-    }
+    this.handleOnPressPassiveCheck = this.handleOnPressPassiveCheck.bind(this);
+  }
 
+  handleOnPressPassiveCheck() {
+    const { write } = this.props;
+    write("2");
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.viewTemperature}>
-          <Text style={styles.textTemperature}>온도</Text>
-          <Text style={styles.textTemperatureNumber}>
-            {this.props.temp}
-            ˚C
-          </Text>
-        </View>
-        <View style={styles.viewHumidity}>
-          <Text style={styles.textHumidity}>습도</Text>
-          <Text style={styles.textHumidityNumber}>{this.props.humid}%</Text>
-        </View>
+        <TouchableHighlight onPress={this.handleOnPressPassiveCheck}>
+          <View style={styles.viewTemperature}>
+            <Text style={styles.textTemperature}>온도</Text>
+            <Text style={styles.textTemperatureNumber}>
+              {this.props.temp}
+              ˚C
+            </Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.handleOnPressPassiveCheck}>
+          <View style={styles.viewHumidity}>
+            <Text style={styles.textHumidity}>습도</Text>
+            <Text style={styles.textHumidityNumber}>{this.props.humid}%</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -77,8 +83,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ baby }) => ({
+export default connect(({ baby, bluetooth }) => ({
   baby: baby.get("baby"),
   temp: baby.get("temp"),
-  humid: baby.get("humid")
+  humid: baby.get("humid"),
+  write: bluetooth.get("functions").write
 }))(TempAndHumid);
