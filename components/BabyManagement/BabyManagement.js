@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, ToastAndroid, View } from "react-native";
 import realm from "../../realm/realmDatabase";
 import {
   Content,
@@ -86,6 +86,11 @@ class BabyManagement extends React.Component {
     this.saveDeviceInRealm();
     this._resetBluetoothDevicesInRedux();
     this._setPageBabySelection();
+    ToastAndroid.showWithGravity(
+      "정상적으로 아이를 추가했습니다.",
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+    );
   }
 
   saveDeviceInRealm() {
