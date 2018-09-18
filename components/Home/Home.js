@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleSheet, TouchableHighlight } from "react-native";
+import { StyleSheet } from "react-native";
 import BabyInfo from "../BabyInfo";
-import { connect } from "react-redux";
 import { Content } from "native-base";
 import HomeFunction from "./HomeFunction";
 import TempAndHumid from "./TempAndHumid";

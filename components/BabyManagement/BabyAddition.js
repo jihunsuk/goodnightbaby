@@ -128,14 +128,14 @@ class BabyAddition extends React.Component {
 
     devices.map(device =>
       realm.write(() => {
-        newDevice = realm.create("bluetoothDevice", device, true);
+        realm.create("bluetoothDevice", device, true);
       })
     );
   }
 
   saveBabyInRealm() {
     realm.write(() => {
-      newBaby = realm.create(
+      realm.create(
         "baby",
         {
           id: this.state.id,
