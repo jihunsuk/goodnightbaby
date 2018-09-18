@@ -1,13 +1,16 @@
 import React from "react";
-import { Image, StyleSheet, View, ToastAndroid } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { Card, CardItem, Text, Content, Button, Icon } from "native-base";
 import BabyList from "./BabyList";
 import { URL, PAGE_NAME } from "../../constants";
 import { BabyActions } from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
-import { activateDevice } from "../../util/BluetoothSerialTemplate";
 
 class BabySelection extends React.Component {
+  componentDidMount() {
+
+  }
+
   render() {
     return (
       <Content>

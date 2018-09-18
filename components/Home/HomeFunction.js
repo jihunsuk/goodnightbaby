@@ -14,8 +14,9 @@ class HomeFunction extends React.Component {
     const { baby } = this.props;
     babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
     this.state = {
-      coolFanStatus: ETC.status.running,
-    }
+      humidifierStatus: ETC.status.stopped,
+      coolFanStatus: ETC.status.running
+    };
   }
 
   prescribe() {
