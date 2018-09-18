@@ -6,7 +6,6 @@ export const commonStyles = StyleSheet.create({
     backgroundColor: "#e0e0e0",
     borderWidth: 0,
     height: 40,
-    alignItems: "center",
     justifyContent: "center"
   },
   viewMenu: {
@@ -26,6 +25,10 @@ export const commonStyles = StyleSheet.create({
     height: 45,
     backgroundColor: "white"
   },
+  _viewPageName: {
+    marginTop: 10,
+    marginBottom: 10
+  },
 
   /* Button Start */
   buttonMenu: {
@@ -38,7 +41,8 @@ export const commonStyles = StyleSheet.create({
 
   /* Text Start */
   textPageName: {
-    fontSize: 20
+    fontSize: 20,
+    marginLeft: 20
   },
 
   /* Icon Start */

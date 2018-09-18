@@ -42,7 +42,10 @@ export const KO = {
       title: "가습기가 꺼졌습니다.",
       content: "가습기가 꺼졌습니다.",
     }
-  }
+  },
+  temperatureSetting: "체온조절 설정",
+  humiditySetting: "습도조절 설정",
+  alarmSetting: "알람 설정"
 };
 
 export const REALM_SCHEMA = {};

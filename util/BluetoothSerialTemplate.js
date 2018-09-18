@@ -5,9 +5,9 @@ import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../realm/realmDatabase";
 import { BabyActions, BluetoothActions } from "../reduxStore/actionCreators";
-import { KO, PAGE_NAME } from "../constants";
+import { ETC, KO, PAGE_NAME } from "../constants";
 import { isNotNull } from "./commonUtil";
-import pushNotifications from "util/PushNotification";
+import pushNotifications from "./PushNotification";
 
 pushNotifications.configure();
 global.Buffer = Buffer;
@@ -23,7 +23,9 @@ class BluetoothSerialTemplate extends React.Component {
       discovering: false,
       unpairedDevices: [],
       connected: false,
-      section: 0
+      section: 0,
+      coolFanStatus: ETC.status.stopped,
+      humdifierStatus: ETC.status.stopped
     };
     BluetoothActions.setFunctions({
       initializeBluetooth: this.initializeBluetooth.bind(this),
@@ -125,6 +127,7 @@ class BluetoothSerialTemplate extends React.Component {
 
   /* Write to bluetooth devices */
   writeTemperatureControlDevices(readData) {
+    const { coolFanStatus, humdifierStatus } = this.state;
     const LOW_HUMIDITY = 55,
       HIGH_HUMIDITY = 60;
     const LOW_TEMPERATURE = 30,
@@ -132,18 +135,39 @@ class BluetoothSerialTemplate extends React.Component {
 
     if (readData.humid <= LOW_HUMIDITY) {
       this.write("a"); //켜짐
-      pushNotifications.localNotification(KO.notification.runningHumidifier);
+      if (humdifierStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.running
+        });
+      }
     } else if (readData.humid >= HIGH_HUMIDITY) {
       this.write("b"); //꺼짐
-      pushNotifications.localNotification(KO.notification.stoppedHumidifier);
+      if (humdifierStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.stopped
+        });
+      }
     }
 
     if (readData.temp >= HIGH_TEMPERATURE) {
       this.write("c"); //켜짐
+      if (coolFanStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.running
+        });
+      }
       pushNotifications.localNotification(KO.notification.runningCoolFan);
     } else if (readData.temp <= LOW_TEMPERATURE) {
       this.write("d"); //꺼짐
-      pushNotifications.localNotification(KO.notification.stoppedCoolFan);
+      if (coolFanStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.stopped
+        });
+      }
     }
   }
 
