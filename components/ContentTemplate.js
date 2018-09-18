@@ -52,29 +52,13 @@ class ContentTemplate extends React.Component {
 
   isNeedBluetooth() {
     const { pageName } = this.props;
-    switch (pageName) {
-      case PAGE_NAME.home:
-        return true;
-      case PAGE_NAME.deviceMgmt:
-        return true;
-      case PAGE_NAME.measurementHistory:
-        return true;
-      case PAGE_NAME.setting:
-        return true;
-      case PAGE_NAME.deviceSelection:
-        return true;
-      case PAGE_NAME.coolFanSelection:
-        return true;
-      case PAGE_NAME.humidifierSelection:
-        return true;
-      case PAGE_NAME.temperatureSetting:
-        return true;
-      case PAGE_NAME.humiditySetting:
-        return true;
-      case PAGE_NAME.alarmSetting:
-        return true;
-    }
-    return false;
+    if (
+      pageName === PAGE_NAME.babySelection ||
+      pageName === PAGE_NAME.babyAddition ||
+      pageName === PAGE_NAME.babyModification
+    )
+      return false;
+    return true;
   }
 
   render() {

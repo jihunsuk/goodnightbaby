@@ -18,6 +18,7 @@ import { commonProps, commonStyles } from "../../styles";
 import ButtonTemplate from "../../component/ButtonTemplate/ButtonTemplate";
 import { connect } from "react-redux";
 import { isNotNull } from "../../util/commonUtil";
+import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 
 class BabyManagement extends React.Component {
   constructor(props) {
@@ -51,10 +52,20 @@ class BabyManagement extends React.Component {
     this.setHumidifierModalVisible = this.setHumidifierModalVisible.bind(this);
     this.saveBaby = this.saveBaby.bind(this);
     this._setPageBabySelection = this._setPageBabySelection.bind(this);
+    this.handleModalOnPress = this.handleModalOnPress.bind(this);
     /* Bind end */
   }
 
   /* Modal Function Start */
+  handleModalOnPress(visible, modalFunc) {
+    const { requestEnable } = this.props;
+    const { isEnabled } = this.props;
+    if (isEnabled === false) {
+      requestEnable();
+    }
+    modalFunc(visible);
+  }
+
   setThermometerModalVisible(visible) {
     this.setState({ thermometerModalVisible: visible });
   }
@@ -193,7 +204,8 @@ class BabyManagement extends React.Component {
     const {
       selectedThermometer,
       selectedCoolFan,
-      selectedHumidifier
+      selectedHumidifier,
+      isEnabled
     } = this.props;
 
     let coolFans = "-";
@@ -261,7 +273,10 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setThermometerModalVisible(true);
+                    this.handleModalOnPress(
+                      true,
+                      this.setThermometerModalVisible
+                    );
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -281,7 +296,7 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setCoolFanModalVisible(true);
+                    this.handleModalOnPress(true, this.setCoolFanModalVisible);
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -297,7 +312,10 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setHumidifierModalVisible(true);
+                    this.handleModalOnPress(
+                      true,
+                      this.setHumidifierModalVisible
+                    );
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -324,21 +342,26 @@ class BabyManagement extends React.Component {
             />
           </View>
         </Content>
-        <BluetoothSelectModal
-          modalVisible={thermometerModalVisible}
-          setModalVisible={this.setThermometerModalVisible}
-          pageName={KO.thermometer}
-        />
-        <BluetoothSelectModal
-          modalVisible={coolFanModalVisible}
-          setModalVisible={this.setCoolFanModalVisible}
-          pageName={KO.coolFan}
-        />
-        <BluetoothSelectModal
-          modalVisible={humidifierModalVisible}
-          setModalVisible={this.setHumidifierModalVisible}
-          pageName={KO.humidifier}
-        />
+        {isEnabled && (
+          <Fragment>
+            <BluetoothSelectModal
+              modalVisible={thermometerModalVisible}
+              setModalVisible={this.setThermometerModalVisible}
+              pageName={KO.thermometer}
+            />
+            <BluetoothSelectModal
+              modalVisible={coolFanModalVisible}
+              setModalVisible={this.setCoolFanModalVisible}
+              pageName={KO.coolFan}
+            />
+            <BluetoothSelectModal
+              modalVisible={humidifierModalVisible}
+              setModalVisible={this.setHumidifierModalVisible}
+              pageName={KO.humidifier}
+            />
+            <BluetoothSerialTemplate />
+          </Fragment>
+        )}
       </Fragment>
     );
   }
@@ -378,8 +401,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ baby }) => ({
+export default connect(({ baby, bluetooth }) => ({
   selectedThermometer: baby.get("selectedThermometer"),
   selectedCoolFan: baby.get("selectedCoolFan"),
-  selectedHumidifier: baby.get("selectedHumidifier")
+  selectedHumidifier: baby.get("selectedHumidifier"),
+  isEnabled: bluetooth.get("isEnabled"),
+  requestEnable: bluetooth.get("functions").requestEnable
 }))(BabyManagement);

@@ -9,18 +9,19 @@ import TempAndHumid from "./TempAndHumid";
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.handleOnPressPassiveCheck = this.handleOnPressPassiveCheck.bind(this);
+  }
+
+  handleOnPressPassiveCheck() {
+    const { write } = this.props;
+    write("2");
   }
 
   render() {
-    const { write } = this.props;
     return (
       <Content style={styles.container}>
         <BabyInfo />
-        <TouchableHighlight
-          onPress={() => {
-            write("2");
-          }}
-        >
+        <TouchableHighlight onPress={this.handleOnPressPassiveCheck}>
           <TempAndHumid />
         </TouchableHighlight>
         <HomeFunction />
