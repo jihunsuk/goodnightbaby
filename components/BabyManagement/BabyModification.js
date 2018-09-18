@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, ToastAndroid, View } from "react-native";
 import realm from "../../realm/realmDatabase";
 import {
   Content,
@@ -18,25 +18,18 @@ import { commonProps, commonStyles } from "../../styles";
 import ButtonTemplate from "../../component/ButtonTemplate/ButtonTemplate";
 import { connect } from "react-redux";
 import { isNotNull } from "../../util/commonUtil";
+import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 
-class BabyManagement extends React.Component {
+class BabyAddition extends React.Component {
   constructor(props) {
     super(props);
-    let babys = realm.objects("baby");
-    let babys_length = babys.length;
-    let settings = realm.objects("setting");
-    let settings_length = settings.length;
-    let alarms = realm.objects("alarm");
-    let alarms_length = alarms.length;
+    const { baby } = this.props;
     this.state = {
-      id: babys_length === 0 ? 0 : babys[babys_length - 1].id + 1,
-      settingId:
-        settings_length === 0 ? 0 : settings[settings_length - 1].id + 1,
-      alarmId: alarms_length === 0 ? 0 : alarms[alarms_length - 1].id + 1,
-      name: "",
-      age: 0,
-      sex: ETC.male, // male, female
-      image: null,
+      id: baby.id,
+      name: baby.name,
+      age: baby.age,
+      sex: baby.sex, // male, female
+      image: baby.image,
       device_length: realm.objects("bluetoothDevice").length,
       thermometerModalVisible: false,
       coolFanModalVisible: false,
@@ -51,10 +44,20 @@ class BabyManagement extends React.Component {
     this.setHumidifierModalVisible = this.setHumidifierModalVisible.bind(this);
     this.saveBaby = this.saveBaby.bind(this);
     this._setPageBabySelection = this._setPageBabySelection.bind(this);
+    this.handleModalOnPress = this.handleModalOnPress.bind(this);
     /* Bind end */
   }
 
   /* Modal Function Start */
+  handleModalOnPress(visible, modalFunc) {
+    const { requestEnable } = this.props;
+    const { isEnabled } = this.props;
+    if (isEnabled === false) {
+      requestEnable();
+    }
+    modalFunc(visible);
+  }
+
   setThermometerModalVisible(visible) {
     this.setState({ thermometerModalVisible: visible });
   }
@@ -75,64 +78,69 @@ class BabyManagement extends React.Component {
     this.saveDeviceInRealm();
     this._resetBluetoothDevicesInRedux();
     this._setPageBabySelection();
-  }
-
-  saveDeviceInRealm() {
-    const {
-      selectedThermometer,
-      selectedCoolFan,
-      selectedHumidifier
-    } = this.props;
-    const { device_length } = this.state;
-    // Make devices
-    let devices = [];
-    let deviceId = device_length;
-    if (isNotNull(selectedThermometer)) {
-      devices.push(
-        this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
-      );
-      deviceId++;
-    }
-    if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
-      selectedCoolFan.map(device => {
-        if (isNotNull(device)) {
-          devices.push(this._makeDevice(device, ETC.coolFan, deviceId));
-          deviceId++;
-        }
-      });
-    }
-    if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
-      selectedHumidifier.map(device => {
-        if (isNotNull(device)) {
-          devices.push(this._makeDevice(device, ETC.humidifier, deviceId));
-          deviceId++;
-        }
-      });
-    }
-
-    devices.map(device =>
-      realm.write(() => {
-        realm.create("bluetoothDevice", device, true);
-      })
+    ToastAndroid.showWithGravity(
+      "정상적으로 아이를 추가했습니다.",
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
     );
   }
 
+  saveDeviceInRealm() {
+    // const {
+    //   selectedThermometer,
+    //   selectedCoolFan,
+    //   selectedHumidifier
+    // } = this.props;
+    // const { device_length } = this.state;
+    // // Make devices
+    // let devices = [];
+    // let deviceId = device_length;
+    // if (isNotNull(selectedThermometer)) {
+    //   devices.push(
+    //     this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
+    //   );
+    //   deviceId++;
+    // }
+    // if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
+    //   selectedCoolFan.map(device => {
+    //     if (isNotNull(device)) {
+    //       devices.push(this._makeDevice(device, ETC.coolFan, deviceId));
+    //       deviceId++;
+    //     }
+    //   });
+    // }
+    // if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
+    //   selectedHumidifier.map(device => {
+    //     if (isNotNull(device)) {
+    //       devices.push(this._makeDevice(device, ETC.humidifier, deviceId));
+    //       deviceId++;
+    //     }
+    //   });
+    // }
+    //
+    // devices.map(device =>
+    //   realm.write(() => {
+    //     newDevice = realm.create("bluetoothDevice", device, true);
+    //   })
+    // );
+  }
+
   saveBabyInRealm() {
-    realm.write(() => {
-      realm.create(
-        "baby",
-        {
-          id: this.state.id,
-          settingId: this.state.settingId,
-          alarmId: this.state.alarmId,
-          name: this.state.name,
-          age: this.state.age,
-          sex: this.state.sex,
-          image: this.state.image
-        },
-        true
-      );
-    });
+    // realm.write(() => {
+    //   newBaby = realm.create(
+    //     "baby",
+    //     {
+    //       id: this.state.id,
+    //       settingId: this.state.settingId,
+    //       alarmId: this.state.alarmId,
+    //       name: this.state.name,
+    //       age: this.state.age,
+    //       sex: this.state.sex,
+    //       image: this.state.image
+    //     },
+    //     true
+    //   );
+    // });
   }
 
   /* Realm logic End */
@@ -186,6 +194,9 @@ class BabyManagement extends React.Component {
   render() {
     const {
       sex,
+      name,
+      age,
+      image,
       thermometerModalVisible,
       coolFanModalVisible,
       humidifierModalVisible
@@ -193,7 +204,8 @@ class BabyManagement extends React.Component {
     const {
       selectedThermometer,
       selectedCoolFan,
-      selectedHumidifier
+      selectedHumidifier,
+      isEnabled
     } = this.props;
 
     let coolFans = "-";
@@ -211,11 +223,17 @@ class BabyManagement extends React.Component {
           <Form>
             <Item stackedLabel style={styles.itemInput}>
               <Label>이름</Label>
-              <Input onChangeText={name => this.setState({ name })} />
+              <Input
+                value={name}
+                onChangeText={name => this.setState({ name })}
+              />
             </Item>
             <Item stackedLabel style={styles.itemInput}>
               <Label>사진</Label>
-              <Input onChangeText={image => this.setState({ image })} />
+              <Input
+                value={image}
+                onChangeText={image => this.setState({ image })}
+              />
             </Item>
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
@@ -261,7 +279,10 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setThermometerModalVisible(true);
+                    this.handleModalOnPress(
+                      true,
+                      this.setThermometerModalVisible
+                    );
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -281,7 +302,7 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setCoolFanModalVisible(true);
+                    this.handleModalOnPress(true, this.setCoolFanModalVisible);
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -297,7 +318,10 @@ class BabyManagement extends React.Component {
               <View style={styles.viewBluetoothDevice}>
                 <Button
                   onPress={() => {
-                    this.setHumidifierModalVisible(true);
+                    this.handleModalOnPress(
+                      true,
+                      this.setHumidifierModalVisible
+                    );
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
@@ -324,21 +348,26 @@ class BabyManagement extends React.Component {
             />
           </View>
         </Content>
-        <BluetoothSelectModal
-          modalVisible={thermometerModalVisible}
-          setModalVisible={this.setThermometerModalVisible}
-          pageName={KO.thermometer}
-        />
-        <BluetoothSelectModal
-          modalVisible={coolFanModalVisible}
-          setModalVisible={this.setCoolFanModalVisible}
-          pageName={KO.coolFan}
-        />
-        <BluetoothSelectModal
-          modalVisible={humidifierModalVisible}
-          setModalVisible={this.setHumidifierModalVisible}
-          pageName={KO.humidifier}
-        />
+        {isEnabled && (
+          <Fragment>
+            <BluetoothSelectModal
+              modalVisible={thermometerModalVisible}
+              setModalVisible={this.setThermometerModalVisible}
+              pageName={KO.thermometer}
+            />
+            <BluetoothSelectModal
+              modalVisible={coolFanModalVisible}
+              setModalVisible={this.setCoolFanModalVisible}
+              pageName={KO.coolFan}
+            />
+            <BluetoothSelectModal
+              modalVisible={humidifierModalVisible}
+              setModalVisible={this.setHumidifierModalVisible}
+              pageName={KO.humidifier}
+            />
+            <BluetoothSerialTemplate />
+          </Fragment>
+        )}
       </Fragment>
     );
   }
@@ -378,8 +407,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ baby }) => ({
+export default connect(({ baby, bluetooth }) => ({
   selectedThermometer: baby.get("selectedThermometer"),
   selectedCoolFan: baby.get("selectedCoolFan"),
-  selectedHumidifier: baby.get("selectedHumidifier")
-}))(BabyManagement);
+  selectedHumidifier: baby.get("selectedHumidifier"),
+  isEnabled: bluetooth.get("isEnabled"),
+  requestEnable: bluetooth.get("functions").requestEnable,
+  baby: baby.get("baby")
+}))(BabyAddition);

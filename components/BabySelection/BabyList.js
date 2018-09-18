@@ -57,6 +57,7 @@ class Baby extends React.Component {
             transparent
             dark
             onPress={() => {
+              BabyActions.setBaby(baby);
               BabyActions.setPageName(PAGE_NAME.babyModification);
             }}
           >

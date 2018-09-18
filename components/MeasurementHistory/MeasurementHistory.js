@@ -1,9 +1,5 @@
-import React from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import BabyInfo from "../BabyInfo";
 import PureChart from 'react-native-pure-chart';
 import realm from "../../realm/realmDatabase";
@@ -41,7 +37,6 @@ class MeasurementHistory extends React.Component {
         const medics = medic.slice(0, medic.length);
         let Temperature = [];
         let Humidity = [];
-        let medicTime = [];
 
         histories.map(history => {
             Temperature.push({

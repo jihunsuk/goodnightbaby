@@ -11,7 +11,9 @@ import HumiditySetting from "../components/HumiditySetting";
 import MeasurementHistory from "../components/MeasurementHistory";
 import Setting from "../components/Setting";
 import AlarmSetting from "../components/AlarmSetting";
-import BabyManagement from "../components/BabyManagement";
+import TemperatureSetting from "../components/TemperatureSetting"
+import BabyAddition from "../components/BabyManagement/BabyAddition";
+import BabyModification from "../components/BabyManagement/BabyModification";
 import BabySelection from "../components/BabySelection";
 import BluetoothSerialTemplate from "../util/BluetoothSerialTemplate";
 
@@ -28,8 +30,10 @@ class ContentTemplate extends React.Component {
         return <MeasurementHistory />;
       case PAGE_NAME.setting:
         return <Setting />;
-      case PAGE_NAME.babyAddition || PAGE_NAME.babyModification:
-        return <BabyManagement />;
+      case PAGE_NAME.babyAddition:
+        return <BabyAddition />;
+      case PAGE_NAME.babyModification:
+        return <BabyModification />;
       case PAGE_NAME.deviceSelection:
         return <DeviceSelection />;
       case PAGE_NAME.coolFanSelection:
@@ -37,7 +41,7 @@ class ContentTemplate extends React.Component {
       case PAGE_NAME.humidifierSelection:
         return <HumidifierSelection />;
       case PAGE_NAME.temperatureSetting:
-        return <TemeratureSetting />;
+        return <TemperatureSetting />;
       case PAGE_NAME.humiditySetting:
         return <HumiditySetting />;
       case PAGE_NAME.alarmSetting:
@@ -52,29 +56,13 @@ class ContentTemplate extends React.Component {
 
   isNeedBluetooth() {
     const { pageName } = this.props;
-    switch (pageName) {
-      case PAGE_NAME.home:
-        return true;
-      case PAGE_NAME.deviceMgmt:
-        return true;
-      case PAGE_NAME.measurementHistory:
-        return true;
-      case PAGE_NAME.setting:
-        return true;
-      case PAGE_NAME.deviceSelection:
-        return true;
-      case PAGE_NAME.coolFanSelection:
-        return true;
-      case PAGE_NAME.humidifierSelection:
-        return true;
-      case PAGE_NAME.temperatureSetting:
-        return true;
-      case PAGE_NAME.humiditySetting:
-        return true;
-      case PAGE_NAME.alarmSetting:
-        return true;
-    }
-    return false;
+    if (
+      pageName === PAGE_NAME.babySelection ||
+      pageName === PAGE_NAME.babyAddition ||
+      pageName === PAGE_NAME.babyModification
+    )
+      return false;
+    return true;
   }
 
   render() {

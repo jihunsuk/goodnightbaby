@@ -141,6 +141,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-bluetooth-serial')
+    compile project(':react-native-push-notification')
     compile project(':realm')
 }
 

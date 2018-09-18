@@ -1,11 +1,15 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { View } from "react-native";
 import BluetoothSerial from "react-native-bluetooth-serial";
 import Buffer from "buffer";
 import { connect } from "react-redux";
 import realm from "../realm/realmDatabase";
 import { BabyActions, BluetoothActions } from "../reduxStore/actionCreators";
+import { ETC, KO, PAGE_NAME } from "../constants";
+import { isNotNull } from "./commonUtil";
+import pushNotifications from "./PushNotification";
 
+pushNotifications.configure();
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
@@ -16,11 +20,12 @@ class BluetoothSerialTemplate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEnabled: false,
       discovering: false,
       unpairedDevices: [],
       connected: false,
-      section: 0
+      section: 0,
+      coolFanStatus: ETC.status.stopped,
+      humdifierStatus: ETC.status.stopped
     };
     BluetoothActions.setFunctions({
       initializeBluetooth: this.initializeBluetooth.bind(this),
@@ -41,9 +46,20 @@ class BluetoothSerialTemplate extends React.Component {
     this.initializeBluetooth();
   }
 
+  componentWillUnmount() {
+    this.disable();
+  }
+
   initializeBluetooth() {
-    const { baby } = this.props;
-    babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
+    const { baby, pageName } = this.props;
+    if (
+      pageName !== PAGE_NAME.babyAddition &&
+      pageName !== PAGE_NAME.babyModification
+    ) {
+      babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
+    }
+
+    this.readDevices();
     this.activateDevice();
     BluetoothSerial.on("bluetoothEnabled", () => {
       console.log("Bluetooth enabled");
@@ -51,10 +67,29 @@ class BluetoothSerialTemplate extends React.Component {
     });
     BluetoothSerial.on("bluetoothDisabled", () => {
       console.log("Bluetooth disabled");
+      // BluetoothActions.setDevices(null);
       clearInterval(myTimer);
     });
     BluetoothSerial.on("error", err => console.log(`Error: ${err.message}`));
-    BluetoothSerial.on("connectionLost", () => {});
+    BluetoothSerial.on("connectionLost", () => {
+      // if (this.state.device) {
+      //   console.log(
+      //     `Connection to device ${this.state.device.name} has been lost`
+      //   );
+      // }
+      console.log("Some device has been lost");
+      // this.setState({ connected: false });
+    });
+  }
+
+  readDevices() {
+    Promise.all([BluetoothSerial.isEnabled(), BluetoothSerial.list()]).then(
+      values => {
+        const [isEnabled, devices] = values;
+        BluetoothActions.setDevices(devices);
+        BluetoothActions.setIsEnabled(isEnabled);
+      }
+    );
   }
 
   /* Read data test */
@@ -91,17 +126,48 @@ class BluetoothSerialTemplate extends React.Component {
   }
 
   /* Write to bluetooth devices */
-  writeTemperatureControlDevices(readData){
-    if (readData.humid <= 62){
-      this.write("b");  //켜짐
-    } else if (readData.humid >= 70){
-      this.write("a");  //꺼짐
+  writeTemperatureControlDevices(readData) {
+    const { coolFanStatus, humdifierStatus } = this.state;
+    const LOW_HUMIDITY = 62,
+      HIGH_HUMIDITY = 70;
+    const LOW_TEMPERATURE = 30,
+      HIGH_TEMPERATURE = 33;
+
+    if (readData.humid <= LOW_HUMIDITY) {
+      this.write("a"); //켜짐
+      if (humdifierStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.running
+        });
+      }
+    } else if (readData.humid >= HIGH_HUMIDITY) {
+      this.write("b"); //꺼짐
+      if (humdifierStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedHumidifier);
+        this.setState({
+          humdifierStatus: ETC.status.stopped
+        });
+      }
     }
 
-    if (readData.temp >= 33) {
-      this.write("c");  //켜짐
-    } else if (readData.temp <= 30) {
-      this.write("d");  //꺼짐
+    if (readData.temp >= HIGH_TEMPERATURE) {
+      this.write("c"); //켜짐
+      if (coolFanStatus === ETC.status.stopped) {
+        pushNotifications.localNotification(KO.notification.runningCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.running
+        });
+      }
+      pushNotifications.localNotification(KO.notification.runningCoolFan);
+    } else if (readData.temp <= LOW_TEMPERATURE) {
+      this.write("d"); //꺼짐
+      if (coolFanStatus === ETC.status.running) {
+        pushNotifications.localNotification(KO.notification.stoppedCoolFan);
+        this.setState({
+          coolFanStatus: ETC.status.stopped
+        });
+      }
     }
   }
 
@@ -111,7 +177,9 @@ class BluetoothSerialTemplate extends React.Component {
    */
   requestEnable() {
     BluetoothSerial.requestEnable()
-      .then(res => this.setState({ isEnabled: true }))
+      .then(res => {
+        BluetoothActions.setIsEnabled(true);
+      })
       .catch(err => console.log(err.message));
   }
 
@@ -121,7 +189,10 @@ class BluetoothSerialTemplate extends React.Component {
    */
   enable() {
     BluetoothSerial.enable()
-      .then(res => this.setState({ isEnabled: true }))
+      .then(res => {
+        this.initializeBluetooth();
+        BluetoothActions.setIsEnabled(true);
+      })
       .catch(err => console.log(err.message));
   }
 
@@ -131,7 +202,9 @@ class BluetoothSerialTemplate extends React.Component {
    */
   disable() {
     BluetoothSerial.disable()
-      .then(res => this.setState({ isEnabled: false }))
+      .then(res => {
+        BluetoothActions.setIsEnabled(false);
+      })
       .catch(err => console.log(err.message));
   }
 
@@ -142,6 +215,7 @@ class BluetoothSerialTemplate extends React.Component {
   toggleBluetooth(value) {
     if (value === true) {
       this.enable();
+      this.readDevices();
     } else {
       this.disable();
     }
@@ -191,11 +265,11 @@ class BluetoothSerialTemplate extends React.Component {
           const devices = devices;
           devices.push(device);
           this.setState({
-            devices,
             unpairedDevices: this.state.unpairedDevices.filter(
               d => d.id !== device.id
             )
           });
+          BluetoothActions.setDevices(devices);
         } else {
           console.log(`Device ${device.name} pairing failed`);
         }
@@ -218,7 +292,7 @@ class BluetoothSerialTemplate extends React.Component {
             true
           );
         });
-        console.log(`Connected to device ${device.name}`);
+        console.log(`Connected to device ${device.name} ${device.id}`);
         this.setState({ device, connected: true, connecting: false });
         myTimer = setInterval(this.readFromDevice, 1000);
       })
@@ -239,8 +313,11 @@ class BluetoothSerialTemplate extends React.Component {
    * @param  {Boolean} value
    */
   toggleConnect(value) {
-    if (value === true && this.state.device) {
-      this.connect(this.state.device);
+    const { device } = this.props;
+    if (value === true && isNotNull(device)) {
+      device.map(activeDevice => {
+        this.connect(activeDevice);
+      });
     } else {
       this.disconnect();
     }
@@ -284,21 +361,30 @@ class BluetoothSerialTemplate extends React.Component {
   }
 
   activateDevice() {
-    const { devices } = this.props;
-    console.log(devices.length);
-    for (let i = 0; i < devices.length; i++) {
-      if (BluetoothSerial.isEnabled()) {
-        this.connect(devices[i]);
+    const { devices, pageName } = this.props;
+    if (
+      pageName !== PAGE_NAME.babyAddition &&
+      pageName !== PAGE_NAME.babyModification
+    ) {
+      console.log(devices.length);
+      for (let i = 0; i < devices.length; i++) {
+        if (BluetoothSerial.isEnabled()) {
+          this.connect(devices[i]);
+        }
       }
     }
   }
 
   render() {
+    const { device } = this.props;
+    console.log("Once connectedDevices: ", device);
     return <View />;
   }
 }
 
 export default connect(({ baby, bluetooth }) => ({
   baby: baby.get("baby"),
-  devices: bluetooth.get("devices")
+  pageName: baby.get("pageName"),
+  devices: bluetooth.get("devices"),
+  device: bluetooth.get("device")
 }))(BluetoothSerialTemplate);
