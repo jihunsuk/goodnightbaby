@@ -5,6 +5,7 @@ import { commonStyles } from "../../styles";
 import { KO, PAGE_NAME } from "../../constants";
 import { BabyActions } from "../../reduxStore/actionCreators";
 import ButtonTemplate from "../../component/ButtonTemplate/ButtonTemplate";
+import HeaderTemplate from "../../component/HeaderTemplate/HeaderTemplate";
 
 export default class Setting extends React.Component {
   constructor(props) {
@@ -37,9 +38,7 @@ export default class Setting extends React.Component {
 
     return (
       <Content style={styles.container}>
-        <View style={[commonStyles.viewPageName, commonStyles._viewPageName]}>
-          <Text style={commonStyles.textPageName}>설정</Text>
-        </View>
+        <HeaderTemplate title="설정" />
         <View style={styles.viewMenus}>
           <Button
             {...buttonProps}

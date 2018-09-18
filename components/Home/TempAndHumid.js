@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import realm from "../../realm/realmDatabase";
 import { connect } from "react-redux";
-import { BabyActions } from "../../reduxStore/actionCreators";
+import { touchableHighlightProps } from "../../constants";
 
 class TempAndHumid extends React.Component {
   constructor(props) {
@@ -19,7 +18,10 @@ class TempAndHumid extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight onPress={this.handleOnPressPassiveCheck}>
+        <TouchableHighlight
+          {...touchableHighlightProps}
+          onPress={this.handleOnPressPassiveCheck}
+        >
           <View style={styles.viewTemperature}>
             <Text style={styles.textTemperature}>온도</Text>
             <Text style={styles.textTemperatureNumber}>
@@ -28,7 +30,10 @@ class TempAndHumid extends React.Component {
             </Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.handleOnPressPassiveCheck}>
+        <TouchableHighlight
+          {...touchableHighlightProps}
+          onPress={this.handleOnPressPassiveCheck}
+        >
           <View style={styles.viewHumidity}>
             <Text style={styles.textHumidity}>습도</Text>
             <Text style={styles.textHumidityNumber}>{this.props.humid}%</Text>

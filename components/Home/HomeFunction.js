@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  ToastAndroid
+} from "react-native";
 import { Icon } from "native-base";
 import { connect } from "react-redux";
 import realm from "../../realm/realmDatabase";
@@ -16,6 +22,7 @@ class HomeFunction extends React.Component {
     this.state = {
       medic_len: realm.objects("medic").length
     };
+    this.handleMedicOnClick = this.handleMedicOnClick.bind(this);
   }
 
   prescribe(index) {
@@ -32,21 +39,31 @@ class HomeFunction extends React.Component {
     });
   }
 
-  render() {
+  /* handle onClick Start */
+  handleMedicOnClick() {
     let { medic_len } = this.state;
+    this.prescribe(medic_len);
+    medic_len++;
+    ToastAndroid.showWithGravity(
+      "해열제 투약을 기록했습니다.",
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+    );
+  }
+  /* handle onClick End */
+
+  render() {
     return (
       <View style={styles.container}>
-        <View style={[styles.viewMenu]}>
+        <View style={[styles.viewMedicMenu]}>
           <View style={[commonStyles.viewCenter, commonStyles.viewIconWrapper]}>
             <Icon name="medkit" />
           </View>
           <TouchableHighlight
-            onPress={() => {
-              this.prescribe(medic_len);
-              medic_len++;
-            }}
+            {...commonStyles.touchableHighlightProps}
+            onPress={this.handleMedicOnClick}
           >
-            <Text style={[styles.textMenu, { color: "green" }]}>
+            <Text style={[styles.textMenu, { color: "white" }]}>
               해열제 투약
             </Text>
           </TouchableHighlight>
@@ -94,6 +111,17 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     height: 60,
     backgroundColor: "#e0e0e0",
+    padding: 10
+  },
+  viewMedicMenu: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 5,
+    height: 60,
+    backgroundColor: "green",
     padding: 10
   },
   textMenu: {

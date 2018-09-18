@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { PAGE_NAME } from "../constants";
+import { StyleSheet, TouchableHighlight, View } from "react-native";
+import { PAGE_NAME, touchableHighlightProps } from "../constants";
 import { BabyActions } from "../reduxStore/actionCreators";
 import { connect } from "react-redux";
-import { Content, Icon } from "native-base";
+import { Text, Icon } from "native-base";
 import { commonStyles } from "../styles";
 
 class Sidebar extends React.Component {
@@ -15,65 +15,58 @@ class Sidebar extends React.Component {
       pageName !== PAGE_NAME.babyModification &&
       pageName !== PAGE_NAME.babyDeletion
     ) {
-      return (
-        <View style={styles.container}>
+      return <View style={styles.container}>
           <View style={styles.viewSidebarMenu}>
-            <Icon name="home" style={commonStyles.iconMenu} />
-            <Text
-              style={styles.icon}
-              onPress={() => {
+            <TouchableHighlight {...touchableHighlightProps} onPress={() => {
                 BabyActions.setPageName(PAGE_NAME.home);
-              }}
-            >
-              홈
-            </Text>
+              }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
+              <View style={[commonStyles.viewCenter]}>
+                <Icon name="home" style={commonStyles.iconMenu} />
+                <Text style={styles.icon}>홈</Text>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.viewSidebarMenu}>
-            <Icon name="logo-octocat" style={commonStyles.iconMenu} />
-            <Text
-              style={styles.icon}
-              onPress={() => {
+            <TouchableHighlight {...touchableHighlightProps} onPress={() => {
                 BabyActions.setPageName(PAGE_NAME.babySelection);
-              }}
-            >
-              아이선택
-            </Text>
+              }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
+              <View style={[commonStyles.viewCenter]}>
+                <Icon name="logo-octocat" style={commonStyles.iconMenu} />
+                <Text style={styles.icon}>아이선택</Text>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.viewSidebarMenu}>
-            <Icon name="document" style={commonStyles.iconMenu} />
-            <Text
-              style={styles.icon}
-              onPress={() => {
+            <TouchableHighlight {...touchableHighlightProps} onPress={() => {
                 BabyActions.setPageName(PAGE_NAME.deviceMgmt);
-              }}
-            >
-              장치관리
-            </Text>
+              }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
+              <View style={[commonStyles.viewCenter]}>
+                <Icon name="logo-android" style={commonStyles.iconMenu} />
+                <Text style={styles.icon}>장치관리</Text>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.viewSidebarMenu}>
-            <Icon name="logo-android" style={commonStyles.iconMenu} />
-            <Text
-              style={styles.icon}
-              onPress={() => {
+            <TouchableHighlight {...touchableHighlightProps} onPress={() => {
                 BabyActions.setPageName(PAGE_NAME.measurementHistory);
-              }}
-            >
-              측정기록
-            </Text>
+              }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
+              <View style={[commonStyles.viewCenter]}>
+                <Icon name="document" style={commonStyles.iconMenu} />
+                <Text style={styles.icon}>측정기록</Text>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.viewSidebarMenu}>
-            <Icon name="settings" style={commonStyles.iconMenu} />
-            <Text
-              style={styles.icon}
-              onPress={() => {
+            <TouchableHighlight {...touchableHighlightProps} onPress={() => {
                 BabyActions.setPageName(PAGE_NAME.setting);
-              }}
-            >
-              설정
-            </Text>
+              }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
+              <View style={[commonStyles.viewCenter]}>
+                <Icon name="settings" style={commonStyles.iconMenu} />
+                <Text style={styles.icon}>설정</Text>
+              </View>
+            </TouchableHighlight>
           </View>
-        </View>
-      );
+        </View>;
     } else {
       return null;
     }
@@ -100,6 +93,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     width: "20%"
+  },
+  touchableHighlightMenu: {
+    width: "100%",
+    height: "100%"
   }
 });
 
