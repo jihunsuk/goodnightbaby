@@ -28,19 +28,19 @@ export const KO = {
   notification: {
     runningCoolFan: {
       title: "선풍기가 켜졌습니다.",
-      content: "선풍기가 켜졌습니다.",
+      content: "선풍기가 켜졌습니다."
     },
     stoppedCoolFan: {
       title: "선풍기가 꺼졌습니다.",
-      content: "선풍기가 꺼졌습니다.",
+      content: "선풍기가 꺼졌습니다."
     },
     runningHumidifier: {
       title: "가습기가 켜졌습니다.",
-      content: "가습기가 켜졌습니다.",
+      content: "가습기가 켜졌습니다."
     },
     stoppedHumidifier: {
       title: "가습기가 꺼졌습니다.",
-      content: "가습기가 꺼졌습니다.",
+      content: "가습기가 꺼졌습니다."
     }
   },
   temperatureSetting: "체온조절 설정",
@@ -74,6 +74,11 @@ export const URL = {
 export const BLUETOOTH_DATA = {
   on: "0",
   off: "1"
+};
+
+/* Props */
+export const touchableHighlightProps = {
+  underlayColor: "#fff"
 };
 
 export const TEST_DATA = {
