@@ -20,17 +20,19 @@ import { connect } from "react-redux";
 import { isNotNull } from "../../util/commonUtil";
 import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 
-class BabyAddition extends React.Component {
+class BabyModification extends React.Component {
   constructor(props) {
     super(props);
     const { baby } = this.props;
+    let device = realm.objects("bluetoothDevice");
+    let device_length = device.length;
     this.state = {
       id: baby.id,
       name: baby.name,
       age: baby.age,
       sex: baby.sex, // male, female
       image: baby.image,
-      device_length: realm.objects("bluetoothDevice").length,
+      device_index: device_length === 0 ? 0 : device[device_length - 1].id + 1,
       thermometerModalVisible: false,
       coolFanModalVisible: false,
       humidifierModalVisible: false
@@ -414,4 +416,4 @@ export default connect(({ baby, bluetooth }) => ({
   isEnabled: bluetooth.get("isEnabled"),
   requestEnable: bluetooth.get("functions").requestEnable,
   baby: baby.get("baby")
-}))(BabyAddition);
+}))(BabyModification);
