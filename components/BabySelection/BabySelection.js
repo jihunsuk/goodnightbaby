@@ -7,9 +7,7 @@ import { BabyActions } from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
 
 class BabySelection extends React.Component {
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   render() {
     return (

@@ -14,7 +14,7 @@ global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
 let babyInfo,
-  myTimer,
+  myTimer = [],
   listener = [];
 
 class BluetoothSerialTemplate extends React.Component {
@@ -51,8 +51,8 @@ class BluetoothSerialTemplate extends React.Component {
   componentWillUnmount() {
     this.disconnect();
     this.disable();
-    listener.map(_listener => {
-      BluetoothSerial.removeListener(_listener.eventName, _listener.listener);
+    myTimer.map(_timer => {
+      clearInterval(_timer);
     });
     console.log("componentWillUnmount");
   }
@@ -67,27 +67,31 @@ class BluetoothSerialTemplate extends React.Component {
     }
 
     this.readDevices();
-    this.activateDevice();
-    const enableListener = BluetoothSerial.on("bluetoothEnabled", () => {
-      console.log("Bluetooth enabled");
-      this.activateDevice();
-    });
-    const disabledListener = BluetoothSerial.on("bluetoothDisabled", () => {
-      console.log("Bluetooth disabled");
-      clearInterval(myTimer);
-    });
-    const errorListener = BluetoothSerial.on("error", err =>
-      console.log(`Error: ${err.message}`)
-    );
-    const connectionLostlistener = BluetoothSerial.on("connectionLost", () => {
-      console.log("Some device has been lost");
-    });
-    listener.push(
-      this.makeListenerObject("bluetoothEnabled", enableListener),
-      this.makeListenerObject("bluetoothDisabled", disabledListener),
-      this.makeListenerObject("error", errorListener),
-      this.makeListenerObject("connectionLost", connectionLostlistener)
-    );
+    // this.activateDevice();
+    if (listener.length === 0) {
+      const enableListener = BluetoothSerial.on("bluetoothEnabled", () => {
+        console.log("Bluetooth enabled");
+        this.activateDevice();
+      });
+      const disabledListener = BluetoothSerial.on("bluetoothDisabled", () => {
+        console.log("Bluetooth disabled");
+      });
+      const errorListener = BluetoothSerial.on("error", err => {
+        console.log(`Error: ${err.message}`);
+      });
+      const connectionLostlistener = BluetoothSerial.on(
+        "connectionLost",
+        () => {
+          console.log("Some device has been lost");
+        }
+      );
+      listener.push(
+        this.makeListenerObject("bluetoothEnabled", enableListener),
+        this.makeListenerObject("bluetoothDisabled", disabledListener),
+        this.makeListenerObject("error", errorListener),
+        this.makeListenerObject("connectionLost", connectionLostlistener)
+      );
+    }
   }
 
   makeListenerObject(eventName, listener) {
@@ -303,13 +307,14 @@ class BluetoothSerialTemplate extends React.Component {
    * @param  {Object} device
    */
   connect(device) {
-    this.setState({ connecting: true });
+    // this.setState({ connecting: true });
     console.log("connecting...: ", device);
     BluetoothSerial.connect(device.device)
       .then(res => {
         console.log(`Connected to device ${device.name} ${device.id}`);
-        this.setState({ device, connected: true, connecting: false });
-        myTimer = setInterval(this.readFromDevice, 1000);
+        // this.setState({ device, connected: true, connecting: false });
+        const timer = setInterval(this.readFromDevice, 1000);
+        myTimer.push(timer);
       })
       .catch(err => console.log("connect err", err.message));
   }

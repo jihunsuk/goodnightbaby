@@ -1,7 +1,7 @@
 import React from "react";
-import { Switch, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
-import { Icon } from "native-base";
+import { Icon, Switch } from "native-base";
 import { commonStyles } from "../styles";
 
 class BabyInfo extends React.Component {
@@ -18,7 +18,7 @@ class BabyInfo extends React.Component {
     this.setState({
       switchValue: value
     });
-    if (value == true){
+    if (value == true) {
       write("1");
     } else {
       write("0");

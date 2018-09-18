@@ -11,6 +11,7 @@ import { PAGE_NAME } from "../../constants";
 import { Button, Icon } from "native-base";
 import { BabyActions, BluetoothActions } from "../../reduxStore/actionCreators";
 import realm from "../../realm/realmDatabase";
+import { commonStyles } from "../../styles";
 
 export default class BabyList extends React.Component {
   render() {
@@ -46,7 +47,7 @@ class Baby extends React.Component {
           }}
         >
           <Icon bordered name="logo-octocat" style={styles.iconStyle} />
-          <Text style={styles.textBabyName}>{baby.name}</Text>
+          <Text style={commonStyles.textScrollItem}>{baby.name}</Text>
         </Button>
         <Icon
           name={baby.sex}
@@ -108,11 +109,6 @@ const styles = StyleSheet.create({
   },
   iconStyle: {
     fontSize: 30
-  },
-  textBabyName: {
-    fontSize: 20,
-    marginLeft: 5,
-    marginRight: 3
   },
   buttonsBabyMenu: {
     flex: 1,
