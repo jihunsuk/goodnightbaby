@@ -5,8 +5,6 @@ import PureChart from 'react-native-pure-chart';
 import realm from "../../realm/realmDatabase";
 import {connect} from "react-redux";
 
-let history = [];
-
 class MeasurementHistory extends React.Component {
     constructor(props) {
         super(props);
@@ -51,19 +49,19 @@ class MeasurementHistory extends React.Component {
 
         let m = medics.map((md,idx) => {
             if (md.time.getTime() >= histories[0].time.getTime() && md.time.getTime() <= histories[19].time.getTime())
-                return <Medic medic={String(md.time.getDate())+ "일." +String(md.time.getHours())+ "시." +String(md.time.getMinutes())+"분"} key={idx} />
+                return <Medic medic={String(md.time.getDate()) + "일." + String(md.time.getHours()) + "시." + String(md.time.getMinutes()) + "분"} key={idx} />
             }
         );
 
         let Data = [
             {
                 seriesName: 'Temperature',
-                data: Temperature,
+                data: Temperature.length === 0 ? {x:0 , y:0} : Temperature,
                 color: 'red'
             },
             {
                 seriesName: 'Humidity',
-                data: Humidity,
+                data: Humidity.length === 0 ? {x:0, y:0} : Humidity,
                 color: '#297AB1'
             },];
 
@@ -88,7 +86,6 @@ class Medic extends React.Component {
         const { medic } = this.props;
         return (
             <View style={styles.medic_list}>
-                {console.log(medic)}
                 <Text>{medic}</Text>
             </View>
         );

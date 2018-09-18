@@ -2,21 +2,25 @@ import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
 import HumidifierList from "./HumidifierList";
 import { connect } from "react-redux";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { ETC } from "../../constants";
 
 class HumidifierManagement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: true,
+            switchValue: this.props.autoHumidifier === ETC.status.running,
         }
     }
     toggleSwitch = (value) => {
         const { write } = this.props;
         this.setState({switchValue: value})
-        if (value == true){
+        if (value === true){
             write("u");
+            BabyActions.setAutoHumidifier("RUNNING");
         } else {
             write("e");
+            BabyActions.setAutoHumidifier("STOPPED");
         }
     }
 
@@ -45,6 +49,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(({ bluetooth }) => ({
-    write: bluetooth.get("functions").write
+export default connect(({ bluetooth, baby }) => ({
+    write: bluetooth.get("functions").write,
+    autoHumidifier: baby.get("autoHumidifier")
 }))(HumidifierManagement);

@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Switch, ScrollView, Image } from 'react-native';
 import { connect } from "react-redux";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { ETC } from "../../constants";
 
 class CoolFanList extends React.Component {
   render() {
@@ -20,17 +22,19 @@ class CoolFan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: true,
+            switchValue: this.props.coolFanState === ETC.status.running,
         }
     }
 
     toggleSwitch = (value) => {
         const { write } = this.props;
         this.setState({switchValue: value})
-        if (value == true){
+        if (value === true && this.props.autoCoolFan === ETC.status.stopped){
             write("y");
-        } else {
+            BabyActions.setCoolFanState(ETC.status.running);
+        } else if (value === false && this.props.autoCoolFan === ETC.status.stopped){
             write("x");
+            BabyActions.setCoolFanState(ETC.status.stopped);
         }
     }
 
@@ -77,6 +81,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(({ bluetooth }) => ({
-    write: bluetooth.get("functions").write
+export default connect(({ bluetooth, baby }) => ({
+    write: bluetooth.get("functions").write,
+    coolFanState: baby.get("coolFanState"),
+    autoCoolFan: baby.get("autoCoolFan")
 }))(CoolFanList);
