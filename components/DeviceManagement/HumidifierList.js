@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Switch, ScrollView } from 'react-native';
 import { connect } from "react-redux";
+import { BabyActions } from "../../reduxStore/actionCreators";
+import { ETC, KO, PAGE_NAME } from "../../constants";
 
 class HumidifierList extends React.Component {
     render() {
@@ -20,17 +22,19 @@ class Humidifier extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: true,
+            switchValue: this.props.humidifierState === ETC.status.running,
         }
     }
 
     toggleSwitch = (value) => {
         const { write } = this.props;
         this.setState({switchValue: value})
-        if (value == true){
+        if (value === true && this.props.autoHumidifier === ETC.status.stopped){
             write("p");
-        } else {
+            BabyActions.setHumidifierState(ETC.status.running);
+        } else if (value === false && this.props.autoHumidifier === ETC.status.stopped){
             write("q");
+            BabyActions.setHumidifierState(ETC.status.stopped);
         }
     }
 
@@ -53,12 +57,6 @@ class Humidifier extends React.Component {
 const testHumidifier = [{
     name: '가습기1',
 },
-    // {
-    //     name: '가습기2',
-    // },
-    // {
-    //     name: '가습기3',
-    // },
 ];
 
 const styles = StyleSheet.create({
@@ -75,6 +73,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(({ bluetooth }) => ({
-    write: bluetooth.get("functions").write
+export default connect(({ bluetooth, baby }) => ({
+    write: bluetooth.get("functions").write,
+    humidifierState: baby.get("humidifierState"),
+    autoHumidifier: baby.get("autoHumidifier")
 }))(HumidifierList);

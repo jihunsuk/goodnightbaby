@@ -29,6 +29,8 @@ class BabyAddition extends React.Component {
     let settings_length = settings.length;
     let alarms = realm.objects("alarm");
     let alarms_length = alarms.length;
+    let device = realm.objects("bluetoothDevice");
+    let device_length = device.length;
     this.state = {
       id: babys_length === 0 ? 0 : babys[babys_length - 1].id + 1,
       settingId:
@@ -38,7 +40,7 @@ class BabyAddition extends React.Component {
       age: 0,
       sex: ETC.male, // male, female
       image: null,
-      device_length: realm.objects("bluetoothDevice").length,
+      deviceIndex: device_length === 0 ? 0 : device[device_length - 1].id + 1,
       thermometerModalVisible: false,
       coolFanModalVisible: false,
       humidifierModalVisible: false
@@ -99,10 +101,10 @@ class BabyAddition extends React.Component {
       selectedCoolFan,
       selectedHumidifier
     } = this.props;
-    const { device_length } = this.state;
+    const { deviceIndex } = this.state;
     // Make devices
     let devices = [];
-    let deviceId = device_length;
+    let deviceId = deviceIndex;
     if (isNotNull(selectedThermometer)) {
       devices.push(
         this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
