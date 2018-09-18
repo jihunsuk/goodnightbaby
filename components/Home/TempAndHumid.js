@@ -20,13 +20,11 @@ class TempAndHumid extends React.Component {
           <Text style={styles.textTemperature}>온도</Text>
           {/*TODO: 온도*/}
           <Text style={styles.textTemperatureNumber}>{this.props.temp}˚C</Text>
-          {/*<Text style={styles.textTemperatureNumber}>36.5</Text>*/}
         </View>
         <View style={styles.viewHumidity}>
           <Text style={styles.textHumidity}>습도</Text>
           {/*TODO: 습도*/}
             <Text style={styles.textHumidityNumber}>{this.props.humid}%</Text>
-          {/*<Text style={styles.textTemperatureNumber}>50%</Text>*/}
         </View>
       </View>
     );
