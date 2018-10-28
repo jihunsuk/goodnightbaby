@@ -22,7 +22,7 @@ class Sidebar extends React.Component {
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
                 <Icon name="home" style={commonStyles.iconMenu} />
-                <Text style={styles.icon}>홈</Text>
+                <Text>홈</Text>
               </View>
             </TouchableHighlight>
           </View>
@@ -32,7 +32,7 @@ class Sidebar extends React.Component {
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
                 <Icon name="logo-octocat" style={commonStyles.iconMenu} />
-                <Text style={styles.icon}>아이선택</Text>
+                <Text>아이선택</Text>
               </View>
             </TouchableHighlight>
           </View>
@@ -42,7 +42,7 @@ class Sidebar extends React.Component {
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
                 <Icon name="logo-android" style={commonStyles.iconMenu} />
-                <Text style={styles.icon}>장치관리</Text>
+                <Text>장치관리</Text>
               </View>
             </TouchableHighlight>
           </View>
@@ -52,7 +52,7 @@ class Sidebar extends React.Component {
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
                 <Icon name="document" style={commonStyles.iconMenu} />
-                <Text style={styles.icon}>측정기록</Text>
+                <Text>측정기록</Text>
               </View>
             </TouchableHighlight>
           </View>
@@ -62,7 +62,7 @@ class Sidebar extends React.Component {
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
                 <Icon name="settings" style={commonStyles.iconMenu} />
-                <Text style={styles.icon}>설정</Text>
+                <Text>설정</Text>
               </View>
             </TouchableHighlight>
           </View>
@@ -83,9 +83,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: "#e0e0e0",
     borderWidth: 1
-  },
-  icon: {
-    marginHorizontal: 10
   },
   viewSidebarMenu: {
     alignItems: "center",

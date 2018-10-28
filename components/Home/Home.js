@@ -4,7 +4,6 @@ import BabyInfo from "../BabyInfo";
 import { Content } from "native-base";
 import HomeFunction from "./HomeFunction";
 import TempAndHumid from "./TempAndHumid";
-
 class Home extends React.Component {
   constructor(props) {
     super(props);

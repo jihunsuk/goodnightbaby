@@ -40,7 +40,13 @@ class MeasurementHistory extends React.Component {
   render() {
     const { historys, medic, isLoading } = this.state;
     const len = historys.length;
-    const histories = historys.slice(len - 20, len);
+    let histories;
+    console.log(len);
+    if(len >= 20)
+      histories = historys.slice(len - 20, len);
+    else
+      histories = historys.slice(0, len);
+
     const medics = medic.slice(0, medic.length);
     let Temperature = [];
     let Humidity = [];
@@ -69,9 +75,12 @@ class MeasurementHistory extends React.Component {
     });
 
     let _medics = medics.map((md, idx) => {
-      if (
-        md.time.getTime() >= histories[0].time.getTime() &&
-        md.time.getTime() <= histories[19].time.getTime()
+      if ((historys.length >= 20 &&
+        md.time.getTime() >= histories[len-20].time.getTime() &&
+        md.time.getTime() <= histories[len-1].time.getTime()) ||
+          (historys.length < 20 && historys.length > 0 &&
+              md.time.getTime() >= histories[0].time.getTime() &&
+              md.time.getTime() <= histories[len-1].time.getTime())
       )
         return (
           <Medic
@@ -105,7 +114,7 @@ class MeasurementHistory extends React.Component {
       <Content style={styles.container}>
         <BabyInfo />
         <HeaderTemplate title="온습도 측정기록" />
-        {isLoading && <PureChart data={Data} type="line" />}
+        {len != 0 && isLoading && <PureChart data={Data} type="line" />}
         <HeaderTemplate title="약 투여 기록" />
         {_medics}
       </Content>

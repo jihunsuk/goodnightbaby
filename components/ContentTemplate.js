@@ -16,6 +16,7 @@ import BabyAddition from "../components/BabyManagement/BabyAddition";
 import BabyModification from "../components/BabyManagement/BabyModification";
 import BabySelection from "../components/BabySelection";
 import BluetoothSerialTemplate from "../util/BluetoothSerialTemplate";
+import {isNotNull} from "../util/commonUtil";
 
 class ContentTemplate extends React.Component {
   _getPage(pageName) {
@@ -66,17 +67,18 @@ class ContentTemplate extends React.Component {
   }
 
   render() {
-    const { pageName } = this.props;
+    const { pageName, devices } = this.props;
     const page = this._getPage(pageName);
     return (
       <Fragment>
         {page}
-        {this.isNeedBluetooth() === true && <BluetoothSerialTemplate />}
+        {this.isNeedBluetooth() === true && isNotNull(devices) && devices.length !== 0 && <BluetoothSerialTemplate />}
       </Fragment>
     );
   }
 }
 
-export default connect(({ baby }) => ({
-  pageName: baby.get("pageName")
+export default connect(({ baby, bluetooth }) => ({
+  pageName: baby.get("pageName"),
+    devices: bluetooth.get("devices")
 }))(ContentTemplate);

@@ -19,10 +19,10 @@ class HumidifierManagement extends React.Component {
     const { write } = this.props;
     this.setState({ switchValue: value });
     if (value === true) {
-      write("u");
+      write("r");
       BabyActions.setAutoHumidifier("RUNNING");
     } else {
-      write("e");
+      write("w");
       BabyActions.setAutoHumidifier("STOPPED");
     }
   };

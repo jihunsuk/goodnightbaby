@@ -3,11 +3,13 @@ import { Image, StyleSheet, View } from "react-native";
 import { Card, CardItem, Text, Content, Button, Icon } from "native-base";
 import BabyList from "./BabyList";
 import { URL, PAGE_NAME } from "../../constants";
-import { BabyActions } from "../../reduxStore/actionCreators";
+import {BabyActions, BluetoothActions} from "../../reduxStore/actionCreators";
 import { connect } from "react-redux";
 
 class BabySelection extends React.Component {
-  componentDidMount() {}
+  componentDidMount() {
+    BluetoothActions.setDevices(null);
+  }
 
   render() {
     return (
