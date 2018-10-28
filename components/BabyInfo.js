@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { Icon, Switch } from "native-base";
 import { commonStyles } from "../styles";
-import realm from "../realm/realmDatabase";
 
 class BabyInfo extends React.Component {
   constructor(props) {
@@ -12,8 +11,6 @@ class BabyInfo extends React.Component {
       switchValue: true
     };
     this.toggleSwitch = this.toggleSwitch.bind(this);
-      let a = realm.objects("bluetoothDevice").filtered(`babyId = ${this.props.baby.id}`);
-      console.log(a);
   }
 
   toggleSwitch(value) {
