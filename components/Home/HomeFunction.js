@@ -43,7 +43,9 @@ class HomeFunction extends React.Component {
   handleMedicOnClick() {
     let { medic_len } = this.state;
     this.prescribe(medic_len);
-    medic_len++;
+    this.setState({
+       medic_len : medic_len+1
+    });
     ToastAndroid.showWithGravity(
       "해열제 투약을 기록했습니다.",
       ToastAndroid.SHORT,

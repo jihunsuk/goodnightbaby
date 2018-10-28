@@ -287,7 +287,7 @@ class BabyAddition extends React.Component {
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
-                  <Text style={styles.textBluetoothDeviceButton}>
+                  <Text style={[styles.textBluetoothDeviceButton, {fontSize: 13}]}>
                     체온측정장치선택
                   </Text>
                 </Button>
