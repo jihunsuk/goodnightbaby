@@ -28,7 +28,10 @@ const initialState = Map({
     cancelDiscovery: null,
     toggleConnect: null,
     onDevicePress: null,
-    writePackets: null
+    writePackets: null,
+    changeReadTime: null,
+    changeMaxMinTemp: null,
+    changeMaxMinHumid: null
   }
 });
 

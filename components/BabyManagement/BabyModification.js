@@ -21,9 +21,11 @@ import { isNotNull } from "../../util/commonUtil";
 import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 
 class BabyModification extends React.Component {
+
   constructor(props) {
     super(props);
     const { baby } = this.props;
+
     let device = realm.objects("bluetoothDevice");
     let device_length = device.length;
     this.state = {
@@ -37,6 +39,8 @@ class BabyModification extends React.Component {
       coolFanModalVisible: false,
       humidifierModalVisible: false
     };
+    console.log(this.state.device_index);
+
 
     /* Bind start */
     this.setThermometerModalVisible = this.setThermometerModalVisible.bind(
@@ -81,68 +85,75 @@ class BabyModification extends React.Component {
     this._resetBluetoothDevicesInRedux();
     this._setPageBabySelection();
     ToastAndroid.showWithGravity(
-      "정상적으로 아이를 추가했습니다.",
+      "정상적으로 아이를 수정했습니다.",
       ToastAndroid.SHORT,
       ToastAndroid.CENTER
     );
   }
 
   saveDeviceInRealm() {
-    // const {
-    //   selectedThermometer,
-    //   selectedCoolFan,
-    //   selectedHumidifier
-    // } = this.props;
-    // const { device_length } = this.state;
-    // // Make devices
-    // let devices = [];
-    // let deviceId = device_length;
-    // if (isNotNull(selectedThermometer)) {
-    //   devices.push(
-    //     this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
-    //   );
-    //   deviceId++;
-    // }
-    // if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
-    //   selectedCoolFan.map(device => {
-    //     if (isNotNull(device)) {
-    //       devices.push(this._makeDevice(device, ETC.coolFan, deviceId));
-    //       deviceId++;
-    //     }
-    //   });
-    // }
-    // if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
-    //   selectedHumidifier.map(device => {
-    //     if (isNotNull(device)) {
-    //       devices.push(this._makeDevice(device, ETC.humidifier, deviceId));
-    //       deviceId++;
-    //     }
-    //   });
-    // }
-    //
-    // devices.map(device =>
-    //   realm.write(() => {
-    //     newDevice = realm.create("bluetoothDevice", device, true);
-    //   })
-    // );
+    const {
+      selectedThermometer,
+      selectedCoolFan,
+      selectedHumidifier
+    } = this.props;
+
+    realm.write(()=> {
+        let del = realm.objects("bluetoothDevice").filtered(`babyId="${this.state.id}"`);
+        realm.delete(del);
+    });
+
+    const { device_index } = this.state;
+    // Make devices
+    let devices = [];
+    let deviceId = device_index;
+
+    if (isNotNull(selectedThermometer)) {
+      devices.push(
+        this._makeDevice(selectedThermometer, ETC.thermometer, deviceId)
+      );
+      deviceId++;
+    }
+    if (isNotNull(selectedCoolFan) && selectedCoolFan.length !== 0) {
+      selectedCoolFan.map(device => {
+        if (isNotNull(device)) {
+          devices.push(this._makeDevice(device, ETC.coolFan, deviceId));
+          deviceId++;
+        }
+      });
+    }
+    if (isNotNull(selectedHumidifier) && selectedHumidifier.length !== 0) {
+      selectedHumidifier.map(device => {
+        if (isNotNull(device)) {
+          devices.push(this._makeDevice(device, ETC.humidifier, deviceId));
+          deviceId++;
+        }
+      });
+    }
+    console.log(devices);
+    devices.map(device =>
+      realm.write(() => {
+        newDevice = realm.create("bluetoothDevice", device, true);
+      })
+    );
   }
 
   saveBabyInRealm() {
-    // realm.write(() => {
-    //   newBaby = realm.create(
-    //     "baby",
-    //     {
-    //       id: this.state.id,
-    //       settingId: this.state.settingId,
-    //       alarmId: this.state.alarmId,
-    //       name: this.state.name,
-    //       age: this.state.age,
-    //       sex: this.state.sex,
-    //       image: this.state.image
-    //     },
-    //     true
-    //   );
-    // });
+    realm.write(() => {
+      newBaby = realm.create(
+        "baby",
+        {
+          id: this.state.id,
+          settingId: this.state.settingId,
+          alarmId: this.state.alarmId,
+          name: this.state.name,
+          age: this.state.age,
+          sex: this.state.sex,
+          image: this.state.image
+        },
+        true
+      );
+    });
   }
 
   /* Realm logic End */
@@ -241,6 +252,7 @@ class BabyModification extends React.Component {
               <Label>나이</Label>
               <Input
                 keyboardType="numeric"
+                value={age}
                 onChangeText={age => {
                   age = parseInt(age);
                   this.setState({ age });

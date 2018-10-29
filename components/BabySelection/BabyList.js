@@ -28,10 +28,12 @@ export default class BabyList extends React.Component {
 class Baby extends React.Component {
   constructor(props) {
     super(props);
+
   }
 
   render() {
     const { baby } = this.props;
+    let setting = realm.objects("setting").filtered(`id = "${baby.id}"`)[0];
     return (
       <View style={styles.baby}>
         <Button
@@ -41,6 +43,10 @@ class Baby extends React.Component {
           onPress={() => {
             BabyActions.setBaby(baby);
             BabyActions.setPageName(PAGE_NAME.home);
+            BabyActions.setMaxTemp(setting.highTemperature);
+            BabyActions.setMinTemp(setting.lowTemperature);
+            BabyActions.setMaxHumid(setting.highHumidity);
+            BabyActions.setMinHumid(setting.lowHumidity);
             BluetoothActions.setDevices(
               realm.objects("bluetoothDevice").filtered(`babyId = ${baby.id}`)
             );
