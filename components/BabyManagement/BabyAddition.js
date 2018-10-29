@@ -151,6 +151,24 @@ class BabyAddition extends React.Component {
         true
       );
     });
+
+      realm.write(() => {
+          realm.create(
+              "setting",
+              {
+                  id: this.state.settingId,
+                  checkTemperatureTime: 5,
+                  checkHumidityTime: 5,
+                  highTemperature: 33,
+                  lowTemperature: 30,
+                  highHumidity: 75,
+                  lowHumidity: 65
+              },
+              true
+          );
+      });
+
+
   }
 
   /* Realm logic End */

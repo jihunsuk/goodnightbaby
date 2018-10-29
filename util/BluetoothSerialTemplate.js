@@ -13,9 +13,14 @@ pushNotifications.configure();
 global.Buffer = Buffer;
 const iconv = require("iconv-lite");
 
-let babyInfo,
+let babyInfo, setting,
     myTimer = [],
     listener = [];
+
+// realm.write(() => {
+//     // 책을 생성합니다
+//     realm.deleteAll();
+// });
 
 class BluetoothSerialTemplate extends React.Component {
     constructor(props) {
@@ -26,7 +31,11 @@ class BluetoothSerialTemplate extends React.Component {
             connected: false,
             section: 0,
             coolFanStatus: ETC.status.stopped,
-            humdifierStatus: ETC.status.stopped
+            humdifierStatus: ETC.status.stopped,
+            LOW_HUMIDITY: 0,
+            HIGH_HUMIDITY:  0,
+            LOW_TEMPERATURE: 0,
+            HIGH_TEMPERATURE: 0
         };
         BluetoothActions.setFunctions({
             initializeBluetooth: this.initializeBluetooth.bind(this),
@@ -38,7 +47,10 @@ class BluetoothSerialTemplate extends React.Component {
             cancelDiscovery: this.cancelDiscovery.bind(this),
             toggleConnect: this.toggleConnect.bind(this),
             onDevicePress: this.onDevicePress.bind(this),
-            writePackets: this.writePackets.bind(this)
+            writePackets: this.writePackets.bind(this),
+            changeReadTime: this.changeReadTime.bind(this),
+            changeMaxMinTemp: this.changeMaxMinTemp.bind(this),
+            changeMaxMinHumid: this.changeMaxMinHumid.bind(this)
         });
         this.readFromDevice = this.readFromDevice.bind(this);
     }
@@ -64,6 +76,7 @@ class BluetoothSerialTemplate extends React.Component {
             pageName !== PAGE_NAME.babyModification
         ) {
             babyInfo = realm.objects("baby").filtered(`name = "${baby.name}"`)[0];
+            setting = realm.objects("setting").filtered(`id = "${baby.id}"`)[0];
         }
 
         this.readDevices();
@@ -153,12 +166,17 @@ class BluetoothSerialTemplate extends React.Component {
 
     /* Write to bluetooth devices */
     writeTemperatureControlDevices(readData) {
-        const {coolFanStatus, humdifierStatus} = this.state;
-        const LOW_HUMIDITY = 65,
-            HIGH_HUMIDITY = 75;
-        const LOW_TEMPERATURE = 30,
-            HIGH_TEMPERATURE = 33;
 
+        this.setState({
+            LOW_HUMIDITY: setting.lowHumidity,
+            HIGH_HUMIDITY:  setting.highHumidity,
+            LOW_TEMPERATURE: setting.lowTemperature,
+            HIGH_TEMPERATURE: setting.highTemperature
+        });
+
+        const {coolFanStatus, humdifierStatus, LOW_HUMIDITY, LOW_TEMPERATURE, HIGH_HUMIDITY, HIGH_TEMPERATURE} = this.state;
+        console.log(LOW_TEMPERATURE);
+        console.log(HIGH_TEMPERATURE);
         if (readData.humid <= LOW_HUMIDITY && this.props.autoHumidifier === ETC.status.running) {
             this.write("b"); //켜짐
             if (humdifierStatus === ETC.status.stopped) {
@@ -166,7 +184,7 @@ class BluetoothSerialTemplate extends React.Component {
                 this.state.humdifierStatus = ETC.status.running;
                 BabyActions.setHumidifierState(ETC.status.running);
             }
-        } else if (readData.humid >= HIGH_HUMIDITY && this.props.autoHumidifier === ETC.status.running) {
+        } else if (readData.humid > HIGH_HUMIDITY && this.props.autoHumidifier === ETC.status.running) {
             this.write("a"); //꺼짐
             if (humdifierStatus === ETC.status.running) {
                 pushNotifications.localNotification(KO.notification.stoppedHumidifier);
@@ -182,8 +200,7 @@ class BluetoothSerialTemplate extends React.Component {
                 this.state.coolFanStatus = ETC.status.running;
                 BabyActions.setCoolFanState(ETC.status.running);
             }
-            pushNotifications.localNotification(KO.notification.runningCoolFan);
-        } else if (readData.temp <= LOW_TEMPERATURE && this.props.autoCoolFan === ETC.status.running) {
+        } else if (readData.temp < LOW_TEMPERATURE && this.props.autoCoolFan === ETC.status.running) {
             this.write("d"); //꺼짐
             if (coolFanStatus === ETC.status.running) {
                 pushNotifications.localNotification(KO.notification.stoppedCoolFan);
@@ -310,6 +327,7 @@ class BluetoothSerialTemplate extends React.Component {
             .then(res => {
                 console.log(`Connected to device ${device.name} ${device.id}`);
                 // this.setState({ device, connected: true, connecting: false });
+                //const timer = setInterval(this.readFromDevice, setting.checkTemperatureTime*1000);
                 const timer = setInterval(this.readFromDevice, 1000);
                 myTimer.push(timer);
             })
@@ -377,6 +395,33 @@ class BluetoothSerialTemplate extends React.Component {
         }
 
         Promise.all(writePromises).then(result => {
+        });
+    }
+
+    changeReadTime(newTime) {
+        let newTimer = [];
+        myTimer.map(_timer => {
+            clearInterval(_timer);
+            const timer = setInterval(this.readFromDevice, newTime*1000);
+            newTimer.push(timer);
+        });
+
+        myTimer = newTimer;
+        this.write("3");
+        this.write(String(newTime*1000));
+    }
+
+    changeMaxMinHumid(minHumid, maxHumid) {
+        this.setState({
+            LOW_HUMIDITY: minHumid,
+            HIGH_HUMIDITY: maxHumid
+        });
+    }
+
+    changeMaxMinTemp(minTemp, maxTemp) {
+        this.setState({
+            LOW_TEMPERATURE: minTemp,
+            HIGH_TEMPERATURE: maxTemp
         });
     }
 

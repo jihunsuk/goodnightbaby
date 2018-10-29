@@ -10,19 +10,20 @@ import {commonProps, commonStyles} from "../../styles/index";
 import ButtonTemplate from "../../component/ButtonTemplate/ButtonTemplate";
 import {KO, PAGE_NAME} from "../../constants/index";
 import {BabyActions} from "../../reduxStore/actionCreators";
+import { connect } from "react-redux";
+import realm from "../../realm/realmDatabase";
 
-export default class HumiditySetting extends React.Component {
+class HumiditySetting extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchValue: false,
-            selected: "1min"
+            selected: this.props.measurementTime,
+            highHumid: this.props.maxHumid,
+            lowHumid: this.props.minHumid,
+            baby: this.props.baby
         };
     }
 
-    toggleSwitch = value => {
-        this.setState({switchValue: value});
-    }
 
     onValueChange(value) {
         this.setState({
@@ -30,18 +31,56 @@ export default class HumiditySetting extends React.Component {
         });
     }
 
+    save() {
+        const {  changeReadTime, baby, changeMaxMinHumid } = this.props;
+        BabyActions.setMeasurementTime(this.state.selected);
+        changeReadTime(parseInt(this.state.selected));
+
+        const setting = realm.objects("setting").filtered(`id = "${baby.id}"`)[0];
+        realm.write(() => {
+            realm.create("setting", {
+                id: setting.id,
+                highHumidity: this.state.highHumid,
+                lowHumidity: this.state.lowHumid,
+                checkTemperatureTime: parseInt(this.state.selected)
+            }, true);
+        });
+
+        changeMaxMinHumid(this.state.lowHumid, this.state.highHumid);
+
+        BabyActions.setMinHumid(this.state.lowHumid);
+        BabyActions.setMaxHumid(this.state.highHumid);
+
+        BabyActions.setPageName(PAGE_NAME.setting);
+    }
+
+    isValidHighHumid(e) {
+        let newHumid;
+        if(!isNaN(e) && e !== undefined && e != ""){
+            newHumid = parseInt(e);
+            this.setState({highHumid: newHumid});
+        } else{
+            newHumid = "";
+            this.setState({highHumid: newHumid});
+        }
+    }
+
+    isValidLowHumid(e) {
+        let newHumid;
+        if(!isNaN(e) && e !== undefined && e != ""){
+            newHumid = parseInt(e);
+            this.setState({lowHumid: newHumid});
+        } else{
+            newHumid = "";
+            this.setState({lowHumid: newHumid});
+        }
+    }
+
     render() {
         return (
             <Content style={styles.container}>
                 <HeaderTemplate title="습도조절 설정"/>
-                <View style={[styles.viewFormItem, styles.viewMargin]}>
-                    <Text style={styles.textLabel}>자동조절</Text>
-                    <Switch
-                        style={[commonStyles.switchDefault]}
-                        onValueChange={this.toggleSwitch}
-                        value={this.state.switchValue}
-                    />
-                </View>
+
                 <View style={[styles.viewFormItem, styles.viewMargin]}>
                     <Text style={[styles.textLabel, {paddingTop: 15}]}>측정시간</Text>
                     <Picker
@@ -52,9 +91,11 @@ export default class HumiditySetting extends React.Component {
                         selectedValue={this.state.selected}
                         onValueChange={this.onValueChange.bind(this)}
                     >
-                        <Picker.Item label="1분" value="1min"/>
-                        <Picker.Item label="5분" value="2min"/>
-                        <Picker.Item label="10분" value="10min"/>
+                        <Picker.Item label="5초" value="5" />
+                        <Picker.Item label="30초" value="30"/>
+                        <Picker.Item label="1분" value="60"/>
+                        <Picker.Item label="5분" value="300"/>
+                        <Picker.Item label="10분" value="600"/>
                     </Picker>
                 </View>
                 <Form style={styles.viewMargin}>
@@ -62,20 +103,16 @@ export default class HumiditySetting extends React.Component {
                         <Label>최고습도</Label>
                         <Input
                             keyboardType="numeric"
-                            onChangeText={highHumid => {
-                                highHumid = parseInt(highHumid);
-                                this.setState({highHumid});
-                            }}
+                            value={String(this.state.highHumid)}
+                            onChangeText={(value)=>{this.isValidHighHumid(value)}}
                         />
                     </Item>
                     <Item stackedLabel style={styles.itemInput}>
                         <Label>최저습도</Label>
                         <Input
                             keyboardType="numeric"
-                            onChangeText={lowHumid => {
-                                lowHumid = parseInt(lowHumid);
-                                this.setState({lowHumid});
-                            }}
+                            value={String(this.state.lowHumid)}
+                            onChangeText={(value)=>{this.isValidLowHumid(value)}}
                         />
                     </Item>
                 </Form>
@@ -84,7 +121,7 @@ export default class HumiditySetting extends React.Component {
                         buttonProps={commonProps.buttonMenus}
                         style={[commonStyles.buttonMenu, commonStyles.buttonLeftMenu]}
                         onPress={() => {
-                            BabyActions.setPageName(PAGE_NAME.setting);
+                            this.save();
                         }}
                         title={KO.save}
                     />
@@ -120,3 +157,12 @@ const styles = StyleSheet.create({
         marginLeft: 15
     }
 });
+
+export default connect(({ baby, bluetooth }) => ({
+    changeReadTime: bluetooth.get("functions").changeReadTime,
+    changeMaxMinHumid: bluetooth.get("functions").changeMaxMinHumid,
+    measurementTime: baby.get("measurementTime"),
+    maxHumid: baby.get("maxHumid"),
+    minHumid: baby.get("minHumid"),
+    baby: baby.get("baby")
+}))(HumiditySetting);
