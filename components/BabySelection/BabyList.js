@@ -20,9 +20,9 @@ export default class BabyList extends React.Component {
             testBabys : realm.objects('baby')
         }
         this.update = this.update.bind(this);
-        realm.write(()=>{
-            realm.deleteAll();
-        });
+        // realm.write(()=>{
+        //     realm.deleteAll();
+        // });
     }
     update() {
         this.setState({
@@ -93,8 +93,14 @@ class Baby extends React.Component {
             onPress={() => {
                 realm.write(()=>{
                    let delbaby = realm.objects("baby").filtered(`id="${baby.id}"`);
+                   let delbluetooth = realm.objects("bluetoothDevice").filtered(`babyId="${baby.id}"`);
+                   let delhistry = realm.objects("history").filtered(`babyId="${baby.id}"`);
+                   let delmedic = realm.objects("medic").filtered(`babyId="${baby.id}"`);
                    realm.delete(delbaby);
                     realm.delete(setting);
+                    realm.delete(delbluetooth);
+                    realm.delete(delhistry);
+                    realm.delete(delmedic);
                 });
                 update();
             }}
