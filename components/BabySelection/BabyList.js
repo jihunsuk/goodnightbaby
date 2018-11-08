@@ -24,6 +24,7 @@ class BabyList extends React.Component {
       testBabys: realm.objects("baby").sorted("id")
     });
   }
+
   render() {
     let Babys = this.state.testBabys.map((baby, idx) => (
       <Baby update={this.update} baby={baby} key={idx} {...this.props} />
@@ -96,12 +97,18 @@ class Baby extends React.Component {
             transparent
             dark
             onPress={() => {
-              realm.write(() => {
-                let delbaby = realm.objects("baby").filtered(`id="${baby.id}"`);
-                realm.delete(delbaby);
-                realm.delete(setting);
-              });
-              update();
+                realm.write(()=>{
+                   let delbaby = realm.objects("baby").filtered(`id="${baby.id}"`);
+                   let delbluetooth = realm.objects("bluetoothDevice").filtered(`babyId="${baby.id}"`);
+                   let delhistry = realm.objects("history").filtered(`babyId="${baby.id}"`);
+                   let delmedic = realm.objects("medic").filtered(`babyId="${baby.id}"`);
+                   realm.delete(delbaby);
+                    realm.delete(setting);
+                    realm.delete(delbluetooth);
+                    realm.delete(delhistry);
+                    realm.delete(delmedic);
+                });
+                update();
             }}
           >
             <Icon name="remove" />

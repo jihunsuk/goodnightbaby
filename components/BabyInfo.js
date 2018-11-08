@@ -3,12 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { Icon, Switch } from "native-base";
 import { commonStyles } from "../styles";
+import {BabyActions} from "../reduxStore/actionCreators";
 
 class BabyInfo extends React.Component {
+
   constructor(props) {
     super(props);
+    const { autoMeasurement } = this.props;
     this.state = {
-      switchValue: true
+      switchValue: autoMeasurement
     };
     this.toggleSwitch = this.toggleSwitch.bind(this);
   }
@@ -18,6 +21,9 @@ class BabyInfo extends React.Component {
     this.setState({
       switchValue: value
     });
+    BabyActions.setAutoMeasurement(
+        value
+    );
     if (value == true) {
       write("1");
     } else {
@@ -26,7 +32,7 @@ class BabyInfo extends React.Component {
   }
 
   render() {
-    const { baby } = this.props;
+      const { baby } = this.props;
     return (
       <View style={[styles.container]}>
         <View style={[commonStyles.viewCenter, styles.viewBabyNameArea]}>
@@ -75,5 +81,6 @@ const styles = StyleSheet.create({
 
 export default connect(({ baby, bluetooth }) => ({
   baby: baby.get("baby"),
+  autoMeasurement: baby.get("autoMeasurement"),
   write: bluetooth.get("functions").write
 }))(BabyInfo);

@@ -11,6 +11,7 @@ const SET_SELECTED_HUMIDIFIER = "SET_SELECTED_HUMIDIFIER";
 const SET_TEMP_AND_HUMID = "SET_TEMP_AND_HUMID";
 const SET_COOLFAN_STATE = "SET_COOLFAN_STATE";
 const SET_HUMIDIFIER_STATE = "SET_HUMIDIFIER_STATE";
+const SET_AUTO_MEASUREMENT = "SET_AUTO_MEASUREMENT";
 const SET_AUTO_COOLFAN = "SET_AUTO_COOLFAN";
 const SET_AUTO_HUMIDIFIER = "SET_AUTO_HUMIDIFIER";
 const SET_MEASUREMENT_TIME = "SET_MEASUREMENT_TIME";
@@ -26,6 +27,7 @@ export const setSelectedThermometer = createAction(SET_SELECTED_THERMOMETER);
 export const setSelectedCoolFan = createAction(SET_SELECTED_COOLFAN);
 export const setSelectedHumidifier = createAction(SET_SELECTED_HUMIDIFIER);
 export const setTempAndHumid = createAction(SET_TEMP_AND_HUMID);
+export const setAutoMeasurement = createAction(SET_AUTO_MEASUREMENT);
 export const setCoolFanState = createAction(SET_COOLFAN_STATE);
 export const setHumidifierState = createAction(SET_HUMIDIFIER_STATE);
 export const setAutoCoolFan = createAction(SET_AUTO_COOLFAN);
@@ -49,6 +51,7 @@ const initialState = Map({
   setTempAndHumid: null,
   temp: "-",
   humid: "-",
+  autoMeasurement : true,
   autoCoolFan: "RUNNING",
   autoHumidifier: "RUNNING",
   coolFanState: "STOPPED",
@@ -90,7 +93,9 @@ export default handleActions(
     [SET_MAX_HUMID]: (state, { payload: newState }) =>
       state.set("maxHumid", newState),
     [SET_MIN_HUMID]: (state, { payload: newState }) =>
-      state.set("minHumid", newState)
+      state.set("minHumid", newState),
+    [SET_AUTO_MEASUREMENT]: (state, { payload: newState }) =>
+        state.set("autoMeasurement", newState)
   },
   initialState
 );
