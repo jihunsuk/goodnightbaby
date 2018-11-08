@@ -33,7 +33,7 @@ class BabyModification extends React.Component {
       name: baby.name,
       age: baby.age,
       sex: baby.sex, // male, female
-      image: baby.image,
+      //image: baby.image,
       device_index: device_length === 0 ? 0 : device[device_length - 1].id + 1,
       thermometerModalVisible: false,
       coolFanModalVisible: false,
@@ -149,7 +149,7 @@ class BabyModification extends React.Component {
           name: this.state.name,
           age: this.state.age,
           sex: this.state.sex,
-          image: this.state.image
+          //image: this.state.image
         },
         true
       );
@@ -209,7 +209,7 @@ class BabyModification extends React.Component {
       sex,
       name,
       age,
-      image,
+      //image,
       thermometerModalVisible,
       coolFanModalVisible,
       humidifierModalVisible
@@ -241,13 +241,13 @@ class BabyModification extends React.Component {
                 onChangeText={name => this.setState({ name })}
               />
             </Item>
-            <Item stackedLabel style={styles.itemInput}>
-              <Label>사진</Label>
-              <Input
-                value={image}
-                onChangeText={image => this.setState({ image })}
-              />
-            </Item>
+            {/*<Item stackedLabel style={styles.itemInput}>*/}
+              {/*<Label>사진</Label>*/}
+              {/*<Input*/}
+                {/*value={image}*/}
+                {/*onChangeText={image => this.setState({ image })}*/}
+              {/*/>*/}
+            {/*</Item>*/}
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
               <Input

@@ -23,9 +23,9 @@ import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 class BabyAddition extends React.Component {
   constructor(props) {
     super(props);
-    let babys = realm.objects("baby");
+    let babys = realm.objects("baby").sorted('id');
     let babys_length = babys.length;
-    let settings = realm.objects("setting");
+    let settings = realm.objects("setting").sorted('id');
     let settings_length = settings.length;
     let alarms = realm.objects("alarm");
     let alarms_length = alarms.length;
@@ -146,7 +146,7 @@ class BabyAddition extends React.Component {
           name: this.state.name,
           age: this.state.age,
           sex: this.state.sex,
-          image: this.state.image
+          //image: this.state.image
         },
         true
       );
@@ -250,10 +250,10 @@ class BabyAddition extends React.Component {
               <Label>이름</Label>
               <Input onChangeText={name => this.setState({ name })} />
             </Item>
-            <Item stackedLabel style={styles.itemInput}>
-              <Label>사진</Label>
-              <Input onChangeText={image => this.setState({ image })} />
-            </Item>
+            {/*<Item stackedLabel style={styles.itemInput}>*/}
+              {/*<Label>사진</Label>*/}
+              {/*<Input onChangeText={image => this.setState({ image })} />*/}
+            {/*</Item>*/}
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
               <Input

@@ -14,8 +14,23 @@ import realm from "../../realm/realmDatabase";
 import { commonStyles } from "../../styles";
 
 export default class BabyList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state= {
+            testBabys : realm.objects('baby')
+        }
+        this.update = this.update.bind(this);
+        realm.write(()=>{
+            realm.deleteAll();
+        });
+    }
+    update() {
+        this.setState({
+            testBabys: realm.objects('baby').sorted('id')
+        });
+    }
   render() {
-    let Babys = testBabys.map((baby, idx) => <Baby baby={baby} key={idx} />);
+    let Babys = this.state.testBabys.map((baby, idx) => <Baby update={this.update} baby={baby} key={idx} />);
 
     return (
       <Fragment>
@@ -32,7 +47,9 @@ class Baby extends React.Component {
   }
 
   render() {
-    const { baby } = this.props;
+    const { baby, update } = this.props;
+    console.log(baby);
+      console.log("-----------------------");
     let setting = realm.objects("setting").filtered(`id = "${baby.id}"`)[0];
     return (
       <View style={styles.baby}>
@@ -74,7 +91,12 @@ class Baby extends React.Component {
             transparent
             dark
             onPress={() => {
-              BabyActions.setPageName(PAGE_NAME.babyDeletion);
+                realm.write(()=>{
+                   let delbaby = realm.objects("baby").filtered(`id="${baby.id}"`);
+                   realm.delete(delbaby);
+                    realm.delete(setting);
+                });
+                update();
             }}
           >
             <Icon name="remove" />

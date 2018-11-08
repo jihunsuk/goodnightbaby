@@ -11,7 +11,7 @@ baby.schema = {
     name: "string",
     age: "int",
     sex: "string",
-    image: { type: "data", optional: true }
+    //image: { type: "data", optional: true }
   }
 };
 

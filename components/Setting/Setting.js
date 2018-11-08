@@ -56,14 +56,14 @@ export default class Setting extends React.Component {
             <Text>{KO.humiditySetting}</Text>
             <Icon name="arrow-round-forward" />
           </Button>
-          <Button
-            {...buttonProps}
-            style={styles.buttonMenu}
-            onPress={this.handleAlarmSettingOnPress}
-          >
-            <Text>{KO.alarmSetting}</Text>
-            <Icon name="arrow-round-forward" />
-          </Button>
+          {/*<Button*/}
+            {/*{...buttonProps}*/}
+            {/*style={styles.buttonMenu}*/}
+            {/*onPress={this.handleAlarmSettingOnPress}*/}
+          {/*>*/}
+            {/*<Text>{KO.alarmSetting}</Text>*/}
+            {/*<Icon name="arrow-round-forward" />*/}
+          {/*</Button>*/}
         </View>
       </Content>
     );
