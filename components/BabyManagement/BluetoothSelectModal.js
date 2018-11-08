@@ -225,7 +225,8 @@ class DeviceList extends React.Component {
                     style={{
                       justifyContent: "space-between",
                       flexDirection: "row",
-                      alignItems: "center"
+                      alignItems: "center",
+                      paddingTop: 10
                     }}
                   >
                     <CheckBox
@@ -233,9 +234,17 @@ class DeviceList extends React.Component {
                       onPress={() => {
                         this.checkDevice(device.id, device.name, i);
                       }}
+                      checkboxSize="40"
                     />
-                    <Text style={{ fontWeight: "bold" }}>{device.name}</Text>
-                    <Text>{`<${device.id}>`}</Text>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 17,
+                        paddingLeft: 15
+                      }}
+                    >
+                      {device.name} {`<${device.id}>`}
+                    </Text>
                   </View>
                 </View>
               );
@@ -253,6 +262,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "#e0e0e0",
-    height: 150
+    height: 350
   }
 });

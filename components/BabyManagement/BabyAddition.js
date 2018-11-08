@@ -23,15 +23,16 @@ import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 class BabyAddition extends React.Component {
   constructor(props) {
     super(props);
-    let babys = realm.objects("baby").sorted('id');
+    let babys = realm.objects("baby").sorted("id");
     let babys_length = babys.length;
-    let settings = realm.objects("setting").sorted('id');
+    let settings = realm.objects("setting").sorted("id");
     let settings_length = settings.length;
     let alarms = realm.objects("alarm");
     let alarms_length = alarms.length;
     let device = realm.objects("bluetoothDevice");
     let device_length = device.length;
     this.state = {
+      isEnable: false,
       id: babys_length === 0 ? 0 : babys[babys_length - 1].id + 1,
       settingId:
         settings_length === 0 ? 0 : settings[settings_length - 1].id + 1,
@@ -58,14 +59,25 @@ class BabyAddition extends React.Component {
     /* Bind end */
   }
 
+  componentWillUnmount() {}
+
   /* Modal Function Start */
   handleModalOnPress(visible, modalFunc) {
     const { requestEnable } = this.props;
     const { isEnabled } = this.props;
-    if (isEnabled === false) {
-      requestEnable();
-    }
-    modalFunc(visible);
+    isEnabled().then(isEnable => {
+      if (isEnable) {
+        this.setState({
+          isEnable: true
+        });
+        modalFunc(visible);
+      } else {
+        this.setState({
+          isEnable: false
+        });
+        requestEnable();
+      }
+    });
   }
 
   setThermometerModalVisible(visible) {
@@ -145,30 +157,28 @@ class BabyAddition extends React.Component {
           alarmId: this.state.alarmId,
           name: this.state.name,
           age: this.state.age,
-          sex: this.state.sex,
+          sex: this.state.sex
           //image: this.state.image
         },
         true
       );
     });
 
-      realm.write(() => {
-          realm.create(
-              "setting",
-              {
-                  id: this.state.settingId,
-                  checkTemperatureTime: 5,
-                  checkHumidityTime: 5,
-                  highTemperature: 33,
-                  lowTemperature: 30,
-                  highHumidity: 75,
-                  lowHumidity: 65
-              },
-              true
-          );
-      });
-
-
+    realm.write(() => {
+      realm.create(
+        "setting",
+        {
+          id: this.state.settingId,
+          checkTemperatureTime: 5,
+          checkHumidityTime: 5,
+          highTemperature: 33,
+          lowTemperature: 30,
+          highHumidity: 75,
+          lowHumidity: 65
+        },
+        true
+      );
+    });
   }
 
   /* Realm logic End */
@@ -224,13 +234,13 @@ class BabyAddition extends React.Component {
       sex,
       thermometerModalVisible,
       coolFanModalVisible,
-      humidifierModalVisible
+      humidifierModalVisible,
+      isEnable
     } = this.state;
     const {
       selectedThermometer,
       selectedCoolFan,
       selectedHumidifier,
-      isEnabled
     } = this.props;
 
     let coolFans = "-";
@@ -250,10 +260,6 @@ class BabyAddition extends React.Component {
               <Label>이름</Label>
               <Input onChangeText={name => this.setState({ name })} />
             </Item>
-            {/*<Item stackedLabel style={styles.itemInput}>*/}
-              {/*<Label>사진</Label>*/}
-              {/*<Input onChangeText={image => this.setState({ image })} />*/}
-            {/*</Item>*/}
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
               <Input
@@ -305,7 +311,9 @@ class BabyAddition extends React.Component {
                   }}
                   style={styles.buttonBluetoothDevice}
                 >
-                  <Text style={[styles.textBluetoothDeviceButton, {fontSize: 13}]}>
+                  <Text
+                    style={[styles.textBluetoothDeviceButton, { fontSize: 13 }]}
+                  >
                     체온측정장치선택
                   </Text>
                 </Button>
@@ -367,7 +375,7 @@ class BabyAddition extends React.Component {
             />
           </View>
         </Content>
-        {isEnabled && (
+        {isEnable === true && (
           <Fragment>
             <BluetoothSelectModal
               modalVisible={thermometerModalVisible}
@@ -430,6 +438,6 @@ export default connect(({ baby, bluetooth }) => ({
   selectedThermometer: baby.get("selectedThermometer"),
   selectedCoolFan: baby.get("selectedCoolFan"),
   selectedHumidifier: baby.get("selectedHumidifier"),
-  isEnabled: bluetooth.get("isEnabled"),
+  isEnabled: bluetooth.get("functions").isEnabled,
   requestEnable: bluetooth.get("functions").requestEnable
 }))(BabyAddition);

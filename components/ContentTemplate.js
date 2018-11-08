@@ -11,12 +11,12 @@ import HumiditySetting from "../components/HumiditySetting";
 import MeasurementHistory from "../components/MeasurementHistory";
 import Setting from "../components/Setting";
 import AlarmSetting from "../components/AlarmSetting";
-import TemperatureSetting from "../components/TemperatureSetting"
+import TemperatureSetting from "../components/TemperatureSetting";
 import BabyAddition from "../components/BabyManagement/BabyAddition";
 import BabyModification from "../components/BabyManagement/BabyModification";
 import BabySelection from "../components/BabySelection";
 import BluetoothSerialTemplate from "../util/BluetoothSerialTemplate";
-import {isNotNull} from "../util/commonUtil";
+import { isNotNull } from "../util/commonUtil";
 
 class ContentTemplate extends React.Component {
   _getPage(pageName) {
@@ -58,7 +58,7 @@ class ContentTemplate extends React.Component {
   isNeedBluetooth() {
     const { pageName } = this.props;
     if (
-      pageName === PAGE_NAME.babySelection ||
+      // pageName === PAGE_NAME.babySelection ||
       pageName === PAGE_NAME.babyAddition ||
       pageName === PAGE_NAME.babyModification
     )
@@ -72,7 +72,8 @@ class ContentTemplate extends React.Component {
     return (
       <Fragment>
         {page}
-        {this.isNeedBluetooth() === true && isNotNull(devices) && devices.length !== 0 && <BluetoothSerialTemplate />}
+        {this.isNeedBluetooth() === true &&
+        <BluetoothSerialTemplate />}
       </Fragment>
     );
   }
@@ -80,5 +81,5 @@ class ContentTemplate extends React.Component {
 
 export default connect(({ baby, bluetooth }) => ({
   pageName: baby.get("pageName"),
-    devices: bluetooth.get("devices")
+  devices: bluetooth.get("devices")
 }))(ContentTemplate);

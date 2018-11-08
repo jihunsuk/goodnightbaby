@@ -8,7 +8,8 @@ import { commonStyles } from "../styles";
 
 class Sidebar extends React.Component {
   render() {
-    const { pageName } = this.props;
+    const { pageName, disconnectDevices} = this.props;
+
     if (
       pageName !== PAGE_NAME.babySelection &&
       pageName !== PAGE_NAME.babyAddition &&
@@ -28,6 +29,7 @@ class Sidebar extends React.Component {
           </View>
           <View style={styles.viewSidebarMenu}>
             <TouchableHighlight {...touchableHighlightProps} onPress={() => {
+                disconnectDevices();
                 BabyActions.setPageName(PAGE_NAME.babySelection);
               }} style={[styles.touchableHighlightMenu, commonStyles.viewCenter]}>
               <View style={[commonStyles.viewCenter]}>
@@ -97,6 +99,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(({ baby }) => ({
-  pageName: baby.get("pageName")
+export default connect(({ baby, bluetooth }) => ({
+  pageName: baby.get("pageName"),
+  disconnectDevices: bluetooth.get("functions").disconnectDevices
 }))(Sidebar);

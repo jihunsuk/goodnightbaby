@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 class BabySelection extends React.Component {
   componentDidMount() {
     BluetoothActions.setDevices(null);
+    BabyActions.setBaby(null);
+    BluetoothActions.setIsActivated(false);
   }
 
   render() {
@@ -89,5 +91,5 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({ baby }) => ({
-  baby: baby.get("baby")
+  baby: baby.get("baby"),
 }))(BabySelection);

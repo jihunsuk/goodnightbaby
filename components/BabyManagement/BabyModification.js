@@ -21,7 +21,6 @@ import { isNotNull } from "../../util/commonUtil";
 import BluetoothSerialTemplate from "../../util/BluetoothSerialTemplate";
 
 class BabyModification extends React.Component {
-
   constructor(props) {
     super(props);
     const { baby } = this.props;
@@ -29,6 +28,7 @@ class BabyModification extends React.Component {
     let device = realm.objects("bluetoothDevice");
     let device_length = device.length;
     this.state = {
+      isEnable: false,
       id: baby.id,
       name: baby.name,
       age: baby.age,
@@ -40,7 +40,6 @@ class BabyModification extends React.Component {
       humidifierModalVisible: false
     };
     console.log(this.state.device_index);
-
 
     /* Bind start */
     this.setThermometerModalVisible = this.setThermometerModalVisible.bind(
@@ -58,10 +57,19 @@ class BabyModification extends React.Component {
   handleModalOnPress(visible, modalFunc) {
     const { requestEnable } = this.props;
     const { isEnabled } = this.props;
-    if (isEnabled === false) {
-      requestEnable();
-    }
-    modalFunc(visible);
+    isEnabled().then(isEnable => {
+      if (isEnable) {
+        this.setState({
+          isEnable: true
+        });
+        modalFunc(visible);
+      } else {
+        this.setState({
+          isEnable: false
+        });
+        requestEnable();
+      }
+    });
   }
 
   setThermometerModalVisible(visible) {
@@ -98,9 +106,11 @@ class BabyModification extends React.Component {
       selectedHumidifier
     } = this.props;
 
-    realm.write(()=> {
-        let del = realm.objects("bluetoothDevice").filtered(`babyId="${this.state.id}"`);
-        realm.delete(del);
+    realm.write(() => {
+      let del = realm
+        .objects("bluetoothDevice")
+        .filtered(`babyId="${this.state.id}"`);
+      realm.delete(del);
     });
 
     const { device_index } = this.state;
@@ -148,7 +158,7 @@ class BabyModification extends React.Component {
           alarmId: this.state.alarmId,
           name: this.state.name,
           age: this.state.age,
-          sex: this.state.sex,
+          sex: this.state.sex
           //image: this.state.image
         },
         true
@@ -209,16 +219,15 @@ class BabyModification extends React.Component {
       sex,
       name,
       age,
-      //image,
       thermometerModalVisible,
       coolFanModalVisible,
-      humidifierModalVisible
+      humidifierModalVisible,
+      isEnable
     } = this.state;
     const {
       selectedThermometer,
       selectedCoolFan,
       selectedHumidifier,
-      isEnabled
     } = this.props;
 
     let coolFans = "-";
@@ -241,13 +250,6 @@ class BabyModification extends React.Component {
                 onChangeText={name => this.setState({ name })}
               />
             </Item>
-            {/*<Item stackedLabel style={styles.itemInput}>*/}
-              {/*<Label>사진</Label>*/}
-              {/*<Input*/}
-                {/*value={image}*/}
-                {/*onChangeText={image => this.setState({ image })}*/}
-              {/*/>*/}
-            {/*</Item>*/}
             <Item stackedLabel style={styles.itemInput}>
               <Label>나이</Label>
               <Input
@@ -362,7 +364,7 @@ class BabyModification extends React.Component {
             />
           </View>
         </Content>
-        {isEnabled && (
+        {isEnable && (
           <Fragment>
             <BluetoothSelectModal
               modalVisible={thermometerModalVisible}
@@ -425,7 +427,7 @@ export default connect(({ baby, bluetooth }) => ({
   selectedThermometer: baby.get("selectedThermometer"),
   selectedCoolFan: baby.get("selectedCoolFan"),
   selectedHumidifier: baby.get("selectedHumidifier"),
-  isEnabled: bluetooth.get("isEnabled"),
+  isEnabled: bluetooth.get("functions").isEnabled,
   requestEnable: bluetooth.get("functions").requestEnable,
   baby: baby.get("baby")
 }))(BabyModification);
